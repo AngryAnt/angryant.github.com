@@ -1,0 +1,559 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - Assembling and assimilating - </title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print.css" type="text/css" media="print" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34029666-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header">AngryAnt</h1>
+<div id="subtitle">Assembling and assimilating</div>
+
+	
+		<a href="/">Home</a>
+		
+	
+
+	
+		<a href="/feed">Feed</a>
+		
+	
+
+	
+		<a href="/path">Path</a>
+		
+	
+
+	
+		<a href="/behave">Behave</a>
+		
+	
+
+
+<div id="external">
+	<a href="https://gist.github.com/AngryAnt">Gist</a>
+	<a href="https://twitter.com/AngryAnt">Twitter</a>
+	<a href="http://www.linkedin.com/in/EmilJohansen">LinkedIn</a>
+</div>
+<div class="comment">
+	That's right - no comments. Contact me on Twitter or otherwise for feedback.
+</div>
+
+			</div>
+			<div id="container">
+				<span class="date">02 Feb 2011</span>
+				<h1 id="Top">Assembling and assimilating</h1>
+				
+				<div id="content">
+					<p class="post"><p>So this post has been delayed for quite a while&#8230; One question I got from many sources after my Advanced Editor Scripting talk with Adam Mechtley at Unite &#8217;10 was &#8220;so how did you do that assembly building thing?&#8221;.</p>
+<p>Well I did it before we had a port of MonoDevelop available, so my options were limited. Now that we do have that port, you&#8217;ll be able to redo this exercise in there with some <span class="caps">GUI</span> drag-drop nicenessness. However, just because I can (and because it is healthy learning and lovely hacky) I will provide the command-line/perl script solution, which is still my approach.</p>
+<p>First a quick &#8220;why&#8221;: As mentioned in my Unite talk, there are three reasons I wrap my projects in .net assemblies before distributing &#8211; and no it&#8217;s got nothing to do with keeping the source secure &#8211; assemblies are <b>easily</b> decompiled:</p>
+<ul>
+	<li>Reduce deployment clutter. If I were to release Behave without being wrapped in assembly, it would span around 150 &#8211; 170 source files and textures in various folder configurations. Now I have two folders, three assemblies and about five script files.</li>
+	<li>Reduce funky bug reports. While .net assemblies are very easily disassembled, it does at least take some dedication to do so. More than it takes to randomly change something in a full source distribution when things don&#8217;t go your way. So assemblies help you get rid of a portion of those really long bug reports which end up with &quot;oh, by the way, I changed this one thing in your distribution &#8211; you think that might have something to do with it?.</li>
+	<li>They can load in at runtime. This is really cool and quite useful if applicable to your scenario &#8211; for more information, check out this other tips and tricks post: <a href="http://angryant.com/general/tipsandtricks/downloading-the-hydra/" target="_parent">downloading the hydra</a>.</li>
+</ul>
+<p>In this post I am going to show you how to build your scripts into a .net assembly (.dll) and add it to your Unity project. And just to spice things up, lets take that in reverse: Once your assembly is built, copy that bastard into your Assets folder. Done.</p>
+<p>Easy, right? Now, let&#8217;s take a look at the assembly building. And, before you start, yes this will run on all Unity supported platforms and no it does not require pro &#8211; run this on the base Unity license without issues.</p>
+<h2>Setup</h2>
+<p>So first off, if you are on windows, you&#8217;ll be needing a perl install. I usually got for ActivePerl. Not saying it is more awesomerer than anything else out there &#8211; just that I know it and it usually works just fine. If you are on OS X, you&#8217;re in luck, as perl comes preinstalled.</p>
+<p>Now, let&#8217;s get perl hacking. This is in no way meant as a &#8220;my first perl script&#8221; guide. We&#8217;re just getting introduced to a means to an end &#8211; and it is not going to be pretty. So first off, create a new text file in your favorite text editor and save it as build.pl. Start the file off like so:</p>
+<script src='https://gist.github.com/3165387.js?file=build-1.pl'></script><div><noscript><pre><code>#/usr/local/bin/perl
+
+use strict;
+use Getopt::Long;
+use Term::ANSIColor;
+use File::Basename;
+use File::Spec;
+chdir (File::Spec-&amp;gt;rel2abs (dirname($0)));
+
+our $compiler = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Mono/bin/gmcs&amp;quot;;
+our $assemblyUnityEngine = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll&amp;quot;;
+our $assemblyUnityEditor = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll&amp;quot;;</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>Now, that was a bit of a mouthful, but it should be pretty straight-forward. Lines three through eight include a lot of perl functionality we will be using later. And actually the last two ones are already used in line nine. Here we&#8217;re ensuring that the rest of the script is being executed in the context of the folder containing the file.</p>
+<p>In the next few lines of interest, three variables are declared &#8211; pathes to the mono compiler shipped with Unity and the UnityEngine and UnityEditor assemblies. Notice that these are OS X pathes, for a windows setup (or if you installed Unity into a different folder than the default), you&#8217;ll need to correct these.</p>
+<h2>Debug command-line parameter</h2>
+<p>Next up, let&#8217;s add support for command-line parameters. &#8220;Why?&#8221; you ask &#8211; because they are going to be awesome for debugging our assembly later. The only command-line parameter we will be supporting for now is &#8220;&#8212;release&#8221;. This will basically let us toggle, when building the assembly, a bunch of logging and other stuff on or off. This is what it looks like:</p>
+<script src='https://gist.github.com/3165387.js?file=build-2.pl'></script><div><noscript><pre><code>my $optionRelease = 0;
+
+GetOptions (
+	&amp;quot;release&amp;quot; =&amp;gt; \$optionRelease
+);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>We declare a variable named optionRelease, initialize it to zero and then call GetOptions, telling it to pass data on the use of the &#8220;release&#8221; parameter into our variable. Now, GetOptions has a bunch of functionality, but the way we use it here, it simply assigns one or zero to our variable &#8211; depending on whether the parameter is used or not.</p>
+<p>Next up, we need to use this variable to affect the parameters we pass to the gmcs compiler. Like so:</p>
+<script src='https://gist.github.com/3165387.js?file=build-3.pl'></script><div><noscript><pre><code>my $debugOptions = $optionRelease == 0 ? &amp;quot;-d:DEBUG&amp;quot; : &amp;quot;&amp;quot;;</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>The idea here is that gmcs takes a parameter -d:[name] which instructs it to, during pre-processing, run with the symbol [name] defined. Something we can work with in our code like this:</p>
+<script src='https://gist.github.com/3165387.js?file=AssemblyTest-1.cs'></script><div><noscript><pre><code>#if DEBUG
+	Debug.Log (&amp;quot;I'm only visible in debug builds!&amp;quot;);
+#endif</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<h2>Building two assemblies</h2>
+<p>Next up, a bit of info. Since Unity 3, we&#8217;ve enforced that scripts and assembly depending on UnityEditor, even if not using that, cannot be included in builds. This means that if you have some editor scripts, you would also like built to assembly, you will need to split these out into a different assembly than the one containing your runtime scripts.</p>
+<p>Lets&#8217;s assume that is the case for this exercise, that the runtime scripts are located in Source/ and that the editor scripts are located in Source/Editor. So we will have to build two assemblies. That could mean code duplication, which should cause anyone pain, so let&#8217;s be nice and wrap some of the building up in a perl subroutine:</p>
+<script src='https://gist.github.com/3165387.js?file=build-4.pl'></script><div><noscript><pre><code>sub BuildAssembly
+{
+	our $compiler;
+
+	my $target = shift;
+	my $out = shift;
+	my $arguments = shift;
+	my $source = shift;
+
+	print (&amp;quot;Compiling $out\n&amp;quot;);
+	print color (&amp;quot;blue&amp;quot;), &amp;quot;$compiler -target:$target -out:$out $arguments $source\n&amp;quot;;
+	print color (&amp;quot;red&amp;quot;);
+	system (&amp;quot;$compiler -target:$target -out:$out $arguments $source&amp;quot;) and die (&amp;quot;Compilation of $out failed.&amp;quot;);
+	print color (&amp;quot;reset&amp;quot;);
+}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>Let&#8217;s take this subroutine line by line. First off we pull in the global variable &#8220;compiler&#8221;. After this, we populate the variables target, out, arguments and source from subroutine parameters. With these at hand, the fun begins. First off, we print out the name of our build target (MyAwesome.dll) and the command we&#8217;re planning to execute &#8211; marked in fashionable blue.</p>
+<p>Second we actually do the building &#8211; colouring any compiler output red (no news is good news &#8211; output is bad). If compilation fails, we kill the script &#8211; allowing the user to take action. If all went well, we remember to reset the colouring before returning from the subroutine.</p>
+<p>So how about some use of this subroutine, eh?</p>
+<script src='https://gist.github.com/3165387.js?file=build-5.pl'></script><div><noscript><pre><code>BuildAssembly (&amp;quot;library&amp;quot;, &amp;quot;Awesomenessness.Runtime.dll&amp;quot;, &amp;quot;Source/*.cs&amp;quot;, &amp;quot;-d:RUNTIME $debugOptions -r:$assemblyUnityEngine&amp;quot;);
+BuildAssembly (&amp;quot;library&amp;quot;, &amp;quot;Awesomenessness.Editor.dll&amp;quot;, &amp;quot;Source/Editor/*.cs&amp;quot;, &amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>As you see, we first build the runtime assembly from Source/*.cs, with the <span class="caps">RUNTIME</span> and optionally the <span class="caps">DEBUG</span> symbol defined. We also make sure to include the UnityEngine assembly in the building, so that you can reference stuff from the UnityEngine namespace.</p>
+<p>In the second line, we build the editor assembly &#8211; containing all our editor code from Source/Editor/*.cs. This time we define the <span class="caps">EDITOR</span> and optionally the <span class="caps">DEBUG</span> symbol during building. This assembly references not only the UnityEngine assembly, but also the UnityEditor one and the runtime assembly which was just built in the line above.</p>
+<h2>Distribution</h2>
+<p>And that&#8217;s about it! As mentioned early in this post, all you need to do in order to include these assemblies in your project is to drag them into your assets folder, but if you&#8217;re very nice, you could just make that copy a part of the build script:</p>
+<script src='https://gist.github.com/3165387.js?file=build-6.pl'></script><div><noscript><pre><code>system (&amp;quot;cp Awesomenessness.Runtime.dll Test\\ project/Assets/Awesomenessness&amp;quot;);
+system (&amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>Notice that this uses the OS X cp command-line tool. For windows, replace with equivalent.</p>
+<h2>Limitation: Editor classes in assemblies</h2>
+<p>While MonoBehaviours can live just fine in assemblies, editor scripts (ScriptableObject derived classes) come with a limitation (currently still active, as of Unity 3.1): You can not initialize these classes via UnityEditor <span class="caps">API</span> calls. That would be calls like ScriptableObject.CreateInstance and EditorWindow.GetWindow.</p>
+<p>However &#8211; you can create instances of classes via &#8220;new&#8221; just fine and you can derive scripts located outside of the assembly and instantiate those via UnityEditor calls without incident. Say for example that MyEditorWindow derives from EditorWindow and is located in an assembly. Now I cannot instantiate it via GetWindow, but if I create a .cs file in my assets folder containing a class which does nothing but inherit from MyEditorWindow, then that class can be instantiated via GetWindow just fine and will have the exact same behaviour.</p>
+<h2>Extra trick: Including resources in the assembly</h2>
+<p>For extra points, you can include resources, such as textures, in your assembly. This has the bonus of limiting the clutter of your distribution even more.</p>
+<p>Including the resource in your build is as simple as appending the &#8220;-resource:[path]&#8221; parameter to your gmcs build command. This will add the bytes into the assembly manifest &#8211; under the name of the original file. You can fetch these bytes at runtime, using that name. For example, here&#8217;s some utility methods for fetching textures:</p>
+<script src='https://gist.github.com/3165387.js?file=AssemblyTest-2.cs'></script><div><noscript><pre><code>public static Stream GetResourceStream (string resourceName, Assembly assembly)
+{
+	if (assembly == null)
+	{
+		assembly = Assembly.GetExecutingAssembly ();
+	}
+
+	return assembly.GetManifestResourceStream (resourceName);
+}
+
+
+public static Stream GetResourceStream (string resourceName)
+{
+	return GetResourceStream (resourceName, null);
+}
+
+
+public static byte[] GetByteResource (string resourceName, Assembly assembly)
+{
+	Stream byteStream = GetResourceStream (resourceName, assembly);
+	byte[] buffer = new byte[byteStream.Length];
+	byteStream.Read (buffer, 0, (int)byteStream.Length);
+	byteStream.Close ();
+
+	return buffer;
+}
+
+
+public static byte[] GetByteResource (string resourceName)
+{
+	return GetByteResource (resourceName, null);
+}
+
+
+public static Texture2D GetTextureResource (string resourceName, Assembly assembly)
+{
+	Texture2D texture = new Texture2D (4, 4);
+	texture.LoadImage (GetByteResource (resourceName, assembly));
+
+	return texture;
+}
+
+
+public static Texture2D GetTextureResource (string resourceName)
+{
+	return GetTextureResource (resourceName, null);
+}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>Given that you added &#8220;-resource:path/to/Logo.png&#8221; to your gmcs build command, you will with the above utility methods be able to fetch that into a texture like so:</p>
+<script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'></script><div><noscript><pre><code>Texture2D logoTexture = GetTextureResource (&amp;quot;Logo.png&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>Well, I hope you guys found some of this useful! I&#8217;ll see if I can&#8217;t do a follow-up on how to do this in MonoDevelop.</p></p>
+					<p>&nbsp;</p>
+
+					<div id="feed">
+						<div id="newer">
+							
+								
+									
+										<h1>Newer posts:</h1>
+										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2012/05/17/path-is-now-mit-licensed/" class="titleSmall">Path is now MIT licensed</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/11/30/behave-1-4-released/" class="titleSmall">Behave 1.4 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/10/09/so-ive-been-a-bit-busy-lately/" class="titleSmall">So I've been a bit busy lately</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/04/28/behave-1-3-released/" class="titleSmall">Behave 1.3 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/04/23/igda-unity-sig-slides/" class="titleSmall">IGDA Unity SIG slides</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/" class="titleSmall">Second Unity Igda Sig This Evening Scene Construction And Ai</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/03/10/first-igda-unity-sig-this-evening/" class="titleSmall">First IGDA Unity SIG this evening</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/03/03/alternative-licensing-available/" class="titleSmall">Alternative licensing available</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/02/15/pathfinding-in-two-line/" class="titleSmall">Pathfinding in two lines</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/02/15/path-2-released/" class="titleSmall">Path 2 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
+										<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/01/29/path-2-intro-screencast/" class="titleSmall">Path 2 intro screencast</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/01/29/path-2-beta-release-for-ggj/" class="titleSmall">Path 2 beta release for GGJ</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2011/01/09/expanding-beta/" class="titleSmall">Expanding beta</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/11/28/behave-aigamedev-master-class-public-stream/" class="titleSmall">Behave AIgameDev master class public stream</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/" class="titleSmall">Behave master class on open AIgameDev stream tomorrow</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/29/interview-with-aigamedev/" class="titleSmall">Interview with AIGameDev</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/24/new-video-from-tree-to-code/" class="titleSmall">New Video From Tree To Code</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/23/issue-tracking-on-github-behave-release-project/" class="titleSmall">Issue tracking on github Behave release project</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/22/it-university-copenhagen-unity-course-completed/" class="titleSmall">IT University Copenhagen Unity course completed</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/21/it-university-copenhagen-unity-course-files-thursday/" class="titleSmall">IT University Copenhagen Unity course files Thursday</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/20/cph-it-university-unity-course-files/" class="titleSmall">CPH IT University Unity course files</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/09/29/video-behave-starting-from-scratch/" class="titleSmall">Video Behave Starting From Scratch</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/09/29/behave-runtime-documentation-updated/" class="titleSmall">Behave runtime documentation updated</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/03/19/faff-cleanup-sketch/" class="titleSmall">Faff Cleanup Sketch</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/03/15/building-a-menu-of-delegates-and-enums/" class="titleSmall">Building a menu of delegates and enums</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/01/14/optimising-coroutine-yielding-in-c/" class="titleSmall">Optimising coroutine yielding in C#</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2010/01/05/downloading-the-hydra/" class="titleSmall">Downloading the hydra</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/11/15/new-license-of-path-gpl/" class="titleSmall">New License Of Path Gpl</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/10/04/magnetic/" class="titleSmall">Magnetic</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/09/18/gui-drag-drop/" class="titleSmall">GUI drag-drop</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/09/17/logging-an-entire-gameobject/" class="titleSmall">Logging an entire GameObject</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/09/07/i-bet-you-cant-type-an-a/" class="titleSmall">I bet you can't type an A!</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/08/31/where-did-that-component-go/" class="titleSmall">Where did that component go?</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/08/19/unitysteer/" class="titleSmall">UnitySteer</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/05/18/new-and-improved-behave-10-released/" class="titleSmall">New And Improved Behave 10 Released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/03/20/behave-03b-hotfix/" class="titleSmall">Behave 0.3b hotfix</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/03/19/path-tutorial-video-available/" class="titleSmall">Path tutorial video available</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2009/03/18/path-10-launched/" class="titleSmall">Path 1.0 launched!</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/12/17/community-tutorial-2/" class="titleSmall">Continued community tutorials</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/11/30/community-tutorial/" class="titleSmall">Community tutorial</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/11/28/new-tutorial/" class="titleSmall">New tutorial</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/11/04/first-tutorial-available/" class="titleSmall">First tutorial available</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/11/02/behave-03b/" class="titleSmall">Behave 0.3b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/10/25/unite-08-open-mic-session/" class="titleSmall">unite '08 open-mic session</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/09/24/behave-02b/" class="titleSmall">Behave 0.2b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/09/09/behave-01b/" class="titleSmall">Behave 0.1b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/09/08/behave-pre-release/" class="titleSmall">Behave pre-release</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/04/12/path-beta-02b/" class="titleSmall">Path beta 0.2b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/04/05/path-beta-01b/" class="titleSmall">Path beta 0.1b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
+									
+									<a href="/2008/03/30/path-pre-release/" class="titleSmall">Path pre-release</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+	</body>
+</html>

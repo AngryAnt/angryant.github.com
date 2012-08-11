@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - Path - Path documentation</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print.css" type="text/css" media="print" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34029666-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header">AngryAnt</h1>
+<div id="subtitle">Path</div>
+
+	
+		<a href="/">Home</a>
+		
+	
+
+	
+		<a href="/feed">Feed</a>
+		
+	
+
+	
+		<a href="/path">Path</a>
+		
+			<div id="submenu">
+				
+					
+						<a href="/path/documentation">Documentation</a>
+					
+				
+					
+						<a href="https://github.com/AngryAnt/Path-release/issues">Issues</a>
+					
+				
+					
+						<a href="/path/download">Download</a>
+					
+				
+			</div>
+		
+	
+
+	
+		<a href="/behave">Behave</a>
+		
+	
+
+
+<div id="external">
+	<a href="https://gist.github.com/AngryAnt">Gist</a>
+	<a href="https://twitter.com/AngryAnt">Twitter</a>
+	<a href="http://www.linkedin.com/in/EmilJohansen">LinkedIn</a>
+</div>
+<div class="comment">
+	That's right - no comments. Contact me on Twitter or otherwise for feedback.
+</div>
+
+			</div>
+			<div id="container">
+				<h1 id="Top">Path documentation</h1>
+				<div id="content">
+					<p>Running on all Unity licenses and platforms, Path requires no additional installs once you have it imported into your project.</p>
+<p>The editor interface of Path is extremely simple, yet powerful:</p>
+<ul>
+	<li>One central Navigation component for general setup.</li>
+	<li>Add waypoints and drag them around with regular position handles.</li>
+	<li>One Navigator component per pathfinding agent.</li>
+	<li>Tweak min/max connection- and waypoint width for automatic network generation.</li>
+</ul>
+<p>Runtime, Path offers a similar <span class="caps">API</span>:</p>
+<ul>
+	<li>Start path calculations by simply assigning the targetPosition variable.</li>
+	<li>Path pre-calculation.</li>
+	<li>Custom weights based on tagging.</li>
+	<li>Path invalidation.</li>
+	<li>Automatically form new ideal connections on scene addition load/generation.</li>
+</ul>
+<p>Video material:</p>
+<ul>
+	<li><a href="http://eej.dk/angryant/wp-content/uploads/path/Path2.mov">Intro to Path 2.0b1</a></li>
+</ul>
+<hr>
+<h2 id="Navigation">Navigation</h2>
+<h3>Access</h3>
+<p>Navigation</p>
+<h3>Description</h3>
+<p>Path system root. This class is the core of the Path system. All nodes and connections register here and the Navigator pulls data from here &#8211; as can your own code.</p>
+<h3>Functions</h3>
+<table>
+	<tr>
+		<td> static </td>
+		<td> Waypoint </td>
+		<td> GetNearestNode (Vector3 position, Navigator navigator) </td>
+	</tr>
+	<tr>
+		<td> static </td>
+		<td> Waypoint </td>
+		<td> GetNearestNode (Vector3 position) </td>
+	</tr>
+	<tr>
+		<td> static </td>
+		<td> void </td>
+		<td> AutoScale (LayerMask layerMask, float minWidth, float maxWidth, float step) </td>
+	</tr>
+	<tr>
+		<td> static </td>
+		<td> void </td>
+		<td> AutoConnect (LayerMask layerMask, float minWidth, float maxWidth, float step) </td>
+	</tr>
+</table>
+<h3>Properties</h3>
+<table>
+	<tr>
+		<td> static </td>
+		<td> int </td>
+		<td> SeekerIterationCap [get, set] </td>
+	</tr>
+	<tr>
+		<td> static </td>
+		<td> ReadOnlyCollection&lt;Waypoint&gt; </td>
+		<td> Waypoints [get] </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Navigator">Navigator</h2>
+<h3>Access</h3>
+<p>Navigator</p>
+<h3>Description</h3>
+<p>Runtime pathfinding interface. This is your runtime interface for Path. The navigator can be given a position to pathfind for, via the targetPosition variable, or you can call RequestPath in order to pre-calculate pathes.</p>
+<h3>Functions</h3>
+<table>
+	<tr>
+		<td> bool </td>
+		<td> DirectPath (Vector3 fromPosition, Vector3 toPosition) </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> DirectPath (Vector3 toPosition) </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> ReSeek () </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> RequestPath (Vector3 startPosition, Vector3 endPosition) </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> RegisterWeightHandler (string tag, WeightHandler handler) </td>
+	</tr>
+</table>
+<h3>Variables</h3>
+<table>
+	<tr>
+		<td> Vector3 </td>
+		<td> targetPosition = Vector3.zero </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> width = 1.0f </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> selfTargetOnAwake = true </td>
+	</tr>
+	<tr>
+		<td> LayerMask </td>
+		<td> pathBlockingLayers = 0 </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> takeShortcuts = true </td>
+	</tr>
+</table>
+<h3>Sent messages</h3>
+<table>
+	<tr>
+		<td> OnNewPath (Path path) </td>
+	</tr>
+	<tr>
+		<td> OnTargetUnreachable () </td>
+	</tr>
+	<tr>
+		<td> OnPathAvailable (Path path) </td>
+	</tr>
+	<tr>
+		<td> OnPathUnavailable () </td>
+	</tr>
+	<tr>
+		<td> OnPathInvalidated (Path path) </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Path">Path</h2>
+<h3>Access</h3>
+<p>Path</p>
+<h3>Description</h3>
+<p>Pathfinding result for passing to your path follower logic.</p>
+<h3>Functions</h3>
+<table>
+	<tr>
+		<td> void </td>
+		<td> ArrivedAt (Waypoint waypoint) </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Contains (Connection connection) </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Contains (Waypoint waypoint) </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> OnDrawGizmos () </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> ToString () </td>
+	</tr>
+</table>
+<h3>Properties</h3>
+<table>
+	<tr>
+		<td> Vector3 </td>
+		<td> StartPosition [get] </td>
+	</tr>
+	<tr>
+		<td> Vector3 </td>
+		<td> EndPosition [get] </td>
+	</tr>
+	<tr>
+		<td> Waypoint </td>
+		<td> StartNode [get] </td>
+	</tr>
+	<tr>
+		<td> Waypoint </td>
+		<td> EndNode [get] </td>
+	</tr>
+	<tr>
+		<td> ReadOnlyCollection&lt;Connection&gt; </td>
+		<td> Segments [get] </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> SeekTime [get, set] </td>
+	</tr>
+	<tr>
+		<td> Navigator </td>
+		<td> Owner [get] </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Valid [get] </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Waypoint">Waypoint</h2>
+<h3>Access</h3>
+<p>Waypoint</p>
+<h3>Description</h3>
+<p>A Path waypoint. Each waypoint is defined by a Position, a Radius and optinally a list of Connections.</p>
+<h3>Functions</h3>
+<table>
+	<tr>
+		<td> void </td>
+		<td> RemoveConnection (Connection connection) </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> RemoveConnection (Waypoint waypoint) </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> ConnectsTo (Waypoint waypoint) </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> Disconnect () </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Contains (Vector3 position) </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> ToString () </td>
+	</tr>
+</table>
+<h3>Properties</h3>
+<table>
+	<tr>
+		<td> ReadOnlyCollection&lt;Connection&gt; </td>
+		<td> Connections [get] </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Enabled [get, set] </td>
+	</tr>
+	<tr>
+		<td> Vector3 </td>
+		<td> Position [get, set] </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> Radius [get, set] </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> Tag [get, set] </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Connection">Connection</h2>
+<h3>Access</h3>
+<p>Connection</p>
+<h3>Description</h3>
+<p>A connection between two Path nodes.</p>
+<h3>Functions</h3>
+<table>
+	<tr>
+		<td> </td>
+		<td> Connection (Waypoint from, Waypoint to) </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> ToString () </td>
+	</tr>
+</table>
+<h3>Properties</h3>
+<table>
+	<tr>
+		<td> Waypoint </td>
+		<td> From [get] </td>
+	</tr>
+	<tr>
+		<td> Waypoint </td>
+		<td> To [get] </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> Width [get, set] </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> Tag [get, set] </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> Enabled [get, set] </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> Cost [get] </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Tutorial">Tutorial: Pathfinding in two lines</h2>
+<p>So you need no-nonsense pathfinding and fast? Not a problem. This brief tutorial explains how to interface with Path from your code as simple as possible.</p>
+<p>Prerequisites:</p>
+<ul>
+	<li>The Path package has been imported into your project.</li>
+	<li>You’ve set up some waypoints and connected them in the editor. If you’re not sure how to do this, please check out the &#8220;Intro to Path 2.0b1&#8221; video.</li>
+	<li>To handle your pathfinding, you’ve created a script file and attached it to the same GameObject as your Navigator component.</li>
+</ul>
+<p>Ok, here we go. Hang tight.</p>
+<ol>
+	<li>In your MonoBehaviour script, where you want to initiate pathfinding to some point (in my case I’ve stored the point in a Vector3 variable named myDestinationPoint), add the following line:<br />
+<code>GetComponent&lt;Navigator&gt; ().targetPosition = myDestinationPoint;</code></li>
+	<li>Somewhere in the same script or another script attached to the same GameObject, add the following line:<br />
+<code>public void OnNewPath (Path path) { Debug.Log ("Path: " + path); }</code></li>
+	<li>Put on <a href="http://www.youtube.com/results?search_query=%22eagles+of+death+metal%22+%22don%27t+speak%22&amp;aq=f">a nice tune</a> and make a kick-ass game!</li>
+</ol>
+				</div>
+			</div>
+		</div>
+		
+	<div id="pagemenu">
+		
+			
+				<a href="#Top">Introduction</a>
+			
+		
+			
+				<a href="#Navigation">Navigation class</a>
+			
+		
+			
+				<a href="#Navigator">Navigator class</a>
+			
+		
+			
+				<a href="#Path">Path class</a>
+			
+		
+			
+				<a href="#Waypoint">Waypoint class</a>
+			
+		
+			
+				<a href="#Connection">Connection class</a>
+			
+		
+			
+				<a href="#Tutorial">Pathfinding in two lines</a>
+			
+		
+	</div>
+
+
+	</body>
+</html>

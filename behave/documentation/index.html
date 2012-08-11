@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - Behave - Behave documentation</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print.css" type="text/css" media="print" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34029666-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header">AngryAnt</h1>
+<div id="subtitle">Behave</div>
+
+	
+		<a href="/">Home</a>
+		
+	
+
+	
+		<a href="/feed">Feed</a>
+		
+	
+
+	
+		<a href="/path">Path</a>
+		
+	
+
+	
+		<a href="/behave">Behave</a>
+		
+			<div id="submenu">
+				
+					
+						<a href="/behave/documentation">Documentation</a>
+					
+				
+					
+						<a href="https://github.com/AngryAnt/Behave-release/issues">Issues</a>
+					
+				
+					
+						<a href="/behave/download">Download</a>
+					
+				
+			</div>
+		
+	
+
+
+<div id="external">
+	<a href="https://gist.github.com/AngryAnt">Gist</a>
+	<a href="https://twitter.com/AngryAnt">Twitter</a>
+	<a href="http://www.linkedin.com/in/EmilJohansen">LinkedIn</a>
+</div>
+<div class="comment">
+	That's right - no comments. Contact me on Twitter or otherwise for feedback.
+</div>
+
+			</div>
+			<div id="container">
+				<h1 id="Top">Behave documentation</h1>
+				<div id="content">
+					<p>By default available for Unity, Behave runs on all Unity target platforms and does not require Unity pro. Once the package has been imported, you are all set.</p>
+<p>Use the on-page navigation for documentation on various areas of Behave and don&#8217;t forget to check out the <a href="#VideosAndExternal">videos and external material</a> section for additional documentation on Behave and behaviour trees.</p>
+<hr>
+<h2 id="Runtime">Runtime types</h2>
+<h3>Access</h3>
+<p>Behave.Runtime</p>
+<h3>Description</h3>
+<p>These are the types used by the Behave runtime classes. Specifically the Tree class and the IAgent interface and therefore you will be using them as well.</p>
+<h3>Enums</h3>
+<table>
+	<tr>
+		<td> enum </td>
+		<td> BehaveResult { Running, Success, Failure }; </td>
+	</tr>
+</table>
+<h3>Delegates</h3>
+<table>
+	<tr>
+		<td> BehaveResult </td>
+		<td> TickForward (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> ResetForward (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data); </td>
+	</tr>
+	<tr>
+		<td> BehaveResult </td>
+		<td> TickForwardShort (Tree sender); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> ResetForwardShort (Tree sender); </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Library">The library class</h2>
+<h3>Access</h3>
+<p>BL{YourLibraryName}</p>
+<h3>Description</h3>
+<p>As you compile your Behave library, the resulting .<span class="caps">NET</span> assembly will be set to contain a single point of entry – the library class. This is where you will be able to retrieve tree instances from, enums of the actions and delegates and so forth. If you do a debug build, you will also get an info text file generated, containing the name of the class, all enums, their integer values and so forth.</p>
+<h3>Static functions</h3>
+<table>
+	<tr>
+		<td> Tree </td>
+		<td> InstantiateTree (TreeType treeType, IAgent agent); </td>
+	</tr>
+	<tr>
+		<td> TreeType </td>
+		<td> Type (Tree tree); </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> IsAction (int id); </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> IsDecorator (int id); </td>
+	</tr>
+</table>
+<h3>Enums</h3>
+<table>
+	<tr>
+		<td> TreeType </td>
+		<td> { CollectionName_TreeName, &#8230;, Unknown }; </td>
+	</tr>
+	<tr>
+		<td> ActionType </td>
+		<td> { ActionName, &#8230;, Unknown }; </td>
+	</tr>
+	<tr>
+		<td> DecoratorType </td>
+		<td> { DecoratorName, &#8230;, Unknown }; </td>
+	</tr>
+	<tr>
+		<td> PriorityType </td>
+		<td> { PriorityName, &#8230;, Unknown }; </td>
+	</tr>
+	<tr>
+		<td> ContextType </td>
+		<td> { ContextName, &#8230;, Unknown }; </td>
+	</tr>
+</table>
+<hr>
+<h2 id="Tree">Tree</h2>
+<h3>Access</h3>
+<p>Behave.Runtime.Tree</p>
+<h3>Description</h3>
+<p>The Tree class is an abstract class from which each compiled Behave tree in your library inherits. It is the interface you will use to communicate with the tree instances you receive from your library class.</p>
+<h3>Methods</h3>
+<table>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Tick ([IAgent agent, object data]); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> Reset ([IAgent agent, object data]); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetInitForward (int id, TickForward init); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetInitForward (int id, TickForwardShort init); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetTickForward (int id, TickForward tick); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetTickForward (int id, TickForwardShort tick); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetResetForward (int id, ResetForward reset); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> SetResetForward (int id, ResetForwardShort reset); </td>
+	</tr>
+</table>
+<h3>Properties</h3>
+<table>
+	<tr>
+		<td> int </td>
+		<td> ActiveContext { get; } </td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td class="comment">// A context can be set by a component at any time and remains in place until another context is set or the tree tick ends. Subtrees inherit contexts. </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> Frequency { get; } </td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td class="comment">// The frequency is set in the tree designer, but has no impact on the runtime apart from the return value of this property </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> ActiveID { get; } </td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td class="comment">// In a tick or init call on an agent, this will be the ID of the action or decorator </td>
+	</tr>
+	<tr>
+		<td class="comment" colspan="2">// These are set <strong>after</strong> execution of a tick method on an agent: </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> LastTicked { get; } </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> LastTickedAction { get; set; } </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> LastTickedDecorator { get; set; } </td>
+	</tr>
+	<tr>
+		<td> float </td>
+		<td> LastTickTime { get; } </td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td class="comment">// This is grabbed from UnityEngine.Time.time </td>
+	</tr>
+	<tr>
+		<td> bool </td>
+		<td> DebugAvailable { get; } </td>
+	</tr>
+	<tr>
+		<td class="comment" colspan="2">// If the above returns true, then debug is available and these get updated: </td>
+	</tr>
+	<tr>
+		<td> string </td>
+		<td> Name { get; } </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> ActiveComponent { get; } </td>
+	</tr>
+</table>
+<hr>
+<h2 id="IAgent">IAgent</h2>
+<h3>Access</h3>
+<p>Behave.Runtime.IAgent</p>
+<h3>Description</h3>
+<p>This is the interface you will be implementing on scripts responsible for handling action and decorator invokes. The interface itself is quite short and simple, but I will add in here the documentation on the action and decorator handlers which are automatically reflected and hooked up to your tree instances on creation.</p>
+<p>What this basically means is that any method following a specific pattern of naming and declaration will be recognised as the handler for an action or decorator during the instantiation process of a tree. This is very similar to how Start, Awake and other events are automatically detected and invoked on Unity MonoBehaviours without being part of the MonoBehaviour class definition.</p>
+<p>Your absolute bare minimum implementation of an agent is to just implement the Tick and Reset methods of the interface which means whenever an action or decorator is ticked or reset, those methods will be invoked. If you set up forwards/handlers for actions and decorators, those will be used in stead.</p>
+<p>Remember that in stead of relying on automatic registration of handlers, you can always use the SetForward methods of the Tree class to manually specify which method should handle a given action or decorator. This also has the advantage of being able to cluster handling of related actions/decorators in a single method.</p>
+<h3>Methods</h3>
+<table>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Tick (Tree sender, bool init); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> Reset (Tree sender); </td>
+	</tr>
+	<tr>
+		<td> int </td>
+		<td> SelectTopPriority (Tree sender, params int[] IDs); </td>
+	</tr>
+</table>
+<h3>Recognised handlers (must be public)</h3>
+<table>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Init{Name}{Action&#124;Decorator} (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data); </td>
+	</tr>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Tick{Name}{Action&#124;Decorator} (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> Reset{Name}{Action&#124;Decorator} (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data); </td>
+	</tr>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Init{Name}{Action&#124;Decorator} (Tree sender); </td>
+	</tr>
+	<tr>
+		<td> BehaveResult </td>
+		<td> Tick{Name}{Action&#124;Decorator} (Tree sender); </td>
+	</tr>
+	<tr>
+		<td> void </td>
+		<td> Reset{Name}{Action&#124;Decorator} (Tree sender); </td>
+	</tr>
+	<tr>
+		<td> BehaveResult </td>
+		<td> {Name}{Action&#124;Decorator} {get; set;} </td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td class="comment">// For properties, get is recognised as the tick handler and set as the reset handler. You are not required to implement both for one to be recognised. </td>
+	</tr>
+</table>
+<hr>
+<h2 id="VideosAndExternal">Videos and external material</h2>
+<p>The following brief videos provide an overview of Behave:</p>
+<ul>
+	<li><a href="http://angryant.com/wp-content/uploads/2010/09/Behave-starting-from-scratch.mov">Behave: Starting from scratch</a>.</li>
+	<li><a href="http://angryant.com/wp-content/uploads/2010/10/FromTreeToCode.mov">From tree to code</a>.</li>
+</ul>
+<p>These external resources are great for understanding both Behave and behaviour trees:</p>
+<ul>
+	<li>&#8220;Behavior trees for next-gen game AI&#8221; article and video presentation by Alex J. Champandard of <a href="http://aigamedev.com/insider/article/behavior-trees/">aiGameDev.com</a>. <em>An account is required to view the video, but subscription is free.</em></li>
+	<li>&#8220;Introduction to Behaviour Trees&#8221; by Bjoern Knafla for <a href="http://altdevblogaday.org/2011/02/24/introduction-to-behavior-trees/">#AltDevBlogADay</a>. <em>A nice introduction to how behaviour trees work – including examples. Choice and naming of component differs a bit from Behaves component set, but everything in the article is achievable with the Behave components.</em></li>
+	<li>&#8220;Oh, Behave! AI with behaviour trees in Unity and C#&#8221;&quot; video masterclass by me for <a href="http://aigamedev.com/premium/masterclass/unity-behave/">AIgameDev.com</a>. <em>This video goes through some of the inner workings of Behave – including its compiler and code generation structure. An AIgameDev Premium account is required to access this video.</em></li>
+</ul>
+				</div>
+			</div>
+		</div>
+		
+	<div id="pagemenu">
+		
+			
+				<a href="#Top">Introduction</a>
+			
+		
+			
+				<a href="#Runtime">Runtime types</a>
+			
+		
+			
+				<a href="#Library">The library class</a>
+			
+		
+			
+				<a href="#Tree">Tree class</a>
+			
+		
+			
+				<a href="#IAgent">IAgent interface</a>
+			
+		
+			
+				<a href="#VideosAndExternal">Videos and external material</a>
+			
+		
+	</div>
+
+
+	</body>
+</html>

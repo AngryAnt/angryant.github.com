@@ -1,0 +1,12 @@
+#sidebar #subtitle, a, .comment
+{
+	display: none;
+}
+#pagemenu
+{
+	display: none;
+}
+#feed
+{
+	display: none;
+}

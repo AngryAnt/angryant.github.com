@@ -1,0 +1,20 @@
+<p>As some of you might have read, at Unity we have a thing called <a href="http://blogs.unity3d.com/2009/11/18/fridays-are-for-fun/"><span class="caps">FAFF</span></a> &#8211; very much the same as Google and other IT businesses are doing. It generally lets you step out of the bit stream for a day and just, during work hours, go with whatever crazy idea(s) you&#8217;ve been throwing around.</p>
+<p>Some of these ideas are pushed into the product later and others are just filed under &#8220;something to play with when bored&#8221; and &#8220;now I can stop wondering about that&#8221;. Sketch was a micro <span class="caps">FAFF</span> project I just remembered I had filed under &#8220;this was fun&#8221; and then forgot all about. Since then I&#8217;ve continued work on other projects and started new ones &#8211; in all likelihood I&#8217;ll not return to this project.</p>
+<p>So I figured I&#8217;d push it to github and let you guys take it for a spin. If nothing else, it&#8217;s a nice demo of what you can do with Unity editor scripting.</p>
+<p><a href="http://eej.dk/angryant/wp-content/uploads/2010/03/Sketch.png" title="Sketch"><img src="http://eej.dk/angryant/wp-content/uploads/2010/03/Sketch-300x202.png" alt="" /></a></p>
+<p>The idea of Sketch is to have simple tools inside the Unity editor to modify meshes in your assets. My goal with the project was never to turn Unity into a mesh authoring environment, but rather to give people an extra tool for rapid prototyping.</p>
+<p>So what&#8217;s in there now? The simplest I could think of: Triangle selection and movement.</p>
+<p>Workflow:</p>
+<ol>
+	<li>Go to the GameObject &#8594; Create Other menu and click Sketch Cube.</li>
+	<li>With the cube selected, click a triangle and with the handle that appears, drag it around to modify the mesh.</li>
+	<li><span class="caps">GOTO</span> 1.</li>
+</ol>
+<p>Alternatively, you could drag in your own mesh from the Assets folder (make sure that it generates a mesh collider in its import settings) and attach the Sketch script to it.</p>
+<p><span class="caps">NOTICE</span>: Sketch modifies the imported asset. This means that:</p>
+<ul>
+	<li>If you modify a some of the basic geometry meshes (such as GameObject &#8594; Create Other &#8594; Cube), the changes will apply to all cubes until editor relaunch.</li>
+	<li>If the geometry you&#8217;re modifying is based on an imported 3D asset, reimporting it will mean you loose your changes.</li>
+</ul>
+<p>Structure-wise, Sketch consists of two components: A MonoBehaviour (Sketch/Sketch.cs) and a custom inspector (Sketch/Editor/SketchEditor.cs). The purpose of the MonoBehaviour is merely to do some bookkeeping and provide utility functions (it will even destroy itself at runtime) while the custom inspector holds the logic for doing the modifications.</p>
+<p>Woah. That&#8217;s a lot of talk. Here&#8217;s the repository &#8211; go nuts: <a href="http://github.com/AngryAnt/Sketch/">http://github.com/AngryAnt/Sketch</a>.</p>

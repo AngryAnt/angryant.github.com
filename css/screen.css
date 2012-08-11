@@ -1,0 +1,274 @@
+body, p
+{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 10pt;
+	line-height: 150%;
+	color: #888;
+}
+p
+{
+	margin: 0px;
+	padding: 0px;
+	margin-bottom: 15pt;
+}
+h1, h2, h3
+{
+	font-family: arial;
+	font-weight: bold;
+	margin: 0px;
+	padding: 0px;
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+}
+h1
+{
+	font-size: 15pt;
+	color: #000;
+	margin-bottom: 10pt;
+}
+h2
+{
+	font-size: 13pt;
+	color: #555;
+}
+h3
+{
+	font-size: 13pt;
+	color: #777;
+}
+#subtitle
+{
+	font-family: arial;
+	font-weight: bold;
+	margin: 0px;
+	padding: 0px;
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+	font-size: 13pt;
+	color: #777;
+}
+.header
+{
+	font-size: 30pt;
+}
+.gistspacer
+{
+	height: 300px;
+}
+.gist
+{
+	height: 300px;
+	max-height: 300px;
+	overflow: auto;
+
+	color: black;
+	position: absolute;
+	margin-left: -150px;
+	left: 50%;
+	right: 0pt;
+}
+#site
+{
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#sidebar
+{
+	width: 250px;
+	float: left;
+	padding-top: 60px;
+	position: fixed;
+}
+#container
+{
+	width: 550px;
+	float: right;
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+#content a
+{
+	color: #000;
+}
+#content p
+{
+	margin-top: 0pt;
+	padding-top: 0pt;
+	clear: left;
+}
+.date
+{
+	float: right;
+	clear: right;
+	font-size: 20pt;
+	font-weight: bold;
+	color: #ddd;
+	max-width: 80pt;
+	line-height: 110%;
+	text-align: right;
+	text-decoration: none;
+}
+#content h1, h2, h3, .title
+{
+	font-size: 13pt;
+	font-weight: bold;
+	color: #777;
+	float: left;
+	clear: left;
+	margin: 0pt;
+	padding: 0pt;
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+	text-decoration: none;
+}
+#content .dateSmall
+{
+	float: right;
+	clear: right;
+	font-size: 10pt;
+	font-weight: bold;
+	color: #ddd;
+	line-height: 110%;
+	text-align: right;
+	text-decoration: none;
+}
+#newer
+{
+	float: left;
+	clear: left;
+	width: 50%;
+	overflow: hidden;
+}
+#older
+{
+	float: right;
+	clear: right;
+	width: 50%;
+	overflow: hidden;
+}
+#content .titleSmall
+{
+	font-size: 10pt;
+	font-weight: bold;
+	color: #bbb;
+	float: left;
+	clear: left;
+	margin: 0pt;
+	padding: 0pt;
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+	text-decoration: none;
+}
+#content h2
+{
+	font-size: 11pt;
+	color: #888;
+}
+#content h3
+{
+	font-size: 10pt;
+	color: #888;
+	margin: 0pt;
+	padding: 0pt;
+	clear: both;
+}
+#content table
+{
+	float: left;
+	clear: both;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+}
+#content td
+{
+	margin: 0px;
+	padding: 0px;
+	padding-right: 10px;
+	vertical-align: top;
+}
+#content hr
+{
+	border: none;
+	float: left;
+	clear: both;
+	padding: 10px;
+}
+#content table
+{
+	padding-bottom: 20px;
+}
+#content .comment
+{
+	font-size: 8pt;
+	color: #88e;
+}
+#content ul
+{
+	margin: 0pt;
+	padding: 0pt;
+	margin-bottom: 15pt;
+	margin-left: 20pt;
+	clear: both;
+}
+#content li
+{
+	margin-top: 5pt;
+}
+#content img
+{
+	float: right;
+}
+#sidebar a
+{
+	text-decoration: none;
+	color: #000;
+	float: left;
+	clear: both;
+	margin-top: 10pt;
+	margin-left: 20pt;
+}
+#submenu a
+{
+	font-size: 8pt;
+	margin-left: 35pt;
+	margin-top: 5pt;
+}
+#sidebar #external
+{
+	padding-top: 10pt;
+	clear: both;
+	font-size: 8pt;
+}
+#sidebar #external a
+{
+	margin-left: 0pt;
+	margin-top: 5pt;
+}
+#sidebar .comment
+{
+	clear: both;
+	margin: 0pt;
+	padding: 0pt;
+	padding-top: 20pt;
+	width: 180px;
+	font-size: 8pt;
+	line-height: 100%;
+}
+#pagemenu
+{
+	position: fixed;
+	top: 60px;
+	right: 20px;
+	width: 150px;
+}
+#pagemenu a
+{
+	float: left;
+	clear: both;
+	color: black;
+	font-size: 8pt;
+	text-decoration: none;
+	color: #888;
+}
