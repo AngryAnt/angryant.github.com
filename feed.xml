@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+	<channel>
+		<title></title>
+		<description></description>
+		<link></link>
+		
+			<item>
+				<title>Asia Bootcamp videos now available</title>
+				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;!&lt;/p&gt;
+&lt;p&gt;Good news everyone! Having just gotten back from Unite 12, I&amp;#8217;ve just been informed that the videos from the Asia Bootcamp earlier this year are now available for public consumption!&lt;/p&gt;
+&lt;p&gt;Here are the two talks I did on the tour (recordings from the Tokyo event):&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;http://vimeopro.com/unity3djp/unity-asia-bootcamp-tour-tokyo-for-the-public/video/41968409&quot;&gt;Streamlining your Unity editor&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://vimeopro.com/unity3djp/unity-asia-bootcamp-tour-tokyo-for-the-public/video/41969880&quot;&gt;Rapid network- and AI-ready game development in Unity&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note that example projects and slides are linked just below the videos.&lt;/p&gt;
+&lt;p&gt;At this yeas Unite I gave the talk &amp;#8220;Unity, Network Code, and You&amp;#8221;, which was also recorded. I&amp;#8217;ll make the recordings and example projects available for that as soon as everything is cut and online.&lt;/p&gt;</description>
+				<published>Tue Aug 28 00:00:00 +0200 2012</published>
+				<link>/2012/08/28/Asia-Bootcamp-videos-now-available/</link>
+			</item>
+		
+			<item>
+				<title>Path is now MIT licensed</title>
+				<description>&lt;p&gt;Hey guys. Obviously I&amp;#8217;ve been pretty busy and since I&amp;#8217;d like to spend the spare time coding time I have on Behave, I have just made the Path repository publicly available with an &lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license attached.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/AngryAnt/Path&quot; title=&quot;Path on github&quot;&gt;https://github.com/AngryAnt/Path&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Note that I will be monitoring and taking in pull requests as well as compiling builds for releasing into the asset store (obviously as a free package). Let&amp;#8217;s make this project as awesome as can be :)&lt;/p&gt;
+&lt;p&gt;Issue tracking and wiki development (I would appreciate collaborators on that as well) is still happening on &lt;a href=&quot;https://github.com/AngryAnt/Path-release&quot; title=&quot;The Path-release repository on github&quot;&gt;https://github.com/AngryAnt/Path-release&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Happy hacking!&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/78037-AI-Pathfinding-in-Unity-Path&quot; title=&quot;Path thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Thu May 17 00:00:00 +0200 2012</published>
+				<link>/2012/05/17/path-is-now-mit-licensed/</link>
+			</item>
+		
+			<item>
+				<title>Behave 1.4 released</title>
+				<description>&lt;p&gt;So obviously I ended up not spending more time on that &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing&amp;#8230; I did however work on some 3.5 stuff back at Unity, some upcoming demo stuff and baby Lili was born.&lt;/p&gt;
+&lt;p&gt;Meanwhile I spent spare time on Behave rather than the &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing, so now 1.4 is ready for release. &lt;span class=&quot;caps&quot;&gt;TADAA&lt;/span&gt;!&lt;/p&gt;
+&lt;p&gt;This release primarily holds runtime optimizations, fixes and tweaks. Specifically I would like to highlight the ability to mark components as &amp;#8220;instant&amp;#8221;. The instant flag affects sequences and selectors when moving between child nodes. When an instant child component completes, rather than waiting for the next tick to tick the following child node, the sequence or selector does it immediately.&lt;/p&gt;
+&lt;p&gt;Anywho, get it on the asset store and remember to rebuild your libraries after installing.&lt;/p&gt;
+&lt;p&gt;The rest of the changes follow:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Fixed decorator incorrectly initializing on every returning tick when tick handler returned Running.&lt;/li&gt;
+	&lt;li&gt;Fixed debugger view dependency on active tree editor &amp;#8211; causing reported null reference exception.&lt;/li&gt;
+	&lt;li&gt;Fixed missing scrollbars on browser window.&lt;/li&gt;
+	&lt;li&gt;Reduced logging noise from debug builds.&lt;/li&gt;
+	&lt;li&gt;Agent blueprints can now be MonoBehaviour based.&lt;/li&gt;
+	&lt;li&gt;Clarified wording on &amp;#8220;library not loaded&amp;#8221;.&lt;/li&gt;
+	&lt;li&gt;Now handling reset a bit cleverer &amp;#8211; potential performance boost.&lt;/li&gt;
+	&lt;li&gt;Changed the default success criteria of Parallel components from SuccessOrFailure to Success.&lt;/li&gt;
+	&lt;li&gt;Added &amp;#8220;instant&amp;#8221; flag to components. Components marked instant will affect sequences and selectors when moving between child nodes. When a child node marked &amp;#8220;instant&amp;#8221; completes, rather than waiting for the next tree tick to tick the following child node, the sequence or selector does it immediately.&lt;/li&gt;
+	&lt;li&gt;The compiler progress bar returns.&lt;/li&gt;
+	&lt;li&gt;Editing a Behave asset now focuses the asset browser last instead of the tree editor.&lt;/li&gt;
+	&lt;li&gt;Behave can now be installed in any subfolder of Assets &amp;#8211; provided its internal folder structure remains intact.&lt;/li&gt;
+	&lt;li&gt;Compilation speed improvements.&lt;/li&gt;
+	&lt;li&gt;Enabled references across collection borders.&lt;/li&gt;
+	&lt;li&gt;Added Tree.DataSize &amp;#8211; returning the number of bytes used by a tree instance. This is also displayed in the debugger window.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Wed Nov 30 00:00:00 +0100 2011</published>
+				<link>/2011/11/30/behave-1-4-released/</link>
+			</item>
+		
+			<item>
+				<title>So I've been a bit busy lately</title>
+				<description>&lt;p&gt;Little under half a year later and I&amp;#8217;m still here. Things have been rather hectic since my last update. In Copenhagen we conquered more office space and my team moved in there. I made some demos (&lt;a href=&quot;http://u3d.as/content/unity-technologies/third-person-mmo-controller/1Wt&quot;&gt;Third Person &lt;span class=&quot;caps&quot;&gt;MMO&lt;/span&gt; Controller&lt;/a&gt; and &lt;a href=&quot;http://u3d.as/content/unity-technologies/astro-dude/24Y&quot;&gt;Astro Dude&lt;/a&gt;), went to &lt;a href=&quot;http://gameaiconf.com/&quot;&gt;a conference&lt;/a&gt;, worked on &lt;a href=&quot;http://blogs.unity3d.com/2011/06/16/unity-roadmap-2011/&quot;&gt;a Unity release&lt;/a&gt; and pitched in to realize &lt;a href=&quot;http://unity3d.com/unite/&quot;&gt;another killer conference&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;By the way at that last conference I did a talk titled &amp;#8220;AI in Unity&amp;#8221; &amp;#8211; the goal of which was to try and demystify the concept of AI a bit. I&amp;#8217;ll make some noise when we have the recording of it available.&lt;/p&gt;
+&lt;p&gt;Oh and I fixed the comments on the blog, so I&amp;#8217;ve just cleared out 300-something spam posts. Anyone got advice on how to avoid this on a WordPress blog? (Read: I&amp;#8217;m too lazy to change blogging system if anyone suggests that). Oh and therefore I enabled the &amp;#8220;must approve comments&amp;#8221; thingy. Not sure if that is going to help anything, but at least it will reduce the noise on your end.&lt;/p&gt;
+&lt;p&gt;So what is next then? Well I&amp;#8217;ve got a few things I&amp;#8217;d like to release in a Behave point upgrade and then the plan is to move on to 2.0 which will hold some backwards-compatibility breaking changes.&lt;/p&gt;
+&lt;p&gt;At Unity there&amp;#8217;s a bit more 3.5 stuff to do and some even awesomererer demos on the way. The extra awesomeness has been underway for quite a while, so I&amp;#8217;m very excited to get this out soon.&lt;/p&gt;
+&lt;p&gt;I very recently started playing around with some &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; mechanics in my spare time (had a day off after Unite and couldn&amp;#8217;t sit still). It&amp;#8217;s so spare time that the plan is to have no additional plans. Let&amp;#8217;s see where that goes.&lt;/p&gt;
+&lt;p&gt;Ah and I&amp;#8217;ll work with &lt;a href=&quot;http://www.blender.org/blenderorg/blender-foundation/&quot;&gt;some groovy dudes&lt;/a&gt; on getting a &lt;a href=&quot;http://copenhagen.startupweekend.org/&quot;&gt;3D themed workshop event&lt;/a&gt; up and going early next year. I don&amp;#8217;t think it has been announced yet, but it will be awesome &amp;#8211; and full of Unity of-course. That should hit right before &lt;a href=&quot;http://nordicgamejam.org/&quot;&gt;the other groovy thing&lt;/a&gt; I&amp;#8217;m working on again this year with more &lt;a href=&quot;http://igda.dk/&quot;&gt;awesome dudes and dudettes&lt;/a&gt;. Fun times!&lt;/p&gt;
+&lt;p&gt;What else? Oh yea. With my low bandwidth for updates, I&amp;#8217;ve increasingly turned to &lt;a href=&quot;http://twitter.com/#!/angryant&quot;&gt;twitter&lt;/a&gt; and the &lt;a href=&quot;https://gist.github.com/AngryAnt&quot;&gt;gist&lt;/a&gt; feature of &lt;a href=&quot;https://github.com/AngryAnt&quot;&gt;github&lt;/a&gt;. Hopefully I will have the time to do some good reads in the Tips and Tricks section soon, but the gist setup is just so very quick.&lt;/p&gt;
+&lt;p&gt;I probably forgot a ton of stuff, but hopefully this was a good reboot of this blog thing. Let&amp;#8217;s see what happens. Maybe I could start blogging about that &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing if it accidentally turns interesting. We&amp;#8217;ll see.&lt;/p&gt;
+&lt;p&gt;Have fun!&lt;/p&gt;</description>
+				<published>Sun Oct 09 00:00:00 +0200 2011</published>
+				<link>/2011/10/09/so-ive-been-a-bit-busy-lately/</link>
+			</item>
+		
+			<item>
+				<title>Behave 1.3 released</title>
+				<description>&lt;p&gt;After quite a long break (including shifting around at utech, doing a Path release etc.), Behave is finally getting another update!&lt;/p&gt;
+&lt;p&gt;This release is primarily a bugfix and editor polish release. One thing I&amp;#8217;d like to highlight though is the addition of agent blueprints. From the changelog:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;- Added agent blueprints &amp;#8211; connecting to agent handlers through virtual methods rather than reflected handlers.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Generally this enables you to more explicitly tie up handlers and cuts down on tree initialization time. Oh and of-course you gain auto-completion when setting up your handlers.&lt;/p&gt;
+&lt;p&gt;Anyway, here&amp;#8217;s the whole changelog:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Fixed priority selector init flag resetting.&lt;/li&gt;
+	&lt;li&gt;Fixed reference handling on tree renaming and deletion.&lt;/li&gt;
+	&lt;li&gt;Fixed references still pointing at old collection post collection duplication.&lt;/li&gt;
+	&lt;li&gt;Fixed compilation of actions and decorators with non-integral float parameters.&lt;/li&gt;
+	&lt;li&gt;Fixed &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; list behaviours.&lt;/li&gt;
+	&lt;li&gt;Fixed passing context back and forth between referenced trees and referrer.&lt;/li&gt;
+	&lt;li&gt;Fixed reordering connections not causing save state to be set.&lt;/li&gt;
+	&lt;li&gt;Various &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; tweaks.&lt;/li&gt;
+	&lt;li&gt;Runtime optimisations.&lt;/li&gt;
+	&lt;li&gt;Enabled scrolling of the tree list in the debugger window.&lt;/li&gt;
+	&lt;li&gt;Exposed Tree.ReflectForwards.&lt;/li&gt;
+	&lt;li&gt;Added Tree.ResetForwards.&lt;/li&gt;
+	&lt;li&gt;Added agent blueprints &amp;#8211; connecting to agent handlers through virtual methods rather than reflected handlers.&lt;/li&gt;
+	&lt;li&gt;Made connections selectable in the tree editor via the connection nub.&lt;/li&gt;
+	&lt;li&gt;Moved connection managing from the inspector to the tree editor, where it is more visible and handy.&lt;/li&gt;
+	&lt;li&gt;Added support for disabling connections &amp;#8211; for faster, less destructive debugging.&lt;/li&gt;
+	&lt;li&gt;Double-click reference component to jump to referenced tree.&lt;/li&gt;
+	&lt;li&gt;Changed &amp;#8220;Cannot update unregistered tree&amp;#8221; handling from an exception to an error message. Still need more info.&lt;/li&gt;
+	&lt;li&gt;Now showing string and float parameters in the tree editor if either is set.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Thu Apr 28 00:00:00 +0200 2011</published>
+				<link>/2011/04/28/behave-1-3-released/</link>
+			</item>
+		
+			<item>
+				<title>IGDA Unity SIG slides</title>
+				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;! Sorry about the delay &amp;#8211; things have been a bit hectic around here. Per request, I&amp;#8217;m making available exports of three of my slideshows from the recent &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity SIGs. I hope you&amp;#8217;ll find them useful:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2011/04/AI%20in%20Unity.pdf&quot;&gt;AI in Unity&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2011/04/Network.pdf&quot;&gt;Network&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2011/04/Unity%20GUI.pdf&quot;&gt;Unity &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Sat Apr 23 00:00:00 +0200 2011</published>
+				<link>/2011/04/23/igda-unity-sig-slides/</link>
+			</item>
+		
+			<item>
+				<title>Second Unity IGDA SIG this evening: Scene construction and AI</title>
+				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;A week has passed and the second of six Unity specific &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; SIGs is upon us. Like last time, the event will take place at the IT University, Copenhagen, Denmark at 1800.&lt;/p&gt;
+&lt;p&gt;We will meet in the reception and from there move to the auditorium. The originally planned physics bit of todays &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; has been rescheduled to next thursday, where Jonas Echterhoff will be in town and give the talk. Jonas is the man with the plan of the PhysX integration in Unity, so added awesomenessness!&lt;/p&gt;
+&lt;p&gt;This means that today Joe Robins will be talking about scene construction and I will be covering AI in Unity.&lt;/p&gt;
+&lt;p&gt;For this thursday we should be lucky and get even more Unity Tech people to participate in the discussion bit of the &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt;. And remember afterwards we&amp;#8217;re doing the bar meet and given it&amp;#8217;s Saint Patricks, we&amp;#8217;re likely to be a good group of people moving from bar to bar.&lt;/p&gt;
+&lt;p&gt;The original &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post w. schedule:&lt;br /&gt;
+&lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post on the rescheduling of the physics talk:&lt;br /&gt;
+&lt;a href=&quot;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&quot;&gt;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Thu Mar 17 00:00:00 +0100 2011</published>
+				<link>/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
+			</item>
+		
+			<item>
+				<title>First IGDA Unity SIG this evening</title>
+				<description>&lt;p&gt;Quick announcement for anyone in or around the &lt;span class=&quot;caps&quot;&gt;CPH&lt;/span&gt; area: I&amp;#8217;m doing the first of six &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity SIGs (Special Interest Groups) this evening, with Joe Robins.&lt;/p&gt;
+&lt;p&gt;The event is held at the IT University of Copenhagen and starts at 1800. Anyone can attend (for free) and this first &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; will be a general introduction to Unity &amp;#8211; basic principles of the engine, workflow and such. The following five SIGs will dive into various specific areas of Unity.&lt;/p&gt;
+&lt;p&gt;For more information and the full program, see the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; DK blog:&lt;br /&gt;
+&lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Thu Mar 10 00:00:00 +0100 2011</published>
+				<link>/2011/03/10/first-igda-unity-sig-this-evening/</link>
+			</item>
+		
+			<item>
+				<title>Alternative licensing available</title>
+				<description>&lt;p&gt;After having been poked on the issue for a while now, I&amp;#8217;m finally offering the option of requesting alternative licensing on Path and Behave.&lt;/p&gt;
+&lt;p&gt;Something in the default license which doesn&amp;#8217;t fit your project too well? Let&amp;#8217;s talk about it. Please use the form available on the &lt;a href=&quot;/behave/download/&quot;&gt;download&lt;/a&gt; page.&lt;/p&gt;</description>
+				<published>Thu Mar 03 00:00:00 +0100 2011</published>
+				<link>/2011/03/03/alternative-licensing-available/</link>
+			</item>
+		
+			<item>
+				<title>Pathfinding in two lines</title>
+				<description>&lt;p&gt;I just updated the &lt;a href=&quot;/path/documentation&quot;&gt;Path documentation&lt;/a&gt; with a short tutorial describing the simplest possible interface between your code and the Path runtime: &amp;#8220;Pathfinding in two lines&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;Furthermore, I added a link to the previously released introduction video to Path 2.0b1. While I will make sure to re-record it with the released build, 99% of the stuff in that video still applies.&lt;/p&gt;</description>
+				<published>Tue Feb 15 00:00:00 +0100 2011</published>
+				<link>/2011/02/15/pathfinding-in-two-line/</link>
+			</item>
+		
+	</channel>
+</rss>
