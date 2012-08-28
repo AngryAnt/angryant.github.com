@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 	<channel>
-		<title> - Articles</title>
-		<description></description>
-		<link></link>
+		<title>AngryAnt.com/feed - Articles</title>
+		<description>Random scribblings at random intervals</description>
+		<link>http://angryant.com</link>
 		
 			
 			<item>
@@ -18,7 +18,7 @@
 &lt;p&gt;Note that example projects and slides are linked just below the videos.&lt;/p&gt;
 &lt;p&gt;At this yeas Unite I gave the talk &amp;#8220;Unity, Network Code, and You&amp;#8221;, which was also recorded. I&amp;#8217;ll make the recordings and example projects available for that as soon as everything is cut and online.&lt;/p&gt;</description>
 				<published>Tue Aug 28 00:00:00 +0200 2012</published>
-				<link>/2012/08/28/Asia-Bootcamp-videos-now-available/</link>
+				<link>http://angryant.com/2012/08/28/Asia-Bootcamp-videos-now-available/</link>
 			</item>
 			
 		
@@ -32,7 +32,7 @@
 &lt;p&gt;Happy hacking!&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/78037-AI-Pathfinding-in-Unity-Path&quot; title=&quot;Path thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Thu May 17 00:00:00 +0200 2012</published>
-				<link>/2012/05/17/path-is-now-mit-licensed/</link>
+				<link>http://angryant.com/2012/05/17/path-is-now-mit-licensed/</link>
 			</item>
 			
 		
@@ -64,7 +64,7 @@
 &lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Wed Nov 30 00:00:00 +0100 2011</published>
-				<link>/2011/11/30/behave-1-4-released/</link>
+				<link>http://angryant.com/2011/11/30/behave-1-4-released/</link>
 			</item>
 			
 		
@@ -82,7 +82,7 @@
 &lt;p&gt;I probably forgot a ton of stuff, but hopefully this was a good reboot of this blog thing. Let&amp;#8217;s see what happens. Maybe I could start blogging about that &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing if it accidentally turns interesting. We&amp;#8217;ll see.&lt;/p&gt;
 &lt;p&gt;Have fun!&lt;/p&gt;</description>
 				<published>Sun Oct 09 00:00:00 +0200 2011</published>
-				<link>/2011/10/09/so-ive-been-a-bit-busy-lately/</link>
+				<link>http://angryant.com/2011/10/09/so-ive-been-a-bit-busy-lately/</link>
 			</item>
 			
 		
@@ -120,7 +120,7 @@
 &lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Thu Apr 28 00:00:00 +0200 2011</published>
-				<link>/2011/04/28/behave-1-3-released/</link>
+				<link>http://angryant.com/2011/04/28/behave-1-3-released/</link>
 			</item>
 			
 		
@@ -134,7 +134,7 @@
 	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2011/04/Unity%20GUI.pdf&quot;&gt;Unity &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Sat Apr 23 00:00:00 +0200 2011</published>
-				<link>/2011/04/23/igda-unity-sig-slides/</link>
+				<link>http://angryant.com/2011/04/23/igda-unity-sig-slides/</link>
 			</item>
 			
 		
@@ -151,7 +151,7 @@
 &lt;p&gt;&lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post on the rescheduling of the physics talk:&lt;br /&gt;
 &lt;a href=&quot;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&quot;&gt;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Thu Mar 17 00:00:00 +0100 2011</published>
-				<link>/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
+				<link>http://angryant.com/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
 			</item>
 			
 		
@@ -163,7 +163,7 @@
 &lt;p&gt;For more information and the full program, see the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; DK blog:&lt;br /&gt;
 &lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Thu Mar 10 00:00:00 +0100 2011</published>
-				<link>/2011/03/10/first-igda-unity-sig-this-evening/</link>
+				<link>http://angryant.com/2011/03/10/first-igda-unity-sig-this-evening/</link>
 			</item>
 			
 		
@@ -173,7 +173,7 @@
 				<description>&lt;p&gt;After having been poked on the issue for a while now, I&amp;#8217;m finally offering the option of requesting alternative licensing on Path and Behave.&lt;/p&gt;
 &lt;p&gt;Something in the default license which doesn&amp;#8217;t fit your project too well? Let&amp;#8217;s talk about it. Please use the form available on the &lt;a href=&quot;/behave/download/&quot;&gt;download&lt;/a&gt; page.&lt;/p&gt;</description>
 				<published>Thu Mar 03 00:00:00 +0100 2011</published>
-				<link>/2011/03/03/alternative-licensing-available/</link>
+				<link>http://angryant.com/2011/03/03/alternative-licensing-available/</link>
 			</item>
 			
 		
@@ -183,7 +183,7 @@
 				<description>&lt;p&gt;I just updated the &lt;a href=&quot;/path/documentation&quot;&gt;Path documentation&lt;/a&gt; with a short tutorial describing the simplest possible interface between your code and the Path runtime: &amp;#8220;Pathfinding in two lines&amp;#8221;.&lt;/p&gt;
 &lt;p&gt;Furthermore, I added a link to the previously released introduction video to Path 2.0b1. While I will make sure to re-record it with the released build, 99% of the stuff in that video still applies.&lt;/p&gt;</description>
 				<published>Tue Feb 15 00:00:00 +0100 2011</published>
-				<link>/2011/02/15/pathfinding-in-two-line/</link>
+				<link>http://angryant.com/2011/02/15/pathfinding-in-two-line/</link>
 			</item>
 			
 		
@@ -195,7 +195,7 @@
 &lt;p&gt;That&amp;#8217;s it for now. Have fun!&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/78037-AI-Pathfinding-in-Unity-Path&quot; title=&quot;Path thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Tue Feb 15 00:00:00 +0100 2011</published>
-				<link>/2011/02/15/path-2-released/</link>
+				<link>http://angryant.com/2011/02/15/path-2-released/</link>
 			</item>
 			
 		
@@ -330,7 +330,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;Texture2D logoTexture = GetTextureResource (&amp;amp;quot;Logo.png&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Well, I hope you guys found some of this useful! I&amp;#8217;ll see if I can&amp;#8217;t do a follow-up on how to do this in MonoDevelop.&lt;/p&gt;</description>
 				<published>Wed Feb 02 00:00:00 +0100 2011</published>
-				<link>/2011/02/02/assembling-and-assimilating/</link>
+				<link>http://angryant.com/2011/02/02/assembling-and-assimilating/</link>
 			</item>
 			
 		
@@ -342,7 +342,7 @@ public static Texture2D GetTextureResource (string resourceName)
 	&lt;li&gt;&lt;a href=&quot;/resources/path/Path2.mov&quot;&gt;Path 2.0b1 quick intro&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Sat Jan 29 00:00:00 +0100 2011</published>
-				<link>/2011/01/29/path-2-intro-screencast/</link>
+				<link>http://angryant.com/2011/01/29/path-2-intro-screencast/</link>
 			</item>
 			
 		
@@ -363,7 +363,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;No release schedule yet. Documentation as I can have it ready. Have fun!&lt;/p&gt;
 &lt;p&gt;I&amp;#8217;m off to recording a screen cast of this.&lt;/p&gt;</description>
 				<published>Sat Jan 29 00:00:00 +0100 2011</published>
-				<link>/2011/01/29/path-2-beta-release-for-ggj/</link>
+				<link>http://angryant.com/2011/01/29/path-2-beta-release-for-ggj/</link>
 			</item>
 			
 		
@@ -373,7 +373,7 @@ public static Texture2D GetTextureResource (string resourceName)
 				<description>&lt;p&gt;For those of you who didn&amp;#8217;t have a chance to dial in live, but would still like to view the master class I did for AIgameDev last year: The video recording is now available here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://aigamedev.com/premium/masterclass/unity-behave/&quot;&gt;http://aigamedev.com/premium/masterclass/unity-behave/&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Tue Jan 25 00:00:00 +0100 2011</published>
-				<link>/2011/01/25/aigamedev-master-class-video-now-online-3/</link>
+				<link>http://angryant.com/2011/01/25/aigamedev-master-class-video-now-online-3/</link>
 			</item>
 			
 		
@@ -383,7 +383,7 @@ public static Texture2D GetTextureResource (string resourceName)
 				<description>&lt;p&gt;Due to an increasing number of users, I&amp;#8217;ve decided to expand the Behave beta testing group.&lt;/p&gt;
 &lt;p&gt;You will find more information on this and how to join in the &amp;#8220;Beta&amp;#8221; page of the &amp;#8220;Behave&amp;#8221; section on this site &amp;#8211; &lt;a href=&quot;http://angryant.com/behave/beta/&quot;&gt;http://angryant.com/behave/beta&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Sun Jan 09 00:00:00 +0100 2011</published>
-				<link>/2011/01/09/expanding-beta/</link>
+				<link>http://angryant.com/2011/01/09/expanding-beta/</link>
 			</item>
 			
 		
@@ -394,7 +394,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;The direct link is available in the following forum post:&lt;br /&gt;
 &lt;a href=&quot;http://forum.unity3d.com/threads/68843-Behave-master-class-on-AIgameDev/&quot;&gt;http://forum.unity3d.com/threads/68843-Behave-master-class-on-AIgameDev&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Sun Nov 28 00:00:00 +0100 2010</published>
-				<link>/2010/11/28/behave-aigamedev-master-class-public-stream/</link>
+				<link>http://angryant.com/2010/11/28/behave-aigamedev-master-class-public-stream/</link>
 			</item>
 			
 		
@@ -405,7 +405,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;Keep tabs on this site, as I&amp;#8217;ll be linking to a forum post with the stream link when it&amp;#8217;s available.&lt;/p&gt;
 &lt;p&gt;Masterclass time: 22:00 European time, 16:00 East Coast, 13:00 Pacific time, 21:00 U.K.&lt;/p&gt;</description>
 				<published>Sat Nov 27 00:00:00 +0100 2010</published>
-				<link>/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/</link>
+				<link>http://angryant.com/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/</link>
 			</item>
 			
 		
@@ -417,7 +417,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;Time: 22:00 European time, 16:00 East Coast, 13:00 Pacific time, 21:00 U.K.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://aigamedev.com/premium/event/session-behave-unity/&quot;&gt;http://aigamedev.com/premium/event/session-behave-unity/&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Fri Oct 29 00:00:00 +0200 2010</published>
-				<link>/2010/10/29/interview-with-aigamedev/</link>
+				<link>http://angryant.com/2010/10/29/interview-with-aigamedev/</link>
 			</item>
 			
 		
@@ -428,7 +428,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;This morning I recorded a video as a guide on how to go from installing Behave to using a behaviour tree in a script. I hope you guys find it useful.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;/resources/behave/FromTreeToCode.mov&quot;&gt;From tree to code&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Sun Oct 24 00:00:00 +0200 2010</published>
-				<link>/2010/10/24/new-video-from-tree-to-code/</link>
+				<link>http://angryant.com/2010/10/24/new-video-from-tree-to-code/</link>
 			</item>
 			
 		
@@ -441,7 +441,7 @@ public static Texture2D GetTextureResource (string resourceName)
 &lt;p&gt;Similarly, please use the Behave release thread on the Unity forums for questions and discussions on Behave:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released/&quot;&gt;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Sat Oct 23 00:00:00 +0200 2010</published>
-				<link>/2010/10/23/issue-tracking-on-github-behave-release-project/</link>
+				<link>http://angryant.com/2010/10/23/issue-tracking-on-github-behave-release-project/</link>
 			</item>
 			
 		
@@ -455,7 +455,7 @@ public static Texture2D GetTextureResource (string resourceName)
 	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/themes/angryant/downloads/ITUCourse2010/Friday.zip&quot;&gt;Friday&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Fri Oct 22 00:00:00 +0200 2010</published>
-				<link>/2010/10/22/it-university-copenhagen-unity-course-completed/</link>
+				<link>http://angryant.com/2010/10/22/it-university-copenhagen-unity-course-completed/</link>
 			</item>
 			
 		
@@ -468,7 +468,7 @@ public static Texture2D GetTextureResource (string resourceName)
 	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/themes/angryant/downloads/ITUCourse2010/Thursday.zip&quot;&gt;Thursday&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Thu Oct 21 00:00:00 +0200 2010</published>
-				<link>/2010/10/21/it-university-copenhagen-unity-course-files-thursday/</link>
+				<link>http://angryant.com/2010/10/21/it-university-copenhagen-unity-course-files-thursday/</link>
 			</item>
 			
 		
@@ -486,7 +486,7 @@ Attached to this post you should find three zip files of the content we have gon
 	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/themes/angryant/downloads/ITUCourse2010/Wednesday.zip&quot;&gt;Wednesday&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Wed Oct 20 00:00:00 +0200 2010</published>
-				<link>/2010/10/20/cph-it-university-unity-course-files/</link>
+				<link>http://angryant.com/2010/10/20/cph-it-university-unity-course-files/</link>
 			</item>
 			
 		
@@ -517,7 +517,7 @@ Attached to this post you should find three zip files of the content we have gon
 &lt;p&gt;I&amp;#8217;ll make sure to update the documentation to reflect the new &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; changes and yes, more is coming on that front.&lt;/p&gt;
 &lt;p&gt;And yes I will be releasing a new demo project. I just wanted to make it something different, and nice for you guys, y&amp;#8217;know? So hang in there.&lt;/p&gt;</description>
 				<published>Mon Oct 11 00:00:00 +0200 2010</published>
-				<link>/2010/10/11/behave-1-2-released/</link>
+				<link>http://angryant.com/2010/10/11/behave-1-2-released/</link>
 			</item>
 			
 		
@@ -531,7 +531,7 @@ Attached to this post you should find three zip files of the content we have gon
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Wed Sep 29 00:00:00 +0200 2010</published>
-				<link>/2010/09/29/video-behave-starting-from-scratch/</link>
+				<link>http://angryant.com/2010/09/29/video-behave-starting-from-scratch/</link>
 			</item>
 			
 		
@@ -541,7 +541,7 @@ Attached to this post you should find three zip files of the content we have gon
 				<description>&lt;p&gt;It is no secret that the Behave documentation has been in a quite bad state for a while. With this release I intend to correct that and as a starting point, I have moved the outdated documentation offline and replaced it with documentation of the Behave runtime. Rest assured that I will be adding documentation on the authoring environment as well.&lt;/p&gt;
 &lt;p&gt;Go check it out: &lt;a href=&quot;/behave/documentation/&quot;&gt;http://angryant.com/behave/documentation&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Wed Sep 29 00:00:00 +0200 2010</published>
-				<link>/2010/09/29/behave-runtime-documentation-updated/</link>
+				<link>http://angryant.com/2010/09/29/behave-runtime-documentation-updated/</link>
 			</item>
 			
 		
@@ -593,7 +593,7 @@ Attached to this post you should find three zip files of the content we have gon
 &lt;p&gt;Ah and one more thing: Behave 1.1 removes the &amp;#8220;only for non-commercial work&amp;#8221; clause from the license.&lt;/p&gt;
 &lt;p&gt;Have fun! And remember to tell me about all your awesome projects!&lt;/p&gt;</description>
 				<published>Wed Sep 29 00:00:00 +0200 2010</published>
-				<link>/2010/09/29/behave-1-1-released/</link>
+				<link>http://angryant.com/2010/09/29/behave-1-1-released/</link>
 			</item>
 			
 		
@@ -621,7 +621,7 @@ Attached to this post you should find three zip files of the content we have gon
 &lt;p&gt;Structure-wise, Sketch consists of two components: A MonoBehaviour (Sketch/Sketch.cs) and a custom inspector (Sketch/Editor/SketchEditor.cs). The purpose of the MonoBehaviour is merely to do some bookkeeping and provide utility functions (it will even destroy itself at runtime) while the custom inspector holds the logic for doing the modifications.&lt;/p&gt;
 &lt;p&gt;Woah. That&amp;#8217;s a lot of talk. Here&amp;#8217;s the repository &amp;#8211; go nuts: &lt;a href=&quot;http://github.com/AngryAnt/Sketch/&quot;&gt;http://github.com/AngryAnt/Sketch&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Fri Mar 19 00:00:00 +0100 2010</published>
-				<link>/2010/03/19/faff-cleanup-sketch/</link>
+				<link>http://angryant.com/2010/03/19/faff-cleanup-sketch/</link>
 			</item>
 			
 		
@@ -746,7 +746,7 @@ EndStandardMenu ();
 &lt;hr&gt;&lt;br /&gt;
 Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010/03/Menu.zip&quot;&gt;Menu.zip&lt;/a&gt; &amp;#8211; built with Unity 2.6.1&lt;/p&gt;</description>
 				<published>Mon Mar 15 00:00:00 +0100 2010</published>
-				<link>/2010/03/15/building-a-menu-of-delegates-and-enums/</link>
+				<link>http://angryant.com/2010/03/15/building-a-menu-of-delegates-and-enums/</link>
 			</item>
 			
 		
@@ -833,7 +833,7 @@ s_ActiveSelection = &lt;span class=&quot;keyword keyword_other keyword_other_csh
 &lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:&lt;br /&gt;
 &lt;a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Wed Mar 10 00:00:00 +0100 2010</published>
-				<link>/2010/03/10/pick-me-pick-me/</link>
+				<link>http://angryant.com/2010/03/10/pick-me-pick-me/</link>
 			</item>
 			
 		
@@ -864,7 +864,7 @@ However, as Rodrigo recently brought to my attention, this approach ofcourse per
 }&lt;/span&gt;&lt;/pre&gt;&lt;br /&gt;
 An interesting test could be to, on a larger co-routine heavy project, do a project-wide find and replace on &amp;#8220;yield return 0;&amp;#8221; and &amp;#8220;yield return null;&amp;#8221; back and forth and measuring the performance difference with the profiler (for non-pro users, maybe the performance gain is even measurable using external monitoring tools).&lt;/p&gt;</description>
 				<published>Thu Jan 14 00:00:00 +0100 2010</published>
-				<link>/2010/01/14/optimising-coroutine-yielding-in-c/</link>
+				<link>http://angryant.com/2010/01/14/optimising-coroutine-yielding-in-c/</link>
 			</item>
 			
 		
@@ -1057,7 +1057,7 @@ m_MessageString += &amp;#8220;&amp;#8221;string string_quoted string_quoted_doub
 &lt;p&gt;&lt;b&gt;The assembly compile terminal command&lt;/b&gt;&lt;br /&gt;
 &lt;i&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/i&gt;&lt;/p&gt;</description>
 				<published>Tue Jan 05 00:00:00 +0100 2010</published>
-				<link>/2010/01/05/downloading-the-hydra/</link>
+				<link>http://angryant.com/2010/01/05/downloading-the-hydra/</link>
 			</item>
 			
 		
@@ -1069,7 +1069,7 @@ m_MessageString += &amp;#8220;&amp;#8221;string string_quoted string_quoted_doub
 &lt;p&gt;Also, although very messy (yes &amp;#8211; very), the source could also serve as a good learning resource for Unity editor scripting.&lt;/p&gt;
 &lt;p&gt;The project repository is available on &lt;a href=&quot;http://github.com/AngryAnt/Path-GPL&quot;&gt;github&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Sun Nov 15 00:00:00 +0100 2009</published>
-				<link>/2009/11/15/new-license-of-path-gpl/</link>
+				<link>http://angryant.com/2009/11/15/new-license-of-path-gpl/</link>
 			</item>
 			
 		
@@ -1211,7 +1211,7 @@ OnCopyInspectorGUI ();
 &lt;p&gt;[&lt;span class=&quot;support support_class support_class_unity&quot;&gt;CustomEditor&lt;/span&gt; (&lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt; (YourComponentType))]&lt;br /&gt;
 &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; CopyYourComponentTypeInspector : CopyInspector{}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
 				<published>Wed Nov 04 00:00:00 +0100 2009</published>
-				<link>/2009/11/04/copyinspector/</link>
+				<link>http://angryant.com/2009/11/04/copyinspector/</link>
 			</item>
 			
 		
@@ -1261,7 +1261,7 @@ OnCopyInspectorGUI ();
     }
 }&amp;lt;/span&amp;gt;&lt;/pre&gt;</description>
 				<published>Sun Oct 04 00:00:00 +0200 2009</published>
-				<link>/2009/10/04/magnetic/</link>
+				<link>http://angryant.com/2009/10/04/magnetic/</link>
 			</item>
 			
 		
@@ -1531,7 +1531,7 @@ OnCopyInspectorGUI ();
     }
 }&amp;lt;/span&amp;gt;&lt;/pre&gt;</description>
 				<published>Fri Sep 18 00:00:00 +0200 2009</published>
-				<link>/2009/09/18/gui-drag-drop/</link>
+				<link>http://angryant.com/2009/09/18/gui-drag-drop/</link>
 			</item>
 			
 		
@@ -1582,7 +1582,7 @@ LogGameObject( transform.gameObject, children );
 &lt;span class=&quot;comment comment_block comment_block_csharp&quot;&gt;/* &amp;#8230; */&lt;/span&gt;
 &lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
 				<published>Thu Sep 17 00:00:00 +0200 2009</published>
-				<link>/2009/09/17/logging-an-entire-gameobject/</link>
+				<link>http://angryant.com/2009/09/17/logging-an-entire-gameobject/</link>
 			</item>
 			
 		
@@ -1625,7 +1625,7 @@ LogGameObject( transform.gameObject, children );
     text = &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;GUILayout&amp;lt;/span&amp;gt;.TextArea( text );
 }&amp;lt;/span&amp;gt;&lt;/pre&gt;</description>
 				<published>Mon Sep 07 00:00:00 +0200 2009</published>
-				<link>/2009/09/07/i-bet-you-cant-type-an-a/</link>
+				<link>http://angryant.com/2009/09/07/i-bet-you-cant-type-an-a/</link>
 			</item>
 			
 		
@@ -1696,7 +1696,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 }
 &lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
 				<published>Mon Aug 31 00:00:00 +0200 2009</published>
-				<link>/2009/08/31/where-did-that-component-go/</link>
+				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
 			</item>
 			
 		
@@ -1708,7 +1708,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 &lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
 &lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Wed Aug 19 00:00:00 +0200 2009</published>
-				<link>/2009/08/19/unitysteer/</link>
+				<link>http://angryant.com/2009/08/19/unitysteer/</link>
 			</item>
 			
 		
@@ -1721,7 +1721,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 &lt;p&gt;This site will be updated as soon as possible with all the changes and additions and the documentation will be brought up to speed.&lt;/p&gt;
 &lt;p&gt;So what are you waiting for? Head on over to the downloads section and get your copy today!&lt;/p&gt;</description>
 				<published>Mon May 18 00:00:00 +0200 2009</published>
-				<link>/2009/05/18/new-and-improved-behave-10-released/</link>
+				<link>http://angryant.com/2009/05/18/new-and-improved-behave-10-released/</link>
 			</item>
 			
 		
@@ -1735,7 +1735,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 &lt;/ul&gt;
 &lt;p&gt;I&amp;#8217;m currently working on a new version of Behave which will resolve these and other issues apart from adding new features.&lt;/p&gt;</description>
 				<published>Wed Apr 08 00:00:00 +0200 2009</published>
-				<link>/2009/04/08/behave-03b-and-unity-25/</link>
+				<link>http://angryant.com/2009/04/08/behave-03b-and-unity-25/</link>
 			</item>
 			
 		
@@ -1745,7 +1745,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;Changes in the unity 2.5 editor &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; has resulted in some bad issues in Behave 0.3b &amp;#8211; a hotfix to solve the most critical ones &amp;#8211; making the Behave editor interface usable again is available in the Behave downloads section.&lt;/p&gt;
 &lt;p&gt;I&amp;#8217;ll be working on a more extensive rewrite. Stay tuned.&lt;/p&gt;</description>
 				<published>Fri Mar 20 00:00:00 +0100 2009</published>
-				<link>/2009/03/20/behave-03b-hotfix/</link>
+				<link>http://angryant.com/2009/03/20/behave-03b-hotfix/</link>
 			</item>
 			
 		
@@ -1754,7 +1754,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>Path tutorial video available</title>
 				<description>&lt;p&gt;I just finished the first Path tutorial video. &lt;a href=&quot;/resources/path/TheBasics.mov&quot;&gt;Give it a look&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Thu Mar 19 00:00:00 +0100 2009</published>
-				<link>/2009/03/19/path-tutorial-video-available/</link>
+				<link>http://angryant.com/2009/03/19/path-tutorial-video-available/</link>
 			</item>
 			
 		
@@ -1763,7 +1763,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>Path 1.0 launched!</title>
 				<description>&lt;p&gt;Earlier today unity 2.5 launched so here we go! Path 1.0 and a pretty new website is now online. Victory!&lt;/p&gt;</description>
 				<published>Wed Mar 18 00:00:00 +0100 2009</published>
-				<link>/2009/03/18/path-10-launched/</link>
+				<link>http://angryant.com/2009/03/18/path-10-launched/</link>
 			</item>
 			
 		
@@ -1773,7 +1773,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;Arges from the unity community has been keeping busy. His latest tutorial goes more in-depth with Behave and unity, providing an interesting and useful example to work with.&lt;/p&gt;
 &lt;p&gt;Have a read at &lt;a href=&quot;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&quot;&gt;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Wed Dec 17 00:00:00 +0100 2008</published>
-				<link>/2008/12/17/community-tutorial-2/</link>
+				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
 			</item>
 			
 		
@@ -1782,7 +1782,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>Community tutorial</title>
 				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Sun Nov 30 00:00:00 +0100 2008</published>
-				<link>/2008/11/30/community-tutorial/</link>
+				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
 			</item>
 			
 		
@@ -1791,7 +1791,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>New tutorial</title>
 				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
 				<published>Fri Nov 28 00:00:00 +0100 2008</published>
-				<link>/2008/11/28/new-tutorial/</link>
+				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
 			</item>
 			
 		
@@ -1800,7 +1800,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>First tutorial available</title>
 				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
 				<published>Tue Nov 04 00:00:00 +0100 2008</published>
-				<link>/2008/11/04/first-tutorial-available/</link>
+				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
 			</item>
 			
 		
@@ -1824,7 +1824,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 	&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Sun Nov 02 00:00:00 +0100 2008</published>
-				<link>/2008/11/02/behave-03b/</link>
+				<link>http://angryant.com/2008/11/02/behave-03b/</link>
 			</item>
 			
 		
@@ -1833,7 +1833,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>unite '08 open-mic session</title>
 				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
 				<published>Sat Oct 25 00:00:00 +0200 2008</published>
-				<link>/2008/10/25/unite-08-open-mic-session/</link>
+				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
 			</item>
 			
 		
@@ -1856,7 +1856,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 	&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Wed Sep 24 00:00:00 +0200 2008</published>
-				<link>/2008/09/24/behave-02b/</link>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
 			</item>
 			
 		
@@ -1872,7 +1872,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Tue Sep 09 00:00:00 +0200 2008</published>
-				<link>/2008/09/09/behave-01b/</link>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
 			</item>
 			
 		
@@ -1897,7 +1897,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Mon Sep 08 00:00:00 +0200 2008</published>
-				<link>/2008/09/08/behave-pre-release/</link>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
 			</item>
 			
 		
@@ -1906,7 +1906,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>Path beta 0.3b</title>
 				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
 				<published>Tue Apr 15 00:00:00 +0200 2008</published>
-				<link>/2008/04/15/path-beta-03b/</link>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
 			</item>
 			
 		
@@ -1915,7 +1915,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<title>Path beta 0.2b</title>
 				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
 				<published>Sat Apr 12 00:00:00 +0200 2008</published>
-				<link>/2008/04/12/path-beta-02b/</link>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
 			</item>
 			
 		
@@ -1927,7 +1927,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 &lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
 &lt;p&gt;Dig in!&lt;/p&gt;</description>
 				<published>Sat Apr 05 00:00:00 +0200 2008</published>
-				<link>/2008/04/05/path-beta-01b/</link>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
 			</item>
 			
 		
@@ -1937,7 +1937,7 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
 &lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
 				<published>Sun Mar 30 00:00:00 +0100 2008</published>
-				<link>/2008/03/30/path-pre-release/</link>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
 			</item>
 			
 		
