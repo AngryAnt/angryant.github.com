@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Pick me! Pick me! - </title>
+		<title>AngryAnt - Asia Bootcamp videos now available - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen" />
@@ -26,7 +26,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Pick me! Pick me!</div>
+<div id="subtitle">Asia Bootcamp videos now available</div>
 
 	
 		<a href="/">Home</a>
@@ -60,103 +60,29 @@
 
 			</div>
 			<div id="container">
-				<span class="date">10 Mar 2010</span>
-				<h1 id="Top">Pick me! Pick me!</h1>
-				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
+				<span class="date">28 Aug 2012</span>
+				<h1 id="Top">Asia Bootcamp videos now available</h1>
 				
 				<div id="content">
-					<p class="post"><p>Say you&#8217;re developing an <span class="caps">RTS</span> or maybe a connect-the-dots sort of game. What would be the easiest way to go about handling object selection? This is my suggested solution.</p>
-<p>In the given example, I&#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.</p>
-<p>First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&#8217;ve simply put it right after the MonoBehaviour used for testing it.</p>
-<p>SelectionManager<br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> SelectionManager<br />
-{<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="storage storage_modifier storage_modifier_csharp">static</span> <span class="support support_class support_class_unity">GameObject</span> s_ActiveSelection;</p>
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_modifier storage_modifier_csharp">static</span> <span class="support support_class support_class_unity">GameObject</span> ActiveSelection
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> s_ActiveSelection;
-}
-<span class="keyword keyword_other keyword_other_csharp">set</span>
-{
-s_ActiveSelection = <span class="keyword keyword_other keyword_other_csharp">value</span>;
-}
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public static </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Select</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="support support_class support_class_unity">GameObject</span> gameObject, <span class="storage storage_type storage_type_csharp">bool</span> selectionValue</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">if</span> (selectionValue)<br />
-        {<br />
-            Select (gameObject);<br />
-        }<br />
-        <span class="keyword keyword_control keyword_control_csharp">else</span><br />
-        {<br />
-            Deselect (gameObject);<br />
-        }<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public static </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Select</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="support support_class support_class_unity">GameObject</span> gameObject</span>)</span><br />
-    {<br />
-        ActiveSelection = gameObject;<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public static </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Deselect</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="support support_class support_class_unity">GameObject</span> gameObject</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">if</span> (ActiveSelection == gameObject)<br />
-        {<br />
-            ActiveSelection = <span class="constant constant_language constant_language_csharp">null</span>;<br />
-        }<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public static </span><span class="storage storage_type storage_type_csharp">bool</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">IsSelected</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="support support_class support_class_unity">GameObject</span> gameObject</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">return</span> ActiveSelection == gameObject;<br />
-    }<br />
-}</span></pre></p>
-<p>And the promised MonoBehaviour using the SelectionManager class:<br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> SelectableObject : <span class="support support_class support_class_unity">MonoBehaviour</span><br />
-{<br />
-    <span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="support support_class support_class_unity">Rect</span> m_SelectionWindowRect = <span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity">Rect</span> (<span class="constant constant_numeric constant_numeric_csharp">10.0f</span>, <span class="constant constant_numeric constant_numeric_csharp">10.0f</span>, <span class="constant constant_numeric constant_numeric_csharp">300.0f</span>, <span class="constant constant_numeric constant_numeric_csharp">100.0f</span>);</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnMouseDown</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnDisable</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        SelectionManager.Deselect (gameObject);<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Update</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        renderer.material.color = SelectionManager.IsSelected (gameObject) ? <span class="support support_class support_class_unity">Color</span>.green : <span class="support support_class support_class_unity">Color</span>.white;<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnGUI</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">if</span> (SelectionManager.IsSelected (gameObject))<br />
-        {<br />
-            m_SelectionWindowRect = <span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);<br />
-        }<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">SelectionWindow</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="storage storage_type storage_type_csharp">int</span> id</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">GUILayout</span>.Box (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;I am the selection and my name is </span>&quot; + gameObject.name);<br />
-        <span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.DragWindow ();<br />
-    }<br />
-}</span></pre></p>
-<hr>
-<p>And that is all there is to it. By popular demand, I&#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:<br />
-<a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'>SelectableObject</a></p></p>
+					<p class="post"><p><span class="caps">OHAI</span>!</p>
+<p>Good news everyone! Having just gotten back from Unite 12, I&#8217;ve just been informed that the videos from the Asia Bootcamp earlier this year are now available for public consumption!</p>
+<p>Here are the two talks I did on the tour (recordings from the Tokyo event):</p>
+<ul>
+	<li><a href="http://vimeopro.com/unity3djp/unity-asia-bootcamp-tour-tokyo-for-the-public/video/41968409">Streamlining your Unity editor</a></li>
+	<li><a href="http://vimeopro.com/unity3djp/unity-asia-bootcamp-tour-tokyo-for-the-public/video/41969880">Rapid network- and AI-ready game development in Unity</a></li>
+</ul>
+<p>Note that example projects and slides are linked just below the videos.</p>
+<p>At this yeas Unite I gave the talk &#8220;Unity, Network Code, and You&#8221;, which was also recorded. I&#8217;ll make the recordings and example projects available for that as soon as everything is cut and online.</p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2012/08/28/Asia-Bootcamp-videos-now-available/" class="titleSmall">Asia Bootcamp videos now available</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -334,10 +260,9 @@ s_ActiveSelection = <span class="keyword keyword_other keyword_other_csharp">val
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
