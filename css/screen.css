@@ -74,7 +74,7 @@ h3
 }
 #site
 {
-	width: 800px;
+	width: 850px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -87,7 +87,7 @@ h3
 }
 #container
 {
-	width: 550px;
+	width: 600px;
 	float: right;
 	padding-top: 50px;
 }
@@ -227,6 +227,7 @@ h3
 #content img
 {
 	float: right;
+	padding: 10px;
 }
 #sidebar a
 {

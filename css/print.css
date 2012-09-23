@@ -1,12 +1,5 @@
-#sidebar #subtitle, a, .comment
-{
-	display: none;
-}
-#pagemenu
-{
-	display: none;
-}
-#feed
+
+#sidebar, #pagemenu, #feed, .noprint
 {
 	display: none;
 }
