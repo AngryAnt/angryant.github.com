@@ -6,6 +6,15 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Unite 12 video and new videos section available</title>
+				<description>&lt;p&gt;While I was away at gameAIconf 12 in Vienna, the recording of my networking talk at this years Unite conference was made available.&lt;/p&gt;
+&lt;p&gt;Rather than spreading more sporatic linking in various blog posts, I created a videos page collecting up talks, interviews and documentation videos. I&amp;#8217;m hoping it will serve as a good addition to the blog and my gists.&lt;/p&gt;
+&lt;p&gt;The new section can be found over at &lt;a href=&quot;/videos&quot;&gt;/videos&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Sun Sep 23 00:00:00 +0200 2012</published>
+				<link>http://angryant.com/2012/09/23/Unite-12-video-and-new-videos-section-available/</link>
+			</item>
+		
+			<item>
 				<title>Asia Bootcamp videos now available</title>
 				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;!&lt;/p&gt;
 &lt;p&gt;Good news everyone! Having just gotten back from Unite 12, I&amp;#8217;ve just been informed that the videos from the Asia Bootcamp earlier this year are now available for public consumption!&lt;/p&gt;
@@ -157,14 +166,6 @@
 &lt;p&gt;Something in the default license which doesn&amp;#8217;t fit your project too well? Let&amp;#8217;s talk about it. Please use the form available on the &lt;a href=&quot;/behave/download/&quot;&gt;download&lt;/a&gt; page.&lt;/p&gt;</description>
 				<published>Thu Mar 03 00:00:00 +0100 2011</published>
 				<link>http://angryant.com/2011/03/03/alternative-licensing-available/</link>
-			</item>
-		
-			<item>
-				<title>Pathfinding in two lines</title>
-				<description>&lt;p&gt;I just updated the &lt;a href=&quot;/path/documentation&quot;&gt;Path documentation&lt;/a&gt; with a short tutorial describing the simplest possible interface between your code and the Path runtime: &amp;#8220;Pathfinding in two lines&amp;#8221;.&lt;/p&gt;
-&lt;p&gt;Furthermore, I added a link to the previously released introduction video to Path 2.0b1. While I will make sure to re-record it with the released build, 99% of the stuff in that video still applies.&lt;/p&gt;</description>
-				<published>Tue Feb 15 00:00:00 +0100 2011</published>
-				<link>http://angryant.com/2011/02/15/pathfinding-in-two-line/</link>
 			</item>
 		
 	</channel>

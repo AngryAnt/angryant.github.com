@@ -199,6 +199,10 @@ h3
 {
 	padding-bottom: 20px;
 }
+#content .footnote
+{
+	font-size: 8pt;
+}
 #content .comment
 {
 	font-size: 8pt;
