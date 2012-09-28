@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 0.3b and unity 2.5 - </title>
+		<title>AngryAnt - Mountain Lion and laggy bluetooth and duct-tape - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen" />
@@ -26,7 +26,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Behave 0.3b and unity 2.5</div>
+<div id="subtitle">Mountain Lion and laggy bluetooth and duct-tape</div>
 
 	
 		<a href="/">Home</a>
@@ -67,28 +67,27 @@
 
 			</div>
 			<div id="container">
-				<span class="date">08 Apr 2009</span>
-				<h1 id="Top">Behave 0.3b and unity 2.5</h1>
+				<span class="date">28 Sep 2012</span>
+				<h1 id="Top">Mountain Lion and laggy bluetooth and duct-tape</h1>
 				
 				<div id="content">
-					<p class="post"><p>Apart from the hotfix, the following steps need to be followed when using Behave 0.3b in unity 2.5:</p>
-<ul>
-	<li>When building an asset, make sure to use the shortcut for it and not the menu.</li>
-	<li>Behave.dll needs to be in a subfolder of your Assets folder named &#8220;Assets&#8221;. That is, for instance, &#8220;MyProject/Assets/Assets/Behave.dll&#8221;.</li>
-</ul>
-<p>I&#8217;m currently working on a new version of Behave which will resolve these and other issues apart from adding new features.</p></p>
+					<p class="post"><p>If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed rectent occational slow-downs in the response time from those devices.</p>
+<p>A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.</p>
+<p>So until apple addresses this, I&#8217;ve written myself a little utility apple script for turning the radio off and back on again. It&#8217;s based on <a href="http://www.frederikseiffert.de/blueutil/">blueutil</a> which is available with source if you worry about malware and simply turns off the radio for five seconds before turning it back on.</p>
+<p>I hope you find it useful.</p>
+<script src='https://gist.github.com/3798723.js?file='></script><div><noscript><pre><code>do shell script &amp;quot;sudo /usr/local/bin/blueutil off&amp;quot; with administrator privileges
+delay 5
+do shell script &amp;quot;sudo /usr/local/bin/blueutil on&amp;quot; with administrator privileges</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/" class="titleSmall">Mountain Lion and laggy bluetooth and duct-tape</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -350,10 +349,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								

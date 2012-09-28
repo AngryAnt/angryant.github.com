@@ -7,6 +7,21 @@
 		
 			
 			<item>
+				<title>Mountain Lion and laggy bluetooth and duct-tape</title>
+				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed rectent occational slow-downs in the response time from those devices.&lt;/p&gt;
+&lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
+&lt;p&gt;So until apple addresses this, I&amp;#8217;ve written myself a little utility apple script for turning the radio off and back on again. It&amp;#8217;s based on &lt;a href=&quot;http://www.frederikseiffert.de/blueutil/&quot;&gt;blueutil&lt;/a&gt; which is available with source if you worry about malware and simply turns off the radio for five seconds before turning it back on.&lt;/p&gt;
+&lt;p&gt;I hope you find it useful.&lt;/p&gt;
+&lt;script src='https://gist.github.com/3798723.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil off&amp;amp;quot; with administrator privileges
+delay 5
+do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with administrator privileges&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;</description>
+				<published>Fri Sep 28 00:00:00 +0200 2012</published>
+				<link>http://angryant.com/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Unite 12 video and new videos section available</title>
 				<description>&lt;p&gt;While I was away at gameAIconf 12 in Vienna, the recording of my networking talk at this years Unite conference was made available.&lt;/p&gt;
 &lt;p&gt;Rather than spreading more sporatic linking in various blog posts, I created a videos page collecting up talks, interviews and documentation videos. I&amp;#8217;m hoping it will serve as a good addition to the blog and my gists.&lt;/p&gt;
