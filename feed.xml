@@ -7,7 +7,7 @@
 		
 			<item>
 				<title>Mountain Lion and laggy bluetooth and duct-tape</title>
-				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed rectent occational slow-downs in the response time from those devices.&lt;/p&gt;
+				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed recent occasional slow-downs in the response time from those devices.&lt;/p&gt;
 &lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
 &lt;p&gt;So until apple addresses this, I&amp;#8217;ve written myself a little utility apple script for turning the radio off and back on again. It&amp;#8217;s based on &lt;a href=&quot;http://www.frederikseiffert.de/blueutil/&quot;&gt;blueutil&lt;/a&gt; which is available with source if you worry about malware and simply turns off the radio for five seconds before turning it back on.&lt;/p&gt;
 &lt;p&gt;I hope you find it useful.&lt;/p&gt;
@@ -174,4 +174,4 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 			</item>
 		
 	</channel>
-</rss>
+</rss>>
