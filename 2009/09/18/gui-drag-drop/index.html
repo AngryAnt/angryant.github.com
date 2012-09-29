@@ -70,271 +70,261 @@
 				<span class="date">18 Sep 2009</span>
 				<h1 id="Top">GUI drag-drop</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>A lot of people have been asking for tips on how to implement drag-drop functionality in Unity <span class="caps">GUI</span> scripting, so I decided to put together a reusable script for the purpose.</p>
 <p>Basically the solution requires that your data class derives from GUIDraggableObject and at some point in its OnGUI method call Drag( Rect ) &#8211; just like <span class="caps">GUI</span>.Window handles dragging.</p>
-<p>Right. Codez. First off the GUIDraggableObject.cs file:<br />
-&nbsp;</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;
+<p>Right. Codez. First off the GUIDraggableObject.cs file:</p>
+<script src='https://gist.github.com/3804740.js?file=GUIDraggableObject.cs'></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
 
-&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;class&lt;/span&gt; GUIDraggableObject
+public class GUIDraggableObject
 {
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;protected&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; m_Position;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; m_DragStart;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;bool&lt;/span&gt; m_Dragging;
+	protected Vector2 m_Position;
+	private Vector2 m_DragStart;
+	private bool m_Dragging;
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;public&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;GUIDraggableObject&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; position&lt;/span&gt;)&lt;/span&gt;
-    {
-        m_Position = position;
-    }
+	public GUIDraggableObject (Vector2 position)
+	{
+		m_Position = position;
+	}
 
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;bool&lt;/span&gt; Dragging
-    {
-        &lt;span class="keyword keyword_other keyword_other_csharp"&gt;get&lt;/span&gt;
-        {
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;return&lt;/span&gt; m_Dragging;
-        }
-    }
+	public bool Dragging
+	{
+		get
+		{
+			return m_Dragging;
+		}
+	}
 
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; Position
-    {
-        &lt;span class="keyword keyword_other keyword_other_csharp"&gt;get&lt;/span&gt;
-        {
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;return&lt;/span&gt; m_Position;
-        }
+	public Vector2 Position
+	{
+		get
+		{
+			return m_Position;
+		}
 
-        &lt;span class="keyword keyword_other keyword_other_csharp"&gt;set&lt;/span&gt;
-        {
-            m_Position = &lt;span class="keyword keyword_other keyword_other_csharp"&gt;value&lt;/span&gt;;
-        }
-    }
+		set
+		{
+			m_Position = value;
+		}
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;Drag&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; draggingRect&lt;/span&gt;)&lt;/span&gt;
-    {
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.type == &lt;span class="support support_class support_class_unity"&gt;EventType&lt;/span&gt;.MouseUp)
-        {
-            m_Dragging = &lt;span class="constant constant_language constant_language_csharp"&gt;false&lt;/span&gt;;
-        }
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;else&lt;/span&gt; &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.type == &lt;span class="support support_class support_class_unity"&gt;EventType&lt;/span&gt;.MouseDown &amp;&amp; draggingRect.Contains (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition))
-        {
-            m_Dragging = &lt;span class="constant constant_language constant_language_csharp"&gt;true&lt;/span&gt;;
-            m_DragStart = &lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition - m_Position;
-            &lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.Use();
-        }
+	public void Drag (Rect draggingRect)
+	{
+		if (Event.current.type == EventType.MouseUp)
+		{
+			m_Dragging = false;
+		}
+		else if (Event.current.type == EventType.MouseDown &amp;amp;&amp;amp; draggingRect.Contains (Event.current.mousePosition))
+		{
+			m_Dragging = true;
+			m_DragStart = Event.current.mousePosition - m_Position;
+			Event.current.Use();
+		}
 
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (m_Dragging)
-        {
-            m_Position = &lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition - m_DragStart;
-        }
-    }
-}&lt;/span&gt;</pre>
-<p>&nbsp;</p>
-<p>An example data class inheriting from GUIDraggableObject &#8211; DataObject.cs:<br />
-&nbsp;</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;
+		if (m_Dragging)
+		{
+			m_Position = Event.current.mousePosition - m_DragStart;
+		}
+	}
+}</code></pre></noscript></div>
+<p>An example data class inheriting from GUIDraggableObject &#8211; DataObject.cs:</p>
+<script src='https://gist.github.com/3804740.js?file=DataObject.cs'></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
 
-&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;class&lt;/span&gt; DataObject : GUIDraggableObject
-&lt;span class="comment comment_line comment_line_double-slash comment_line_double-slash_csharp"&gt;// This class just has the capability of being dragged in GUI - it could be any type of generic data class&lt;/span&gt;
+public class DataObject : GUIDraggableObject
+// This class just has the capability of being dragged in GUI - it could be any type of generic data class
 {
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;string&lt;/span&gt; m_Name;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;int&lt;/span&gt; m_Value;
+	private string m_Name;
+	private int m_Value;
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;public&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;DataObject&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;span class="storage storage_type storage_type_csharp"&gt;string&lt;/span&gt; name, &lt;span class="storage storage_type storage_type_csharp"&gt;int&lt;/span&gt; &lt;span class="keyword keyword_other keyword_other_csharp"&gt;value&lt;/span&gt;, &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; position&lt;/span&gt;)&lt;/span&gt; : &lt;span class="constant constant_language constant_language_csharp"&gt;base&lt;/span&gt; (position)
-    {
-        m_Name = name;
-        m_Value = &lt;span class="keyword keyword_other keyword_other_csharp"&gt;value&lt;/span&gt;;
-    }
+	public DataObject (string name, int value, Vector2 position) : base (position)
+	{
+		m_Name = name;
+		m_Value = value;
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;OnGUI&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; drawRect = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; (m_Position.x, m_Position.y, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;100.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;100.0f&lt;/span&gt;), dragRect;
+	public void OnGUI ()
+	{
+		Rect drawRect = new Rect (m_Position.x, m_Position.y, 100.0f, 100.0f), dragRect;
 
-        &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.BeginArea (drawRect, &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.skin.GetStyle ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Box&lt;/span&gt;"));
-            &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.Label (m_Name, &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.skin.GetStyle ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Box&lt;/span&gt;"), &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.ExpandWidth (&lt;span class="constant constant_language constant_language_csharp"&gt;true&lt;/span&gt;));
+		GUILayout.BeginArea (drawRect, GUI.skin.GetStyle (&amp;quot;Box&amp;quot;));
+			GUILayout.Label (m_Name, GUI.skin.GetStyle (&amp;quot;Box&amp;quot;), GUILayout.ExpandWidth (true));
 
-            dragRect = &lt;span class="support support_class support_class_unity"&gt;GUILayoutUtility&lt;/span&gt;.GetLastRect ();
-            dragRect = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; (dragRect.x + m_Position.x, dragRect.y + m_Position.y, dragRect.width, dragRect.height);
+			dragRect = GUILayoutUtility.GetLastRect ();
+			dragRect = new Rect (dragRect.x + m_Position.x, dragRect.y + m_Position.y, dragRect.width, dragRect.height);
 
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (Dragging)
-            {
-                &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.Label ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Wooo...&lt;/span&gt;");
-            }
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;else&lt;/span&gt; &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (&lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.Button ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Yes!&lt;/span&gt;"))
-            {
-                &lt;span class="support support_class support_class_unity"&gt;Debug&lt;/span&gt;.Log ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Yes. It is &lt;/span&gt;" + m_Value + "&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;!&lt;/span&gt;");
-            }
-        &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.EndArea ();
+			if (Dragging)
+			{
+				GUILayout.Label (&amp;quot;Wooo...&amp;quot;);
+			}
+			else if (GUILayout.Button (&amp;quot;Yes!&amp;quot;))
+			{
+				Debug.Log (&amp;quot;Yes. It is &amp;quot; + m_Value + &amp;quot;!&amp;quot;);
+			}
+		GUILayout.EndArea ();
 
-        Drag (dragRect);
-    }
-}&lt;/span&gt;</pre>
-<p>&nbsp;</p>
-<p>And finally, this script demonstrates how you could have your data manager class use Unity <span class="caps">GUI</span> for data visualisation with drag-drop enabled &#8211; MyMonoBehaviour.cs:<br />
-&nbsp;</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections.Generic&lt;/span&gt;;&lt;/span&gt;
+		Drag (dragRect);
+	}
+}</code></pre></noscript></div>
+<p>And finally, this script demonstrates how you could have your data manager class use Unity <span class="caps">GUI</span> for data visualisation with drag-drop enabled &#8211; MyMonoBehaviour.cs:</p>
+<script src='https://gist.github.com/3804740.js?file=MyMonoBehaviour.cs'></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;class&lt;/span&gt; MyMonoBehaviour : &lt;span class="support support_class support_class_unity"&gt;MonoBehaviour&lt;/span&gt;
+public class MyMonoBehaviour : MonoBehaviour
 {
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; List&lt; DataObject &gt; m_Data = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; List&lt; DataObject &gt; ();
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; dropTargetRect = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;30.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;30.0f&lt;/span&gt;);
+	private List&amp;lt; DataObject &amp;gt; m_Data = new List&amp;lt; DataObject &amp;gt; ();
+	private Rect dropTargetRect = new Rect (10.0f, 10.0f, 30.0f, 30.0f);
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;Awake&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;One&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Two&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;2&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Three&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;3&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Four&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;4&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Five&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;5&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-    }
+	void Awake ()
+	{
+		m_Data.Add (new DataObject (&amp;quot;One&amp;quot;, 1, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Two&amp;quot;, 2, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Three&amp;quot;, 3, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Four&amp;quot;, 4, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Five&amp;quot;, 5, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;OnGUI&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        DataObject toFront, dropDead;
-        &lt;span class="support support_class support_class_unity"&gt;Color&lt;/span&gt; color;
+	public void OnGUI ()
+	{
+		DataObject toFront, dropDead;
+		Color color;
 
-        &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.Box(dropTargetRect, "&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Die&lt;/span&gt;");
+		GUI.Box(dropTargetRect, &amp;quot;Die&amp;quot;);
 
-        toFront = dropDead = &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;;
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;foreach&lt;/span&gt; (DataObject data &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;in&lt;/span&gt; m_Data)
-        {
-            color = &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color;
+		toFront = dropDead = null;
+		foreach (DataObject data in m_Data)
+		{
+			color = GUI.color;
 
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (data.Dragging)
-            {
-                &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color = dropTargetRect.Contains (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition) ? &lt;span class="support support_class support_class_unity"&gt;Color&lt;/span&gt;.red : color;
-            }
+			if (data.Dragging)
+			{
+				GUI.color = dropTargetRect.Contains (Event.current.mousePosition) ? Color.red : color;
+			}
 
-            data.OnGUI ();
+			data.OnGUI ();
 
-            &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color = color;
+			GUI.color = color;
 
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (data.Dragging)
-            {
-                &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (m_Data.IndexOf (data) != m_Data.Count - &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1&lt;/span&gt;)
-                {
-                    toFront = data;
-                }
-            }
-        }
+			if (data.Dragging)
+			{
+				if (m_Data.IndexOf (data) != m_Data.Count - 1)
+				{
+					toFront = data;
+				}
+			}
+		}
 
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (toFront != &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;)
-        &lt;span class="comment comment_line comment_line_double-slash comment_line_double-slash_csharp"&gt;// Move an object to front if needed&lt;/span&gt;
-        {
-            m_Data.Remove (toFront);
-            m_Data.Add (toFront);
-        }
-    }
-}
-&lt;/span&gt;</pre>
-<p>&nbsp;</p>
-<p>Ah yea and an example of how you could do the same in an editor window &#8211; MyEditorWindow.cs:<br />
-&nbsp;</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEditor&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections.Generic&lt;/span&gt;;&lt;/span&gt;
+		if (toFront != null)
+		// Move an object to front if needed
+		{
+			m_Data.Remove (toFront);
+			m_Data.Add (toFront);
+		}
+	}
+}</code></pre></noscript></div>
+<p>Ah yea and an example of how you could do the same in an editor window &#8211; MyEditorWindow.cs:</p>
+<script src='https://gist.github.com/3804740.js?file=MyEditorWindow.cs'></script><div><noscript><pre><code>using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
 
-&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;class&lt;/span&gt; MyEditorWindow : &lt;span class="support support_class support_class_unity"&gt;EditorWindow&lt;/span&gt;
+public class MyEditorWindow : EditorWindow
 {
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; List&lt; DataObject &gt; m_Data = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; List&lt; DataObject &gt; ();
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;bool&lt;/span&gt; doRepaint = &lt;span class="constant constant_language constant_language_csharp"&gt;false&lt;/span&gt;;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; dropTargetRect = &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Rect&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;30.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;30.0f&lt;/span&gt;);
+	private List&amp;lt; DataObject &amp;gt; m_Data = new List&amp;lt; DataObject &amp;gt; ();
+	private bool doRepaint = false;
+	private Rect dropTargetRect = new Rect (10.0f, 10.0f, 30.0f, 30.0f);
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;public&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;MyEditorWindow&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;One&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Two&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;2&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Three&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;3&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Four&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;4&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-        m_Data.Add (&lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; DataObject ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Five&lt;/span&gt;", &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;5&lt;/span&gt;, &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector2&lt;/span&gt; (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;), &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;20.0f&lt;/span&gt; * &lt;span class="support support_class support_class_unity"&gt;Random&lt;/span&gt;.Range (&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1.0f&lt;/span&gt;, &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;10.0f&lt;/span&gt;))));
-    }
+	public MyEditorWindow ()
+	{
+		m_Data.Add (new DataObject (&amp;quot;One&amp;quot;, 1, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Two&amp;quot;, 2, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Three&amp;quot;, 3, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Four&amp;quot;, 4, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+		m_Data.Add (new DataObject (&amp;quot;Five&amp;quot;, 5, new Vector2 (20.0f * Random.Range (1.0f, 10.0f), 20.0f * Random.Range (1.0f, 10.0f))));
+	}
 
-    [&lt;span class="support support_class support_class_unity"&gt;MenuItem&lt;/span&gt; ("&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Window/MyEditorWindow&lt;/span&gt;")]
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public static &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;Launch&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        GetWindow (&lt;span class="keyword keyword_operator keyword_operator_csharp"&gt;typeof&lt;/span&gt; (MyEditorWindow)).Show ();
-    }
+	[MenuItem (&amp;quot;Window/MyEditorWindow&amp;quot;)]
+	public static void Launch ()
+	{
+		GetWindow (typeof (MyEditorWindow)).Show ();
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;Update&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (doRepaint)
-        {
-            Repaint ();
-        }
-    }
+	public void Update ()
+	{
+		if (doRepaint)
+		{
+			Repaint ();
+		}
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;OnGUI&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        DataObject toFront, dropDead;
-        &lt;span class="storage storage_type storage_type_csharp"&gt;bool&lt;/span&gt; previousState, flipRepaint;
-        &lt;span class="support support_class support_class_unity"&gt;Color&lt;/span&gt; color;
+	public void OnGUI ()
+	{
+		DataObject toFront, dropDead;
+		bool previousState, flipRepaint;
+		Color color;
 
-        &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.Box(dropTargetRect, "&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;Die&lt;/span&gt;");
+		GUI.Box(dropTargetRect, &amp;quot;Die&amp;quot;);
 
-        toFront = dropDead = &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;;
-        doRepaint = &lt;span class="constant constant_language constant_language_csharp"&gt;false&lt;/span&gt;;
-        flipRepaint = &lt;span class="constant constant_language constant_language_csharp"&gt;false&lt;/span&gt;;
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;foreach&lt;/span&gt; (DataObject data &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;in&lt;/span&gt; m_Data)
-        {
-            previousState = data.Dragging;
+		toFront = dropDead = null;
+		doRepaint = false;
+		flipRepaint = false;
+		foreach (DataObject data in m_Data)
+		{
+			previousState = data.Dragging;
 
-            color = &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color;
+			color = GUI.color;
 
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (previousState)
-            {
-                &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color = dropTargetRect.Contains (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition) ? &lt;span class="support support_class support_class_unity"&gt;Color&lt;/span&gt;.red : color;
-            }
+			if (previousState)
+			{
+				GUI.color = dropTargetRect.Contains (Event.current.mousePosition) ? Color.red : color;
+			}
 
-            data.OnGUI ();
+			data.OnGUI ();
 
-            &lt;span class="support support_class support_class_unity"&gt;GUI&lt;/span&gt;.color = color;
+			GUI.color = color;
 
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (data.Dragging)
-            {
-                doRepaint = &lt;span class="constant constant_language constant_language_csharp"&gt;true&lt;/span&gt;;
+			if (data.Dragging)
+			{
+				doRepaint = true;
 
-                &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (m_Data.IndexOf (data) != m_Data.Count - &lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1&lt;/span&gt;)
-                {
-                    toFront = data;
-                }
-            }
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;else&lt;/span&gt; &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (previousState)
-            {
-                flipRepaint = &lt;span class="constant constant_language constant_language_csharp"&gt;true&lt;/span&gt;;
+				if (m_Data.IndexOf (data) != m_Data.Count - 1)
+				{
+					toFront = data;
+				}
+			}
+			else if (previousState)
+			{
+				flipRepaint = true;
 
-                &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (dropTargetRect.Contains (&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.mousePosition))
-                {
-                    dropDead = data;
-                }
-            }
-        }
+				if (dropTargetRect.Contains (Event.current.mousePosition))
+				{
+					dropDead = data;
+				}
+			}
+		}
 
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (toFront != &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;)
-        &lt;span class="comment comment_line comment_line_double-slash comment_line_double-slash_csharp"&gt;// Move an object to front if needed&lt;/span&gt;
-        {
-            m_Data.Remove (toFront);
-            m_Data.Add (toFront);
-        }
+		if (toFront != null)
+		// Move an object to front if needed
+		{
+			m_Data.Remove (toFront);
+			m_Data.Add (toFront);
+		}
 
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (dropDead != &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;)
-        &lt;span class="comment comment_line comment_line_double-slash comment_line_double-slash_csharp"&gt;// Destroy an object if needed&lt;/span&gt;
-        {
-            m_Data.Remove (dropDead);
-        }
+		if (dropDead != null)
+		// Destroy an object if needed
+		{
+			m_Data.Remove (dropDead);
+		}
 
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (flipRepaint)
-        &lt;span class="comment comment_line comment_line_double-slash comment_line_double-slash_csharp"&gt;// If some object just stopped being dragged, we should repaing for the state change&lt;/span&gt;
-        {
-            Repaint ();
-        }
-    }
-}&lt;/span&gt;</pre></p>
+		if (flipRepaint)
+		// If some object just stopped being dragged, we should repaing for the state change
+		{
+			Repaint ();
+		}
+	}
+}</code></pre></noscript></div></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
