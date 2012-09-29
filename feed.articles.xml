@@ -1660,67 +1660,67 @@ LogGameObject( transform.gameObject, children );
 				<title>Where did that component go?</title>
 				<description>&lt;p&gt;In larger Unity projects, components sometimes &amp;#8220;get lost&amp;#8221; &amp;#8211; you refactor something and there&amp;#8217;s an audio source still attached somewhere in your hierarchy and you simply cannot remember where.&lt;/p&gt;
 &lt;p&gt;You&amp;#8217;re not the first one. A while ago I created a simple editor script to combat this issue as a response to a similar frustrated post on the Unity forums. Earlier this week I stumbled on the script again, picked it up and dusted it off a bit and decided to give it another chance to shine in some spotlight.&lt;/p&gt;
-&lt;p&gt;Use:&lt;br /&gt;
-&lt;ul&gt;&lt;br /&gt;
-&lt;li&gt;Save the script as &lt;i&gt;ComponentLister.cs&lt;/i&gt;.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Place it in /Assets/Editor in your project.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Launch the window from the Component menu &amp;#8211; should be the last item titled &amp;#8220;Component lister&amp;#8221;.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Click &amp;#8220;Refresh&amp;#8221; to list all components in your scene and the GameObjects to which they are attached.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;&lt;/p&gt;
+&lt;p&gt;Use:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Save the script as &lt;i&gt;ComponentLister.cs&lt;/i&gt;.&lt;/li&gt;
+	&lt;li&gt;Place it in /Assets/Editor in your project.&lt;/li&gt;
+	&lt;li&gt;Launch the window from the Component menu &amp;#8211; should be the last item titled &amp;#8220;Component lister&amp;#8221;.&lt;/li&gt;
+	&lt;li&gt;Click &amp;#8220;Refresh&amp;#8221; to list all components in your scene and the GameObjects to which they are attached.&lt;/li&gt;
+	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Codes:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEditor&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; ComponentLister : EditorWindow&lt;br /&gt;
+&lt;script src='https://gist.github.com/3804708.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+using System.Collections;&lt;/p&gt;
+&lt;p&gt;public class ComponentLister : EditorWindow&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; Hashtable sets = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; Hashtable();&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Vector2&lt;/span&gt; scrollPosition;&lt;/p&gt;
-[ &lt;span class=&quot;support support_class support_class_unity&quot;&gt;MenuItem&lt;/span&gt;( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Component/Component lister&lt;/span&gt;&amp;quot; ) ]
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Launch&lt;/span&gt;&lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        EditorWindow window = GetWindow( &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt;( ComponentLister ) );&lt;br /&gt;
-        window.Show();&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;UpdateList&lt;/span&gt;&lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Object&lt;/span&gt;[] objects;&lt;/p&gt;
-sets.Clear();
-objects = FindObjectsOfType( &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; ) );
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; component &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; objects )
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt;( !sets.ContainsKey( component.GetType() ) )
-{
-sets[ component.GetType() ] = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; ArrayList();
-}
-( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnGUI&lt;/span&gt;&lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.skin.GetStyle( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Box&lt;/span&gt;&amp;quot; ) );&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Components in scene:&lt;/span&gt;&amp;quot; );&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace();&lt;/p&gt;
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Refresh&lt;/span&gt;&amp;quot; ) )
-{
-UpdateList();
-}
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndHorizontal();
-scrollPosition = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginScrollView(scrollPosition);
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( System.Type type &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; sets.Keys )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label( type.Name + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;:&lt;/span&gt;&amp;quot; );
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; ( ArrayList )sets[ type ] )
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button( gameObject.name ) )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Selection&lt;/span&gt;.activeObject = gameObject;
-}
-}
-}
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndScrollView();
-}
-&lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
+	private Hashtable sets = new Hashtable();&lt;br /&gt;
+	private Vector2 scrollPosition;&lt;/p&gt;
+&lt;p&gt;[ MenuItem( &amp;quot;Component/Component lister&amp;quot; ) ]&lt;br /&gt;
+	public static void Launch()&lt;br /&gt;
+	{&lt;br /&gt;
+		EditorWindow window = GetWindow( typeof( ComponentLister ) );&lt;br /&gt;
+		window.Show();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void UpdateList()&lt;br /&gt;
+	{&lt;br /&gt;
+		Object[] objects;&lt;/p&gt;
+&lt;p&gt;sets.Clear();&lt;/p&gt;
+&lt;p&gt;objects = FindObjectsOfType( typeof( Component ) );&lt;br /&gt;
+		foreach( Component component in objects )&lt;br /&gt;
+		{&lt;br /&gt;
+			if( !sets.ContainsKey( component.GetType() ) )&lt;br /&gt;
+			{&lt;br /&gt;
+				sets[ component.GetType() ] = new ArrayList();&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnGUI()&lt;br /&gt;
+	{&lt;br /&gt;
+		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
+			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
+			GUILayout.FlexibleSpace();&lt;/p&gt;
+&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
+			{&lt;br /&gt;
+				UpdateList();&lt;br /&gt;
+			}&lt;br /&gt;
+		GUILayout.EndHorizontal();&lt;/p&gt;
+&lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
+&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
+			{&lt;br /&gt;
+				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
+				{&lt;br /&gt;
+					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
+					{&lt;br /&gt;
+						Selection.activeObject = gameObject;&lt;br /&gt;
+					}&lt;br /&gt;
+				}&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>Mon Aug 31 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
 			</item>
@@ -1860,6 +1860,115 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
 				<published>Sat Oct 25 00:00:00 +0200 2008</published>
 				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.2b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
+	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
+		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>angryant.com/2008/10/25/unite-08-open-mic-session/</link>
 			</item>
 			
 		

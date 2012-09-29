@@ -70,72 +70,70 @@
 				<span class="date">31 Aug 2009</span>
 				<h1 id="Top">Where did that component go?</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>In larger Unity projects, components sometimes &#8220;get lost&#8221; &#8211; you refactor something and there&#8217;s an audio source still attached somewhere in your hierarchy and you simply cannot remember where.</p>
 <p>You&#8217;re not the first one. A while ago I created a simple editor script to combat this issue as a response to a similar frustrated post on the Unity forums. Earlier this week I stumbled on the script again, picked it up and dusted it off a bit and decided to give it another chance to shine in some spotlight.</p>
-<p>Use:<br />
-<ul><br />
-<li>Save the script as <i>ComponentLister.cs</i>.</li><br />
-<li>Place it in /Assets/Editor in your project.</li><br />
-<li>Launch the window from the Component menu &#8211; should be the last item titled &#8220;Component lister&#8221;.</li><br />
-<li>Click &#8220;Refresh&#8221; to list all components in your scene and the GameObjects to which they are attached.</li><br />
-<li>To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.</li></p>
+<p>Use:</p>
+<ul>
+	<li>Save the script as <i>ComponentLister.cs</i>.</li>
+	<li>Place it in /Assets/Editor in your project.</li>
+	<li>Launch the window from the Component menu &#8211; should be the last item titled &#8220;Component lister&#8221;.</li>
+	<li>Click &#8220;Refresh&#8221; to list all components in your scene and the GameObjects to which they are attached.</li>
+	<li>To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.</li>
 </ul>
 <p>Codes:<br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEditor</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> ComponentLister : EditorWindow<br />
+<script src='https://gist.github.com/3804708.js?file='></script><div><noscript><pre><code>using UnityEngine;
+using UnityEditor;
+using System.Collections;</p>
+<p>public class ComponentLister : EditorWindow<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> Hashtable sets = <span class="keyword keyword_control keyword_control_csharp">new</span> Hashtable();<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="support support_class support_class_unity">Vector2</span> scrollPosition;</p>
-[ <span class="support support_class support_class_unity">MenuItem</span>( &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Component/Component lister</span>&quot; ) ]
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public static </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Launch</span><span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        EditorWindow window = GetWindow( <span class="keyword keyword_operator keyword_operator_csharp">typeof</span>( ComponentLister ) );<br />
-        window.Show();<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">UpdateList</span><span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">Object</span>[] objects;</p>
-sets.Clear();
-objects = FindObjectsOfType( <span class="keyword keyword_operator keyword_operator_csharp">typeof</span>( <span class="support support_class support_class_unity">Component</span> ) );
-<span class="keyword keyword_control keyword_control_csharp">foreach</span>( <span class="support support_class support_class_unity">Component</span> component <span class="storage storage_modifier storage_modifier_csharp">in</span> objects )
-{
-<span class="keyword keyword_control keyword_control_csharp">if</span>( !sets.ContainsKey( component.GetType() ) )
-{
-sets[ component.GetType() ] = <span class="keyword keyword_control keyword_control_csharp">new</span> ArrayList();
-}
-( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );
-}
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnGUI</span><span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">GUILayout</span>.BeginHorizontal( <span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.skin.GetStyle( &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Box</span>&quot; ) );<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.Label( &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Components in scene:</span>&quot; );<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace();</p>
-<span class="keyword keyword_control keyword_control_csharp">if</span>( <span class="support support_class support_class_unity">GUILayout</span>.Button( &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Refresh</span>&quot; ) )
-{
-UpdateList();
-}
-<span class="support support_class support_class_unity">GUILayout</span>.EndHorizontal();
-scrollPosition = <span class="support support_class support_class_unity">GUILayout</span>.BeginScrollView(scrollPosition);
-<span class="keyword keyword_control keyword_control_csharp">foreach</span>( System.Type type <span class="storage storage_modifier storage_modifier_csharp">in</span> sets.Keys )
-{
-<span class="support support_class support_class_unity">GUILayout</span>.Label( type.Name + &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;:</span>&quot; );
-<span class="keyword keyword_control keyword_control_csharp">foreach</span>( <span class="support support_class support_class_unity">GameObject</span> gameObject <span class="storage storage_modifier storage_modifier_csharp">in</span> ( ArrayList )sets[ type ] )
-{
-<span class="keyword keyword_control keyword_control_csharp">if</span>( <span class="support support_class support_class_unity">GUILayout</span>.Button( gameObject.name ) )
-{
-<span class="support support_class support_class_unity">Selection</span>.activeObject = gameObject;
-}
-}
-}
-<span class="support support_class support_class_unity">GUILayout</span>.EndScrollView();
-}
-<p>}</span></pre></p></p>
+	private Hashtable sets = new Hashtable();<br />
+	private Vector2 scrollPosition;</p>
+<p>[ MenuItem( &quot;Component/Component lister&quot; ) ]<br />
+	public static void Launch()<br />
+	{<br />
+		EditorWindow window = GetWindow( typeof( ComponentLister ) );<br />
+		window.Show();<br />
+	}</p>
+<p>public void UpdateList()<br />
+	{<br />
+		Object[] objects;</p>
+<p>sets.Clear();</p>
+<p>objects = FindObjectsOfType( typeof( Component ) );<br />
+		foreach( Component component in objects )<br />
+		{<br />
+			if( !sets.ContainsKey( component.GetType() ) )<br />
+			{<br />
+				sets[ component.GetType() ] = new ArrayList();<br />
+			}</p>
+<p>( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );<br />
+		}<br />
+	}</p>
+<p>public void OnGUI()<br />
+	{<br />
+		GUILayout.BeginHorizontal( <span class="caps">GUI</span>.skin.GetStyle( &quot;Box&quot; ) );<br />
+			GUILayout.Label( &quot;Components in scene:&quot; );<br />
+			GUILayout.FlexibleSpace();</p>
+<p>if( GUILayout.Button( &quot;Refresh&quot; ) )<br />
+			{<br />
+				UpdateList();<br />
+			}<br />
+		GUILayout.EndHorizontal();</p>
+<p>scrollPosition = GUILayout.BeginScrollView(scrollPosition);</p>
+<p>foreach( System.Type type in sets.Keys )<br />
+			{<br />
+				GUILayout.Label( type.Name + &quot;:&quot; );<br />
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )<br />
+				{<br />
+					if( GUILayout.Button( gameObject.name ) )<br />
+					{<br />
+						Selection.activeObject = gameObject;<br />
+					}<br />
+				}<br />
+			}</p>
+<p>GUILayout.EndScrollView();<br />
+	}<br />
+}</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
