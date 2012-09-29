@@ -1567,46 +1567,46 @@ public class Magnetic : MonoBehaviour
 				<description>&lt;p&gt;More stuff from the shadowy corners of my hard-drive. Don&amp;#8217;t remember the context, but someone needed to log every single piece of information available on a particular GameObject. I suppose this could be useful for end-user &amp;#8220;This GameObject Just Went Completely &lt;span class=&quot;caps&quot;&gt;FUBAR&lt;/span&gt;&amp;#8221;&amp;#8482; scenarios.&lt;/p&gt;
 &lt;p&gt;Anyway &amp;#8211; it has reflection in it which by definition makes it cool.&lt;/p&gt;
 &lt;p&gt;Le codez:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Reflection&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; Utilities&lt;br /&gt;
+&lt;script src='https://gist.github.com/3804730.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using System.Reflection;&lt;/p&gt;
+&lt;p&gt;public class Utilities&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;comment comment_block comment_block_csharp&quot;&gt;/* &amp;#8230; */&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;LogGameObject&lt;/span&gt;&lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject, &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; children &lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt;[] components = gameObject.GetComponents( &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; ) );&lt;br /&gt;
-        FieldInfo[] fields;&lt;br /&gt;
-        PropertyInfo[] properties;&lt;/p&gt;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log( gameObject.name + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;:&lt;/span&gt;&amp;quot; );
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; component &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; components )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt; &amp;#8211; &lt;/span&gt;&amp;quot; + component.GetType().Name + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;:&lt;/span&gt;&amp;quot; );
-fields = component.GetType().GetFields();
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( FieldInfo field &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; fields )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt; .&lt;/span&gt;&amp;quot; + field.Name + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt; = &lt;/span&gt;&amp;quot; + field.GetValue( component ) );
-}
-properties = component.GetType().GetProperties();
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( PropertyInfo property &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; properties )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt; .&lt;/span&gt;&amp;quot; + property.Name + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt; = &lt;/span&gt;&amp;quot; + property.GetGetMethod().Invoke( component, &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt; ) );
-}
-}
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt;( children )
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Transform&lt;/span&gt; transform &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; gameObject.transform )
-{
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log( &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;&amp;#8594;&lt;/span&gt;&amp;quot; );
-LogGameObject( transform.gameObject, children );
-}
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;LogGameObject&lt;/span&gt;&lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;( &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject &lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        LogGameObject( gameObject, &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;false&lt;/span&gt; );&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;span class=&quot;comment comment_block comment_block_csharp&quot;&gt;/* &amp;#8230; */&lt;/span&gt;
-&lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
+	/* &amp;#8230; */&lt;/p&gt;
+&lt;p&gt;static void LogGameObject( GameObject gameObject, bool children )&lt;br /&gt;
+	{&lt;br /&gt;
+		Component[] components = gameObject.GetComponents( typeof( Component ) );&lt;br /&gt;
+		FieldInfo[] fields;&lt;br /&gt;
+		PropertyInfo[] properties;&lt;/p&gt;
+&lt;p&gt;Debug.Log( gameObject.name + &amp;quot;:&amp;quot; );&lt;/p&gt;
+&lt;p&gt;foreach( Component component in components )&lt;br /&gt;
+		{&lt;br /&gt;
+			Debug.Log( &amp;quot; &amp;#8211; &amp;quot; + component.GetType().Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
+			fields = component.GetType().GetFields();&lt;br /&gt;
+			foreach( FieldInfo field in fields )&lt;br /&gt;
+			{&lt;br /&gt;
+				Debug.Log( &amp;quot; .&amp;quot; + field.Name + &amp;quot; = &amp;quot; + field.GetValue( component ) );&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;properties = component.GetType().GetProperties();&lt;br /&gt;
+			foreach( PropertyInfo property in properties )&lt;br /&gt;
+			{&lt;br /&gt;
+				Debug.Log( &amp;quot; .&amp;quot; + property.Name + &amp;quot; = &amp;quot; + property.GetGetMethod().Invoke( component, null ) );&lt;br /&gt;
+			}&lt;br /&gt;
+		}&lt;/p&gt;
+&lt;p&gt;if( children )&lt;br /&gt;
+		{&lt;br /&gt;
+			foreach( Transform transform in gameObject.transform )&lt;br /&gt;
+			{&lt;br /&gt;
+				Debug.Log( &amp;quot;-&amp;gt;&amp;quot; );&lt;br /&gt;
+				LogGameObject( transform.gameObject, children );&lt;br /&gt;
+			}&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;static void LogGameObject( GameObject gameObject )&lt;br /&gt;
+	{&lt;br /&gt;
+		LogGameObject( gameObject, false );&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;/* &amp;#8230; */&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>Thu Sep 17 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/09/17/logging-an-entire-gameobject/</link>
 			</item>
@@ -1882,6 +1882,93 @@ using System.Collections;&lt;/p&gt;
 	&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>
 				<link>http://angryant.com/2008/09/24/behave-02b/</link>
 			</item>
 			
