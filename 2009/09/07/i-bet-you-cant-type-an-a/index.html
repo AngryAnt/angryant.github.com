@@ -70,44 +70,42 @@
 				<span class="date">07 Sep 2009</span>
 				<h1 id="Top">I bet you can't type an A!</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>Keys got special meaning and shouldn&#8217;t be fed into parts of the <span class="caps">GUI</span>? This handy little snippet takes care of that job:</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;private&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;string&lt;/span&gt; text = "&lt;span class="string string_quoted string_quoted_double string_quoted_double_csharp"&gt;I bet you can't type an A!&lt;/span&gt;";
+<script src='https://gist.github.com/3804718.js?file='></script><div><noscript><pre><code>private string text = &amp;quot;I bet you can't type an A!&amp;quot;;
 
 
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;static &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;DisableKeys&lt;/span&gt;&lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;( &lt;span class="support support_class support_class_unity"&gt;KeyCode&lt;/span&gt;[] keys &lt;/span&gt;)&lt;/span&gt;
+static void DisableKeys( KeyCode[] keys )
 {
-    &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt;( !&lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.isKey )
-    {
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;return&lt;/span&gt;;
-    }
+	if( !Event.current.isKey )
+	{
+		return;
+	}
 
-    &lt;span class="keyword keyword_control keyword_control_csharp"&gt;foreach&lt;/span&gt;( &lt;span class="support support_class support_class_unity"&gt;KeyCode&lt;/span&gt; key &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;in&lt;/span&gt; keys )
-    {
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt;( &lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.keyCode == key )
-        {
-            &lt;span class="support support_class support_class_unity"&gt;Event&lt;/span&gt;.current.Use();
-        }
-    }
+	foreach( KeyCode key in keys )
+	{
+		if( Event.current.keyCode == key )
+		{
+			Event.current.Use();
+		}
+	}
 }
 
 
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;static &lt;/span&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;DisableKey&lt;/span&gt;&lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;( &lt;span class="support support_class support_class_unity"&gt;KeyCode&lt;/span&gt; key &lt;/span&gt;)&lt;/span&gt;
+static void DisableKey( KeyCode key )
 {
-    DisableKeys( &lt;span class="keyword keyword_control keyword_control_csharp"&gt;new&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;KeyCode&lt;/span&gt;[]{ key } );
+	DisableKeys( new KeyCode[]{ key } );
 }
 
 
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;&lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;OnGUI&lt;/span&gt;&lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
+void OnGUI()
 {
-    DisableKey( &lt;span class="support support_class support_class_unity"&gt;KeyCode&lt;/span&gt;.A );
-    text = &lt;span class="support support_class support_class_unity"&gt;GUILayout&lt;/span&gt;.TextArea( text );
-}&lt;/span&gt;</pre></p>
+	DisableKey( KeyCode.A );
+	text = GUILayout.TextArea( text );
+}</code></pre></noscript></div></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">

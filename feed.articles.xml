@@ -1616,40 +1616,40 @@ LogGameObject( transform.gameObject, children );
 			<item>
 				<title>I bet you can't type an A!</title>
 				<description>&lt;p&gt;Keys got special meaning and shouldn&amp;#8217;t be fed into parts of the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;? This handy little snippet takes care of that job:&lt;/p&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&amp;lt;span class=&quot;source source_csharp&quot;&amp;gt;&amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;private&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;string&amp;lt;/span&amp;gt; text = &quot;&amp;lt;span class=&quot;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&amp;gt;I bet you can't type an A!&amp;lt;/span&amp;gt;&quot;;
+&lt;script src='https://gist.github.com/3804718.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private string text = &amp;amp;quot;I bet you can't type an A!&amp;amp;quot;;
 
 
 
-&amp;lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&amp;gt;&amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;static &amp;lt;/span&amp;gt;&amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;void&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&amp;gt;DisableKeys&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&amp;gt;( &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;KeyCode&amp;lt;/span&amp;gt;[] keys &amp;lt;/span&amp;gt;)&amp;lt;/span&amp;gt;
+static void DisableKeys( KeyCode[] keys )
 {
-    &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;if&amp;lt;/span&amp;gt;( !&amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Event&amp;lt;/span&amp;gt;.current.isKey )
-    {
-        &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;return&amp;lt;/span&amp;gt;;
-    }
+	if( !Event.current.isKey )
+	{
+		return;
+	}
 
-    &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;foreach&amp;lt;/span&amp;gt;( &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;KeyCode&amp;lt;/span&amp;gt; key &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;in&amp;lt;/span&amp;gt; keys )
-    {
-        &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;if&amp;lt;/span&amp;gt;( &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Event&amp;lt;/span&amp;gt;.current.keyCode == key )
-        {
-            &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Event&amp;lt;/span&amp;gt;.current.Use();
-        }
-    }
+	foreach( KeyCode key in keys )
+	{
+		if( Event.current.keyCode == key )
+		{
+			Event.current.Use();
+		}
+	}
 }
 
 
 
-&amp;lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&amp;gt;&amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;static &amp;lt;/span&amp;gt;&amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;void&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&amp;gt;DisableKey&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&amp;gt;( &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;KeyCode&amp;lt;/span&amp;gt; key &amp;lt;/span&amp;gt;)&amp;lt;/span&amp;gt;
+static void DisableKey( KeyCode key )
 {
-    DisableKeys( &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;new&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;KeyCode&amp;lt;/span&amp;gt;[]{ key } );
+	DisableKeys( new KeyCode[]{ key } );
 }
 
 
 
-&amp;lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&amp;gt;&amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;void&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&amp;gt;OnGUI&amp;lt;/span&amp;gt;&amp;lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&amp;gt;(&amp;lt;/span&amp;gt;)&amp;lt;/span&amp;gt;
+void OnGUI()
 {
-    DisableKey( &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;KeyCode&amp;lt;/span&amp;gt;.A );
-    text = &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;GUILayout&amp;lt;/span&amp;gt;.TextArea( text );
-}&amp;lt;/span&amp;gt;&lt;/pre&gt;</description>
+	DisableKey( KeyCode.A );
+	text = GUILayout.TextArea( text );
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description>
 				<published>Mon Sep 07 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/09/07/i-bet-you-cant-type-an-a/</link>
 			</item>
@@ -1907,6 +1907,68 @@ using System.Collections;&lt;/p&gt;
 				<title>Behave pre-release</title>
 				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
 &lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
 &lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
 &lt;p&gt;Specs:&lt;/p&gt;
 &lt;ul&gt;
