@@ -14,7 +14,7 @@
 &lt;p&gt;I hope you find it useful.&lt;/p&gt;
 &lt;script src='https://gist.github.com/3798723.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil off&amp;amp;quot; with administrator privileges
 delay 5
-do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with administrator privileges&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;</description>
+do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with administrator privileges&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description>
 				<published>Fri Sep 28 00:00:00 +0200 2012</published>
 				<link>http://angryant.com/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/</link>
 			</item>
@@ -252,7 +252,7 @@ chdir (File::Spec-&amp;amp;gt;rel2abs (dirname($0)));
 
 our $compiler = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Mono/bin/gmcs&amp;amp;quot;;
 our $assemblyUnityEngine = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll&amp;amp;quot;;
-our $assemblyUnityEditor = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+our $assemblyUnityEditor = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Now, that was a bit of a mouthful, but it should be pretty straight-forward. Lines three through eight include a lot of perl functionality we will be using later. And actually the last two ones are already used in line nine. Here we&amp;#8217;re ensuring that the rest of the script is being executed in the context of the folder containing the file.&lt;/p&gt;
 &lt;p&gt;In the next few lines of interest, three variables are declared &amp;#8211; pathes to the mono compiler shipped with Unity and the UnityEngine and UnityEditor assemblies. Notice that these are OS X pathes, for a windows setup (or if you installed Unity into a different folder than the default), you&amp;#8217;ll need to correct these.&lt;/p&gt;
 &lt;h2&gt;Debug command-line parameter&lt;/h2&gt;
@@ -261,14 +261,14 @@ our $assemblyUnityEditor = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/
 
 GetOptions (
 	&amp;amp;quot;release&amp;amp;quot; =&amp;amp;gt; \$optionRelease
-);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;We declare a variable named optionRelease, initialize it to zero and then call GetOptions, telling it to pass data on the use of the &amp;#8220;release&amp;#8221; parameter into our variable. Now, GetOptions has a bunch of functionality, but the way we use it here, it simply assigns one or zero to our variable &amp;#8211; depending on whether the parameter is used or not.&lt;/p&gt;
 &lt;p&gt;Next up, we need to use this variable to affect the parameters we pass to the gmcs compiler. Like so:&lt;/p&gt;
-&lt;script src='https://gist.github.com/3165387.js?file=build-3.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $debugOptions = $optionRelease == 0 ? &amp;amp;quot;-d:DEBUG&amp;amp;quot; : &amp;amp;quot;&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3165387.js?file=build-3.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $debugOptions = $optionRelease == 0 ? &amp;amp;quot;-d:DEBUG&amp;amp;quot; : &amp;amp;quot;&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;The idea here is that gmcs takes a parameter -d:[name] which instructs it to, during pre-processing, run with the symbol [name] defined. Something we can work with in our code like this:&lt;/p&gt;
 &lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-1.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#if DEBUG
 	Debug.Log (&amp;amp;quot;I'm only visible in debug builds!&amp;amp;quot;);
-#endif&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+#endif&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;h2&gt;Building two assemblies&lt;/h2&gt;
 &lt;p&gt;Next up, a bit of info. Since Unity 3, we&amp;#8217;ve enforced that scripts and assembly depending on UnityEditor, even if not using that, cannot be included in builds. This means that if you have some editor scripts, you would also like built to assembly, you will need to split these out into a different assembly than the one containing your runtime scripts.&lt;/p&gt;
 &lt;p&gt;Lets&amp;#8217;s assume that is the case for this exercise, that the runtime scripts are located in Source/ and that the editor scripts are located in Source/Editor. So we will have to build two assemblies. That could mean code duplication, which should cause anyone pain, so let&amp;#8217;s be nice and wrap some of the building up in a perl subroutine:&lt;/p&gt;
@@ -286,18 +286,18 @@ GetOptions (
 	print color (&amp;amp;quot;red&amp;amp;quot;);
 	system (&amp;amp;quot;$compiler -target:$target -out:$out $arguments $source&amp;amp;quot;) and die (&amp;amp;quot;Compilation of $out failed.&amp;amp;quot;);
 	print color (&amp;amp;quot;reset&amp;amp;quot;);
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Let&amp;#8217;s take this subroutine line by line. First off we pull in the global variable &amp;#8220;compiler&amp;#8221;. After this, we populate the variables target, out, arguments and source from subroutine parameters. With these at hand, the fun begins. First off, we print out the name of our build target (MyAwesome.dll) and the command we&amp;#8217;re planning to execute &amp;#8211; marked in fashionable blue.&lt;/p&gt;
 &lt;p&gt;Second we actually do the building &amp;#8211; colouring any compiler output red (no news is good news &amp;#8211; output is bad). If compilation fails, we kill the script &amp;#8211; allowing the user to take action. If all went well, we remember to reset the colouring before returning from the subroutine.&lt;/p&gt;
 &lt;p&gt;So how about some use of this subroutine, eh?&lt;/p&gt;
 &lt;script src='https://gist.github.com/3165387.js?file=build-5.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Runtime.dll&amp;amp;quot;, &amp;amp;quot;Source/*.cs&amp;amp;quot;, &amp;amp;quot;-d:RUNTIME $debugOptions -r:$assemblyUnityEngine&amp;amp;quot;);
-BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Editor.dll&amp;amp;quot;, &amp;amp;quot;Source/Editor/*.cs&amp;amp;quot;, &amp;amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Editor.dll&amp;amp;quot;, &amp;amp;quot;Source/Editor/*.cs&amp;amp;quot;, &amp;amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;As you see, we first build the runtime assembly from Source/*.cs, with the &lt;span class=&quot;caps&quot;&gt;RUNTIME&lt;/span&gt; and optionally the &lt;span class=&quot;caps&quot;&gt;DEBUG&lt;/span&gt; symbol defined. We also make sure to include the UnityEngine assembly in the building, so that you can reference stuff from the UnityEngine namespace.&lt;/p&gt;
 &lt;p&gt;In the second line, we build the editor assembly &amp;#8211; containing all our editor code from Source/Editor/*.cs. This time we define the &lt;span class=&quot;caps&quot;&gt;EDITOR&lt;/span&gt; and optionally the &lt;span class=&quot;caps&quot;&gt;DEBUG&lt;/span&gt; symbol during building. This assembly references not only the UnityEngine assembly, but also the UnityEditor one and the runtime assembly which was just built in the line above.&lt;/p&gt;
 &lt;h2&gt;Distribution&lt;/h2&gt;
 &lt;p&gt;And that&amp;#8217;s about it! As mentioned early in this post, all you need to do in order to include these assemblies in your project is to drag them into your assets folder, but if you&amp;#8217;re very nice, you could just make that copy a part of the build script:&lt;/p&gt;
 &lt;script src='https://gist.github.com/3165387.js?file=build-6.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;system (&amp;amp;quot;cp Awesomenessness.Runtime.dll Test\\ project/Assets/Awesomenessness&amp;amp;quot;);
-system (&amp;amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+system (&amp;amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Notice that this uses the OS X cp command-line tool. For windows, replace with equivalent.&lt;/p&gt;
 &lt;h2&gt;Limitation: Editor classes in assemblies&lt;/h2&gt;
 &lt;p&gt;While MonoBehaviours can live just fine in assemblies, editor scripts (ScriptableObject derived classes) come with a limitation (currently still active, as of Unity 3.1): You can not initialize these classes via UnityEditor &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; calls. That would be calls like ScriptableObject.CreateInstance and EditorWindow.GetWindow.&lt;/p&gt;
@@ -351,9 +351,9 @@ public static Texture2D GetTextureResource (string resourceName, Assembly assemb
 public static Texture2D GetTextureResource (string resourceName)
 {
 	return GetTextureResource (resourceName, null);
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Given that you added &amp;#8220;-resource:path/to/Logo.png&amp;#8221; to your gmcs build command, you will with the above utility methods be able to fetch that into a texture like so:&lt;/p&gt;
-&lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;Texture2D logoTexture = GetTextureResource (&amp;amp;quot;Logo.png&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;Texture2D logoTexture = GetTextureResource (&amp;amp;quot;Logo.png&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Well, I hope you guys found some of this useful! I&amp;#8217;ll see if I can&amp;#8217;t do a follow-up on how to do this in MonoDevelop.&lt;/p&gt;</description>
 				<published>Wed Feb 02 00:00:00 +0100 2011</published>
 				<link>http://angryant.com/2011/02/02/assembling-and-assimilating/</link>
@@ -825,7 +825,7 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 		return ActiveSelection == gameObject;&lt;br /&gt;
 	}&lt;br /&gt;
 }&lt;br /&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And the promised MonoBehaviour using the SelectionManager class:&lt;br /&gt;
 &lt;script src='https://gist.github.com/3804386.js?file=SelectableObject.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
 &lt;p&gt;public class SelectableObject : MonoBehaviour&lt;br /&gt;
@@ -856,7 +856,7 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 		&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.DragWindow ();&lt;br /&gt;
 	}&lt;br /&gt;
 }&lt;br /&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:&lt;br /&gt;
 &lt;a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Wed Mar 10 00:00:00 +0100 2010</published>
@@ -876,7 +876,7 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 		yield return 0;
 	}
 	m_Alpha = 1.0f;
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;However, as Rodrigo recently brought to my attention, this approach ofcourse performs unneeded memory allocation, given that the zero needs boxing and unboxing before its passed to the coroutine system. Using null in stead saves you that work and allocation.&lt;/p&gt;
 &lt;p&gt;This might not seem like a lot at first glance, but if you make this a habit every time you need to yield for a frame, I guarantee you that you&amp;#8217;ll see results in larger scenarios.&lt;/p&gt;
 &lt;p&gt;The more optimal way of yielding for a single frame in C#. Minor difference, but allocation saved &amp;#8211; which is always awesome:&lt;/p&gt;
@@ -888,7 +888,7 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 		yield return null;
 	}
 	m_Alpha = 1.0f;
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;An interesting test could be to, on a larger co-routine heavy project, do a project-wide find and replace on &amp;#8220;yield return 0;&amp;#8221; and &amp;#8220;yield return null;&amp;#8221; back and forth and measuring the performance difference with the profiler (for non-pro users, maybe the performance gain is even measurable using external monitoring tools).&lt;/p&gt;</description>
 				<published>Thu Jan 14 00:00:00 +0100 2010</published>
 				<link>http://angryant.com/2010/01/14/optimising-coroutine-yielding-in-c/</link>
@@ -1285,7 +1285,7 @@ public class Magnetic : MonoBehaviour
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere (transform.position + m_Position, m_Radius);
 	}
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;</description>
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description>
 				<published>Sun Oct 04 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/10/04/magnetic/</link>
 			</item>
@@ -1951,6 +1951,24 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
 &lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
 &lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>ugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
 &lt;p&gt;Dig in!&lt;/p&gt;</description>
 				<published>Sat Apr 05 00:00:00 +0200 2008</published>
 				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>

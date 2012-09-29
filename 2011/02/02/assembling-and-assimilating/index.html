@@ -95,7 +95,7 @@ chdir (File::Spec-&amp;gt;rel2abs (dirname($0)));
 
 our $compiler = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Mono/bin/gmcs&amp;quot;;
 our $assemblyUnityEngine = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll&amp;quot;;
-our $assemblyUnityEditor = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll&amp;quot;;</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+our $assemblyUnityEditor = &amp;quot;/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll&amp;quot;;</code></pre></noscript></div>
 <p>Now, that was a bit of a mouthful, but it should be pretty straight-forward. Lines three through eight include a lot of perl functionality we will be using later. And actually the last two ones are already used in line nine. Here we&#8217;re ensuring that the rest of the script is being executed in the context of the folder containing the file.</p>
 <p>In the next few lines of interest, three variables are declared &#8211; pathes to the mono compiler shipped with Unity and the UnityEngine and UnityEditor assemblies. Notice that these are OS X pathes, for a windows setup (or if you installed Unity into a different folder than the default), you&#8217;ll need to correct these.</p>
 <h2>Debug command-line parameter</h2>
@@ -104,14 +104,14 @@ our $assemblyUnityEditor = &amp;quot;/Applications/Unity/Unity.app/Contents/Fram
 
 GetOptions (
 	&amp;quot;release&amp;quot; =&amp;gt; \$optionRelease
-);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+);</code></pre></noscript></div>
 <p>We declare a variable named optionRelease, initialize it to zero and then call GetOptions, telling it to pass data on the use of the &#8220;release&#8221; parameter into our variable. Now, GetOptions has a bunch of functionality, but the way we use it here, it simply assigns one or zero to our variable &#8211; depending on whether the parameter is used or not.</p>
 <p>Next up, we need to use this variable to affect the parameters we pass to the gmcs compiler. Like so:</p>
-<script src='https://gist.github.com/3165387.js?file=build-3.pl'></script><div><noscript><pre><code>my $debugOptions = $optionRelease == 0 ? &amp;quot;-d:DEBUG&amp;quot; : &amp;quot;&amp;quot;;</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<script src='https://gist.github.com/3165387.js?file=build-3.pl'></script><div><noscript><pre><code>my $debugOptions = $optionRelease == 0 ? &amp;quot;-d:DEBUG&amp;quot; : &amp;quot;&amp;quot;;</code></pre></noscript></div>
 <p>The idea here is that gmcs takes a parameter -d:[name] which instructs it to, during pre-processing, run with the symbol [name] defined. Something we can work with in our code like this:</p>
 <script src='https://gist.github.com/3165387.js?file=AssemblyTest-1.cs'></script><div><noscript><pre><code>#if DEBUG
 	Debug.Log (&amp;quot;I'm only visible in debug builds!&amp;quot;);
-#endif</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+#endif</code></pre></noscript></div>
 <h2>Building two assemblies</h2>
 <p>Next up, a bit of info. Since Unity 3, we&#8217;ve enforced that scripts and assembly depending on UnityEditor, even if not using that, cannot be included in builds. This means that if you have some editor scripts, you would also like built to assembly, you will need to split these out into a different assembly than the one containing your runtime scripts.</p>
 <p>Lets&#8217;s assume that is the case for this exercise, that the runtime scripts are located in Source/ and that the editor scripts are located in Source/Editor. So we will have to build two assemblies. That could mean code duplication, which should cause anyone pain, so let&#8217;s be nice and wrap some of the building up in a perl subroutine:</p>
@@ -129,18 +129,18 @@ GetOptions (
 	print color (&amp;quot;red&amp;quot;);
 	system (&amp;quot;$compiler -target:$target -out:$out $arguments $source&amp;quot;) and die (&amp;quot;Compilation of $out failed.&amp;quot;);
 	print color (&amp;quot;reset&amp;quot;);
-}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+}</code></pre></noscript></div>
 <p>Let&#8217;s take this subroutine line by line. First off we pull in the global variable &#8220;compiler&#8221;. After this, we populate the variables target, out, arguments and source from subroutine parameters. With these at hand, the fun begins. First off, we print out the name of our build target (MyAwesome.dll) and the command we&#8217;re planning to execute &#8211; marked in fashionable blue.</p>
 <p>Second we actually do the building &#8211; colouring any compiler output red (no news is good news &#8211; output is bad). If compilation fails, we kill the script &#8211; allowing the user to take action. If all went well, we remember to reset the colouring before returning from the subroutine.</p>
 <p>So how about some use of this subroutine, eh?</p>
 <script src='https://gist.github.com/3165387.js?file=build-5.pl'></script><div><noscript><pre><code>BuildAssembly (&amp;quot;library&amp;quot;, &amp;quot;Awesomenessness.Runtime.dll&amp;quot;, &amp;quot;Source/*.cs&amp;quot;, &amp;quot;-d:RUNTIME $debugOptions -r:$assemblyUnityEngine&amp;quot;);
-BuildAssembly (&amp;quot;library&amp;quot;, &amp;quot;Awesomenessness.Editor.dll&amp;quot;, &amp;quot;Source/Editor/*.cs&amp;quot;, &amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+BuildAssembly (&amp;quot;library&amp;quot;, &amp;quot;Awesomenessness.Editor.dll&amp;quot;, &amp;quot;Source/Editor/*.cs&amp;quot;, &amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;quot;);</code></pre></noscript></div>
 <p>As you see, we first build the runtime assembly from Source/*.cs, with the <span class="caps">RUNTIME</span> and optionally the <span class="caps">DEBUG</span> symbol defined. We also make sure to include the UnityEngine assembly in the building, so that you can reference stuff from the UnityEngine namespace.</p>
 <p>In the second line, we build the editor assembly &#8211; containing all our editor code from Source/Editor/*.cs. This time we define the <span class="caps">EDITOR</span> and optionally the <span class="caps">DEBUG</span> symbol during building. This assembly references not only the UnityEngine assembly, but also the UnityEditor one and the runtime assembly which was just built in the line above.</p>
 <h2>Distribution</h2>
 <p>And that&#8217;s about it! As mentioned early in this post, all you need to do in order to include these assemblies in your project is to drag them into your assets folder, but if you&#8217;re very nice, you could just make that copy a part of the build script:</p>
 <script src='https://gist.github.com/3165387.js?file=build-6.pl'></script><div><noscript><pre><code>system (&amp;quot;cp Awesomenessness.Runtime.dll Test\\ project/Assets/Awesomenessness&amp;quot;);
-system (&amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+system (&amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;quot;);</code></pre></noscript></div>
 <p>Notice that this uses the OS X cp command-line tool. For windows, replace with equivalent.</p>
 <h2>Limitation: Editor classes in assemblies</h2>
 <p>While MonoBehaviours can live just fine in assemblies, editor scripts (ScriptableObject derived classes) come with a limitation (currently still active, as of Unity 3.1): You can not initialize these classes via UnityEditor <span class="caps">API</span> calls. That would be calls like ScriptableObject.CreateInstance and EditorWindow.GetWindow.</p>
@@ -194,9 +194,9 @@ public static Texture2D GetTextureResource (string resourceName, Assembly assemb
 public static Texture2D GetTextureResource (string resourceName)
 {
 	return GetTextureResource (resourceName, null);
-}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+}</code></pre></noscript></div>
 <p>Given that you added &#8220;-resource:path/to/Logo.png&#8221; to your gmcs build command, you will with the above utility methods be able to fetch that into a texture like so:</p>
-<script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'></script><div><noscript><pre><code>Texture2D logoTexture = GetTextureResource (&amp;quot;Logo.png&amp;quot;);</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'></script><div><noscript><pre><code>Texture2D logoTexture = GetTextureResource (&amp;quot;Logo.png&amp;quot;);</code></pre></noscript></div>
 <p>Well, I hope you guys found some of this useful! I&#8217;ll see if I can&#8217;t do a follow-up on how to do this in MonoDevelop.</p></p>
 					<p>&nbsp;</p>
 

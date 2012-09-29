@@ -56,21 +56,10 @@ h3
 {
 	font-size: 30pt;
 }
-.gistspacer
-{
-	height: 300px;
-}
 .gist
 {
-	height: 300px;
-	max-height: 300px;
-	overflow: auto;
-
 	color: black;
-	position: absolute;
-	margin-left: -150px;
-	left: 50%;
-	right: 0pt;
+	width: 100%;
 }
 #site
 {

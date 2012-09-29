@@ -80,7 +80,7 @@
 		yield return 0;
 	}
 	m_Alpha = 1.0f;
-}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+}</code></pre></noscript></div>
 <p>However, as Rodrigo recently brought to my attention, this approach ofcourse performs unneeded memory allocation, given that the zero needs boxing and unboxing before its passed to the coroutine system. Using null in stead saves you that work and allocation.</p>
 <p>This might not seem like a lot at first glance, but if you make this a habit every time you need to yield for a frame, I guarantee you that you&#8217;ll see results in larger scenarios.</p>
 <p>The more optimal way of yielding for a single frame in C#. Minor difference, but allocation saved &#8211; which is always awesome:</p>
@@ -92,7 +92,7 @@
 		yield return null;
 	}
 	m_Alpha = 1.0f;
-}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+}</code></pre></noscript></div>
 <p>An interesting test could be to, on a larger co-routine heavy project, do a project-wide find and replace on &#8220;yield return 0;&#8221; and &#8220;yield return null;&#8221; back and forth and measuring the performance difference with the profiler (for non-pro users, maybe the performance gain is even measurable using external monitoring tools).</p></p>
 					<p>&nbsp;</p>
 
