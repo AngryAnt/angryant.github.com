@@ -783,79 +783,80 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 &lt;p&gt;In the given example, I&amp;#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.&lt;/p&gt;
 &lt;p&gt;First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&amp;#8217;ve simply put it right after the MonoBehaviour used for testing it.&lt;/p&gt;
 &lt;p&gt;SelectionManager&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; SelectionManager&lt;br /&gt;
+&lt;script src='https://gist.github.com/3804386.js?file=SelectionManager.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;p&gt;public class SelectionManager&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; s_ActiveSelection;&lt;/p&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; ActiveSelection
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; s_ActiveSelection;
-}
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;set&lt;/span&gt;
-{
-s_ActiveSelection = &lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;value&lt;/span&gt;;
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Select&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject, &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; selectionValue&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (selectionValue)&lt;br /&gt;
-        {&lt;br /&gt;
-            Select (gameObject);&lt;br /&gt;
-        }&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;else&lt;/span&gt;&lt;br /&gt;
-        {&lt;br /&gt;
-            Deselect (gameObject);&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Select&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        ActiveSelection = gameObject;&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Deselect&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (ActiveSelection == gameObject)&lt;br /&gt;
-        {&lt;br /&gt;
-            ActiveSelection = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;;&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;IsSelected&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GameObject&lt;/span&gt; gameObject&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; ActiveSelection == gameObject;&lt;br /&gt;
-    }&lt;br /&gt;
-}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	private static GameObject s_ActiveSelection;&lt;/p&gt;
+&lt;p&gt;public static GameObject ActiveSelection&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return s_ActiveSelection;&lt;br /&gt;
+		}&lt;br /&gt;
+		set&lt;br /&gt;
+		{&lt;br /&gt;
+			s_ActiveSelection = value;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public static void Select (GameObject gameObject, bool selectionValue)&lt;br /&gt;
+	{&lt;br /&gt;
+		if (selectionValue)&lt;br /&gt;
+		{&lt;br /&gt;
+			Select (gameObject);&lt;br /&gt;
+		}&lt;br /&gt;
+		else&lt;br /&gt;
+		{&lt;br /&gt;
+			Deselect (gameObject);&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public static void Select (GameObject gameObject)&lt;br /&gt;
+	{&lt;br /&gt;
+		ActiveSelection = gameObject;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public static void Deselect (GameObject gameObject)&lt;br /&gt;
+	{&lt;br /&gt;
+		if (ActiveSelection == gameObject)&lt;br /&gt;
+		{&lt;br /&gt;
+			ActiveSelection = null;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public static bool IsSelected (GameObject gameObject)&lt;br /&gt;
+	{&lt;br /&gt;
+		return ActiveSelection == gameObject;&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;br /&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And the promised MonoBehaviour using the SelectionManager class:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; SelectableObject : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;MonoBehaviour&lt;/span&gt;&lt;br /&gt;
+&lt;script src='https://gist.github.com/3804386.js?file=SelectableObject.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;p&gt;public class SelectableObject : MonoBehaviour&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Rect&lt;/span&gt; m_SelectionWindowRect = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Rect&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;300.0f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;100.0f&lt;/span&gt;);&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnMouseDown&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnDisable&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        SelectionManager.Deselect (gameObject);&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Update&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        renderer.material.color = SelectionManager.IsSelected (gameObject) ? &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt;.green : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt;.white;&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (SelectionManager.IsSelected (gameObject))&lt;br /&gt;
-        {&lt;br /&gt;
-            m_SelectionWindowRect = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;SelectionWindow&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;int&lt;/span&gt; id&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Box (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;I am the selection and my name is &lt;/span&gt;&amp;quot; + gameObject.name);&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.DragWindow ();&lt;br /&gt;
-    }&lt;br /&gt;
-}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
-&lt;hr&gt;
+	public Rect m_SelectionWindowRect = new Rect (10.0f, 10.0f, 300.0f, 100.0f);&lt;/p&gt;
+&lt;p&gt;public void OnMouseDown ()&lt;br /&gt;
+	{&lt;br /&gt;
+		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnDisable ()&lt;br /&gt;
+	{&lt;br /&gt;
+		SelectionManager.Deselect (gameObject);&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void Update ()&lt;br /&gt;
+	{&lt;br /&gt;
+		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		if (SelectionManager.IsSelected (gameObject))&lt;br /&gt;
+		{&lt;br /&gt;
+			m_SelectionWindowRect = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void SelectionWindow (int id)&lt;br /&gt;
+	{&lt;br /&gt;
+		GUILayout.Box (&amp;quot;I am the selection and my name is &amp;quot; + gameObject.name);&lt;br /&gt;
+		&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.DragWindow ();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;br /&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:&lt;br /&gt;
 &lt;a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
 				<published>Wed Mar 10 00:00:00 +0100 2010</published>
@@ -1799,6 +1800,176 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 				<description>&lt;p&gt;Arges from the unity community has been keeping busy. His latest tutorial goes more in-depth with Behave and unity, providing an interesting and useful example to work with.&lt;/p&gt;
 &lt;p&gt;Have a read at &lt;a href=&quot;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&quot;&gt;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Wed Dec 17 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Community tutorial</title>
+				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Sun Nov 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New tutorial</title>
+				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Fri Nov 28 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>First tutorial available</title>
+				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Tue Nov 04 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Optimised the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour&lt;/li&gt;
+		&lt;li&gt;When a compile fails, the Behave compiler is locked and unusable &amp;#8211; requiring a unity relaunch&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Implemented the following wishlist items:
+	&lt;ul&gt;
+		&lt;li&gt;Behaviour tree decorators&lt;/li&gt;
+		&lt;li&gt;Stand-alone edition of the Behave editor&lt;/li&gt;
+		&lt;li&gt;Behaviour tree debugging features&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Sun Nov 02 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/02/behave-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>unite '08 open-mic session</title>
+				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
+				<published>Sat Oct 25 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.2b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
+	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
+		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>	<published>Wed Dec 17 00:00:00 +0100 2008</published>
 				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
 			</item>
 			
