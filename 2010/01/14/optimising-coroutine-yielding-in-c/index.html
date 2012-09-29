@@ -70,32 +70,30 @@
 				<span class="date">14 Jan 2010</span>
 				<h1 id="Top">Optimising coroutine yielding in C#</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
-					<p class="post"><p>When needing to yield a coroutine for a single frame in C#, most people &#8211; including myself usually go about it this way:<br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_definition meta_definition_method meta_definition_method_csharp"><span class="storage storage_modifier storage_modifier_csharp">private </span><span class="storage storage_type storage_type_csharp">IEnumerator</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">DoFadeAlphaIn</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-{<br />
-    <span class="keyword keyword_control keyword_control_csharp">while</span> (m_Alpha &lt; <span class="constant constant_numeric constant_numeric_csharp">1.0f</span>)<br />
-    {<br />
-        m_Alpha += <span class="support support_class support_class_unity">Time</span>.deltaTime;<br />
-        <span class="keyword keyword_other keyword_other_csharp">yield</span> <span class="keyword keyword_control keyword_control_csharp">return</span> <span class="constant constant_numeric constant_numeric_csharp">0</span>;<br />
-    }<br />
-    m_Alpha = <span class="constant constant_numeric constant_numeric_csharp">1.0f</span>;<br />
-}</span></pre><br />
-However, as Rodrigo recently brought to my attention, this approach ofcourse performs unneeded memory allocation, given that the zero needs boxing and unboxing before its passed to the coroutine system. Using null in stead saves you that work and allocation.</p>
+					<p class="post"><p>When needing to yield a coroutine for a single frame in C#, most people &#8211; including myself usually go about it this way:</p>
+<script src='https://gist.github.com/3804418.js?file=Zero.cs'></script><div><noscript><pre><code>private IEnumerator DoFadeAlphaIn ()
+{
+	while (m_Alpha &amp;lt; 1.0f)
+	{
+		m_Alpha += Time.deltaTime;
+		yield return 0;
+	}
+	m_Alpha = 1.0f;
+}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>However, as Rodrigo recently brought to my attention, this approach ofcourse performs unneeded memory allocation, given that the zero needs boxing and unboxing before its passed to the coroutine system. Using null in stead saves you that work and allocation.</p>
 <p>This might not seem like a lot at first glance, but if you make this a habit every time you need to yield for a frame, I guarantee you that you&#8217;ll see results in larger scenarios.</p>
-<p>The more optimal way of yielding for a single frame in C#. Minor difference, but allocation saved &#8211; which is always awesome:<br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_definition meta_definition_method meta_definition_method_csharp"><span class="storage storage_modifier storage_modifier_csharp">private </span><span class="storage storage_type storage_type_csharp">IEnumerator</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">DoFadeAlphaIn</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-{<br />
-    <span class="keyword keyword_control keyword_control_csharp">while</span> (m_Alpha &lt; <span class="constant constant_numeric constant_numeric_csharp">1.0f</span>)<br />
-    {<br />
-        m_Alpha += <span class="support support_class support_class_unity">Time</span>.deltaTime;<br />
-        <span class="keyword keyword_other keyword_other_csharp">yield</span> <span class="keyword keyword_control keyword_control_csharp">return</span> <span class="constant constant_language constant_language_csharp">null</span>;<br />
-    }<br />
-    m_Alpha = <span class="constant constant_numeric constant_numeric_csharp">1.0f</span>;<br />
-}</span></pre><br />
-An interesting test could be to, on a larger co-routine heavy project, do a project-wide find and replace on &#8220;yield return 0;&#8221; and &#8220;yield return null;&#8221; back and forth and measuring the performance difference with the profiler (for non-pro users, maybe the performance gain is even measurable using external monitoring tools).</p></p>
+<p>The more optimal way of yielding for a single frame in C#. Minor difference, but allocation saved &#8211; which is always awesome:</p>
+<script src='https://gist.github.com/3804418.js?file=Null.cs'></script><div><noscript><pre><code>private IEnumerator DoFadeAlphaIn ()
+{
+	while (m_Alpha &amp;lt; 1.0f)
+	{
+		m_Alpha += Time.deltaTime;
+		yield return null;
+	}
+	m_Alpha = 1.0f;
+}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p>
+<p>An interesting test could be to, on a larger co-routine heavy project, do a project-wide find and replace on &#8220;yield return 0;&#8221; and &#8220;yield return null;&#8221; back and forth and measuring the performance difference with the profiler (for non-pro users, maybe the performance gain is even measurable using external monitoring tools).</p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
