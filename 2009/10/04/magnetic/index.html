@@ -70,51 +70,48 @@
 				<span class="date">04 Oct 2009</span>
 				<h1 id="Top">Magnetic</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>You know how Little Big Planet, Kingdom Hearts and similar have various pickups move towards your character when you get up close? Yea I also find that&#8217;s a nice bit of polish.</p>
-<p>One way of getting that up and running in Unity is via the code below. Setup:<br />
-<ol><br />
-<li>Add all objects you want to get attracted to the player to a special layer.</li><br />
-<li>Attach the script below to your player.</li><br />
-<li>Set the layer mask on the component to include the layer from step one.</li><br />
-<li>Tweak, play, repeat.</li></p>
-<p></ol>&nbsp;</p>
-<p>Magnetic.cs:</p>
-<pre class="textmate-source idle">&lt;span class="source source_csharp"&gt;&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;
-&lt;span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"&gt;&lt;span class="keyword keyword_other keyword_other_using"&gt;using&lt;/span&gt; &lt;span class="entity entity_name entity_name_package entity_name_package_csharp"&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;
+<p>One way of getting that up and running in Unity is via the code below. Setup:</p>
+<ol>
+	<li>Add all objects you want to get attracted to the player to a special layer.</li>
+	<li>Attach the script below to your player.</li>
+	<li>Set the layer mask on the component to include the layer from step one.</li>
+	<li>Tweak, play, repeat.</li>
+</ol>
+<script src='https://gist.github.com/3804429.js?file='></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
 
-&lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;class&lt;/span&gt; Magnetic : &lt;span class="support support_class support_class_unity"&gt;MonoBehaviour&lt;/span&gt;
+public class Magnetic : MonoBehaviour
 {
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;LayerMask&lt;/span&gt; m_MagneticLayers;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="support support_class support_class_unity"&gt;Vector3&lt;/span&gt; m_Position;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;float&lt;/span&gt; m_Radius;
-    &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;public&lt;/span&gt; &lt;span class="storage storage_type storage_type_csharp"&gt;float&lt;/span&gt; m_Force;
+	public LayerMask m_MagneticLayers;
+	public Vector3 m_Position;
+	public float m_Radius;
+	public float m_Force;
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;FixedUpdate&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        &lt;span class="support support_class support_class_unity"&gt;Collider&lt;/span&gt;[] colliders;
-        &lt;span class="support support_class support_class_unity"&gt;Rigidbody&lt;/span&gt; rigidbody;
+	void FixedUpdate ()
+	{
+		Collider[] colliders;
+		Rigidbody rigidbody;
 
-        colliders = &lt;span class="support support_class support_class_unity"&gt;Physics&lt;/span&gt;.OverlapSphere (transform.position + m_Position, m_Radius, m_MagneticLayers);
-        &lt;span class="keyword keyword_control keyword_control_csharp"&gt;foreach&lt;/span&gt; (&lt;span class="support support_class support_class_unity"&gt;Collider&lt;/span&gt; collider &lt;span class="storage storage_modifier storage_modifier_csharp"&gt;in&lt;/span&gt; colliders)
-        {
-            rigidbody = (&lt;span class="support support_class support_class_unity"&gt;Rigidbody&lt;/span&gt;) collider.gameObject.GetComponent (&lt;span class="keyword keyword_operator keyword_operator_csharp"&gt;typeof&lt;/span&gt; (&lt;span class="support support_class support_class_unity"&gt;Rigidbody&lt;/span&gt;));
-            &lt;span class="keyword keyword_control keyword_control_csharp"&gt;if&lt;/span&gt; (rigidbody == &lt;span class="constant constant_language constant_language_csharp"&gt;null&lt;/span&gt;)
-            {
-                &lt;span class="keyword keyword_control keyword_control_csharp"&gt;continue&lt;/span&gt;;
-            }
-            rigidbody.AddExplosionForce (m_Force * -&lt;span class="constant constant_numeric constant_numeric_csharp"&gt;1&lt;/span&gt;, transform.position + m_Position, m_Radius);
-        }
-    }
+		colliders = Physics.OverlapSphere (transform.position + m_Position, m_Radius, m_MagneticLayers);
+		foreach (Collider collider in colliders)
+		{
+			rigidbody = (Rigidbody) collider.gameObject.GetComponent (typeof (Rigidbody));
+			if (rigidbody == null)
+			{
+				continue;
+			}
+			rigidbody.AddExplosionForce (m_Force * -1, transform.position + m_Position, m_Radius);
+		}
+	}
 
-&lt;span class="meta meta_definition meta_definition_method meta_definition_method_csharp"&gt;    &lt;span class="storage storage_type storage_type_csharp"&gt;void&lt;/span&gt; &lt;span class="entity entity_name entity_name_function entity_name_function_csharp"&gt;OnDrawGizmosSelected&lt;/span&gt; &lt;span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp"&gt;(&lt;/span&gt;)&lt;/span&gt;
-    {
-        &lt;span class="support support_class support_class_unity"&gt;Gizmos&lt;/span&gt;.color = &lt;span class="support support_class support_class_unity"&gt;Color&lt;/span&gt;.red;
-        &lt;span class="support support_class support_class_unity"&gt;Gizmos&lt;/span&gt;.DrawWireSphere (transform.position + m_Position, m_Radius);
-    }
-}&lt;/span&gt;</pre></p>
+	void OnDrawGizmosSelected ()
+	{
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere (transform.position + m_Position, m_Radius);
+	}
+}</code></pre></noscript><p></div><div class='gistspacer'>&nbsp;</div></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">

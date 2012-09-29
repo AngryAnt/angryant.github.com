@@ -1246,47 +1246,46 @@ OnCopyInspectorGUI ();
 			<item>
 				<title>Magnetic</title>
 				<description>&lt;p&gt;You know how Little Big Planet, Kingdom Hearts and similar have various pickups move towards your character when you get up close? Yea I also find that&amp;#8217;s a nice bit of polish.&lt;/p&gt;
-&lt;p&gt;One way of getting that up and running in Unity is via the code below. Setup:&lt;br /&gt;
-&lt;ol&gt;&lt;br /&gt;
-&lt;li&gt;Add all objects you want to get attracted to the player to a special layer.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Attach the script below to your player.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Set the layer mask on the component to include the layer from step one.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Tweak, play, repeat.&lt;/li&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/ol&gt;&amp;nbsp;&lt;/p&gt;
-&lt;p&gt;Magnetic.cs:&lt;/p&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&amp;lt;span class=&quot;source source_csharp&quot;&amp;gt;&amp;lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&amp;gt;&amp;lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&amp;gt;using&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&amp;gt;UnityEngine&amp;lt;/span&amp;gt;;&amp;lt;/span&amp;gt;
-&amp;lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&amp;gt;&amp;lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&amp;gt;using&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&amp;gt;System.Collections&amp;lt;/span&amp;gt;;&amp;lt;/span&amp;gt;
+&lt;p&gt;One way of getting that up and running in Unity is via the code below. Setup:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Add all objects you want to get attracted to the player to a special layer.&lt;/li&gt;
+	&lt;li&gt;Attach the script below to your player.&lt;/li&gt;
+	&lt;li&gt;Set the layer mask on the component to include the layer from step one.&lt;/li&gt;
+	&lt;li&gt;Tweak, play, repeat.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;script src='https://gist.github.com/3804429.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
 
-&amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;public&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;class&amp;lt;/span&amp;gt; Magnetic : &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;MonoBehaviour&amp;lt;/span&amp;gt;
+public class Magnetic : MonoBehaviour
 {
-    &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;public&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;LayerMask&amp;lt;/span&amp;gt; m_MagneticLayers;
-    &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;public&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Vector3&amp;lt;/span&amp;gt; m_Position;
-    &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;public&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;float&amp;lt;/span&amp;gt; m_Radius;
-    &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;public&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;float&amp;lt;/span&amp;gt; m_Force;
+	public LayerMask m_MagneticLayers;
+	public Vector3 m_Position;
+	public float m_Radius;
+	public float m_Force;
 
-&amp;lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&amp;gt;    &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;void&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&amp;gt;FixedUpdate&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&amp;gt;(&amp;lt;/span&amp;gt;)&amp;lt;/span&amp;gt;
-    {
-        &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Collider&amp;lt;/span&amp;gt;[] colliders;
-        &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Rigidbody&amp;lt;/span&amp;gt; rigidbody;
+	void FixedUpdate ()
+	{
+		Collider[] colliders;
+		Rigidbody rigidbody;
 
-        colliders = &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Physics&amp;lt;/span&amp;gt;.OverlapSphere (transform.position + m_Position, m_Radius, m_MagneticLayers);
-        &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;foreach&amp;lt;/span&amp;gt; (&amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Collider&amp;lt;/span&amp;gt; collider &amp;lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&amp;gt;in&amp;lt;/span&amp;gt; colliders)
-        {
-            rigidbody = (&amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Rigidbody&amp;lt;/span&amp;gt;) collider.gameObject.GetComponent (&amp;lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&amp;gt;typeof&amp;lt;/span&amp;gt; (&amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Rigidbody&amp;lt;/span&amp;gt;));
-            &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;if&amp;lt;/span&amp;gt; (rigidbody == &amp;lt;span class=&quot;constant constant_language constant_language_csharp&quot;&amp;gt;null&amp;lt;/span&amp;gt;)
-            {
-                &amp;lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&amp;gt;continue&amp;lt;/span&amp;gt;;
-            }
-            rigidbody.AddExplosionForce (m_Force * -&amp;lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&amp;gt;1&amp;lt;/span&amp;gt;, transform.position + m_Position, m_Radius);
-        }
-    }
+		colliders = Physics.OverlapSphere (transform.position + m_Position, m_Radius, m_MagneticLayers);
+		foreach (Collider collider in colliders)
+		{
+			rigidbody = (Rigidbody) collider.gameObject.GetComponent (typeof (Rigidbody));
+			if (rigidbody == null)
+			{
+				continue;
+			}
+			rigidbody.AddExplosionForce (m_Force * -1, transform.position + m_Position, m_Radius);
+		}
+	}
 
-&amp;lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&amp;gt;    &amp;lt;span class=&quot;storage storage_type storage_type_csharp&quot;&amp;gt;void&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&amp;gt;OnDrawGizmosSelected&amp;lt;/span&amp;gt; &amp;lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&amp;gt;(&amp;lt;/span&amp;gt;)&amp;lt;/span&amp;gt;
-    {
-        &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Gizmos&amp;lt;/span&amp;gt;.color = &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Color&amp;lt;/span&amp;gt;.red;
-        &amp;lt;span class=&quot;support support_class support_class_unity&quot;&amp;gt;Gizmos&amp;lt;/span&amp;gt;.DrawWireSphere (transform.position + m_Position, m_Radius);
-    }
-}&amp;lt;/span&amp;gt;&lt;/pre&gt;</description>
+	void OnDrawGizmosSelected ()
+	{
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere (transform.position + m_Position, m_Radius);
+	}
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;p&gt;&lt;/div&gt;&lt;div class='gistspacer'&gt;&amp;nbsp;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>Sun Oct 04 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/10/04/magnetic/</link>
 			</item>
@@ -1883,6 +1882,93 @@ scrollPosition = &lt;span class=&quot;support support_class support_class_unity&
 	&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>blished>
 				<link>http://angryant.com/2008/09/24/behave-02b/</link>
 			</item>
 			
