@@ -657,120 +657,118 @@ Attached to this post you should find three zip files of the content we have gon
 				<description>&lt;p&gt;I like delegates. I also like enums. Furthermore, I happen to be part of a small group of people who actually enjoy the immediate mode &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; system in Unity. And I want you to like it too :)&lt;/p&gt;
 &lt;p&gt;So &amp;#8211; menus. After having observed quite a few very funky approaches, in the &lt;a href=&quot;http://www.unifycommunity.com/wiki/index.php?title=IRC&quot;&gt;&lt;span class=&quot;caps&quot;&gt;IRC&lt;/span&gt;&lt;/a&gt; channel, to building main menu functionality and giving advice in there, I decided to sow together those ideas into a short example.&lt;/p&gt;
 &lt;p&gt;The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &amp;#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3806175.js?file=NewSubmenu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Notice that since we&amp;#8217;re using delegates, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method needn&amp;#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for the menu system:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-{&lt;br /&gt;
-    m_Menus [m_CurrentState] ();&lt;br /&gt;
-}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
-&lt;p&gt;And this is &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; code inside a menu &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for switching to a different submenu:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;m_CurrentState = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Credits&lt;/span&gt;&amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
-&lt;p&gt;So there. Enough talk. Have some example code:&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections.Generic&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; Menu : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;MonoBehaviour&lt;/span&gt;&lt;br /&gt;
-{&lt;br /&gt;
-    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;delegate&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; OnGUIImplementation();&lt;br /&gt;
-&lt;span class=&quot;meta meta_definition meta_definition_property meta_definition_property_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;MenuState&lt;/span&gt; &lt;/span&gt;{Main,&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Settings&lt;/span&gt;,Credits};&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Settings&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; m_ThisSetting, m_ThatSetting, m_TheOtherSetting;&lt;br /&gt;
-    };&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Vector2&lt;/span&gt; m_StandardMenuSize = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Vector2&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;200.0f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;300.0f&lt;/span&gt;);&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; m_LogoURL = &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&lt;/span&gt;&amp;#8220;;&lt;br /&gt;
-    &amp;#8221;storage storage_modifier storage_modifier_csharp&amp;quot;&amp;gt;static&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Texture2D&lt;/span&gt; m_Logo = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;;&lt;/p&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; MenuState m_CurrentState = MenuState.Main;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; Dictionary&amp;lt;MenuState, OnGUIImplementation&amp;gt; m_Menus;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Settings&lt;/span&gt; m_Settings;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Awake&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_Menus = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; Dictionary&amp;lt;MenuState, OnGUIImplementation&amp;gt; ();&lt;br /&gt;
-        m_Menus [MenuState.Main] = OnMainMenuGUI;&lt;br /&gt;
-        m_Menus [MenuState.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Settings&lt;/span&gt;] = OnSettingsGUI;&lt;br /&gt;
-        m_Menus [MenuState.Credits] = OnCreditsGUI;&lt;br /&gt;
-        StartCoroutine (GetLogo ());&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;IEnumerator&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;GetLogo&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt;&lt;/span&gt; www = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt;&lt;/span&gt; (m_LogoURL);&lt;/p&gt;
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;yield&lt;/span&gt; &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; www;
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (www.error == &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;)
+&lt;script src='https://gist.github.com/3806175.js?file=OnGUI.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public void OnGUI ()
 {
-m_Logo = www.texture;
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_Menus [m_CurrentState] ();&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;BeginStandardMenu&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; title&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginArea (&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Rect&lt;/span&gt; ((&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Screen&lt;/span&gt;.width &amp;#8211; m_StandardMenuSize.x) * &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.5f&lt;/span&gt;, (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Screen&lt;/span&gt;.height &amp;#8211; m_StandardMenuSize.y) * &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.5f&lt;/span&gt;, m_StandardMenuSize.x, m_StandardMenuSize.y));&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginVertical (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.skin.GetStyle (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Box&lt;/span&gt;&amp;#8220;));&lt;br /&gt;
-                &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Label (title, &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.skin.GetStyle (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Box&lt;/span&gt;&amp;quot;));&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;EndStandardMenu&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt; color;&lt;/p&gt;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();
-color = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.color;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.color = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt;.grey;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;My game version 2.4X&lt;/span&gt;&amp;quot;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.color = color;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndHorizontal ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndVertical ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndArea ();
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnMainMenuGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        BeginStandardMenu (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Main menu&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            &amp;#8221;keyword keyword_control keyword_control_csharp&amp;quot;&amp;gt;if&lt;/span&gt; (m_Logo != &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;)&lt;br /&gt;
-            {&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal ();&lt;br /&gt;
-                    &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-                        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label (m_Logo);&lt;br /&gt;
-                    &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndHorizontal ();&lt;br /&gt;
-            }&lt;br /&gt;
-            &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;New game&lt;/span&gt;&amp;#8220;))&lt;br /&gt;
-            {&lt;br /&gt;
-                &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;Application&lt;/span&gt;.LoadLevel (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Level one&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            }&lt;br /&gt;
-            m_CurrentState = &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Settings&lt;/span&gt;&amp;quot;) ? MenuState.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Settings&lt;/span&gt; : m_CurrentState;&lt;br /&gt;
-            m_CurrentState = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Credits&lt;/span&gt;&amp;#8220;) ? MenuState.Credits : m_CurrentState;&lt;br /&gt;
-            &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-        EndStandardMenu ();&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnSettingsGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        BeginStandardMenu (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Settings&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            m_Settings.m_ThisSetting = &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Toggle (m_Settings.m_ThisSetting, &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;This setting&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            m_Settings.m_ThatSetting = &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Toggle (m_Settings.m_ThatSetting, &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;That setting&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            m_Settings.m_TheOtherSetting = &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Toggle (m_Settings.m_TheOtherSetting, &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;The other setting&lt;/span&gt;&amp;#8220;, &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Button&lt;/span&gt;&amp;#8220;));&lt;br /&gt;
-            &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-            m_CurrentState = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Main menu&lt;/span&gt;&amp;quot;) ? MenuState.Main : m_CurrentState;&lt;br /&gt;
-        EndStandardMenu ();&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnCreditsGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        BeginStandardMenu (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Credits&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-            &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.Label (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &amp;#8211; as you can see &amp;#8211; resulted in much joy and success!&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-                &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;20.0f&lt;/span&gt;);&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal ();&lt;br /&gt;
-                    &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-                        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;The awesomestest people inc.&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-                &amp;#8221;support support_class support_class_unity&amp;quot;&amp;gt;GUILayout&lt;/span&gt;.EndHorizontal ();&lt;/p&gt;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();
-m_CurrentState = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Main menu&lt;/span&gt;&amp;quot;) ? MenuState.Main : m_CurrentState;
-EndStandardMenu ();
-}
-&lt;p&gt;}&lt;br /&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;br /&gt;
-&lt;hr&gt;&lt;br /&gt;
-Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010/03/Menu.zip&quot;&gt;Menu.zip&lt;/a&gt; &amp;#8211; built with Unity 2.6.1&lt;/p&gt;</description>
+	m_Menus [m_CurrentState] ();
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;And this is &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; code inside a menu &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for switching to a different submenu:&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806175.js?file=SwitchMenu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_CurrentState = GUILayout.Button (&amp;amp;quot;Credits&amp;amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;So there. Enough talk. Have some example code:&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806175.js?file=Menu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;&lt;/p&gt;
+&lt;p&gt;public class Menu : MonoBehaviour&lt;br /&gt;
+{&lt;br /&gt;
+	delegate void OnGUIImplementation();&lt;br /&gt;
+	public enum MenuState {Main,Settings,Credits};&lt;br /&gt;
+	public struct Settings&lt;br /&gt;
+	{&lt;br /&gt;
+		public bool m_ThisSetting, m_ThatSetting, m_TheOtherSetting;&lt;br /&gt;
+	};&lt;br /&gt;
+	static Vector2 m_StandardMenuSize = new Vector2 (200.0f, 300.0f);&lt;br /&gt;
+	static string m_LogoURL = &amp;quot;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&amp;quot;;&lt;br /&gt;
+	static Texture2D m_Logo = null;&lt;/p&gt;
+&lt;p&gt;private MenuState m_CurrentState = MenuState.Main;&lt;br /&gt;
+	private Dictionary m_Menus;&lt;br /&gt;
+	private Settings m_Settings;&lt;/p&gt;
+&lt;p&gt;void Awake ()&lt;br /&gt;
+	{&lt;br /&gt;
+		m_Menus = new Dictionary ();&lt;br /&gt;
+		m_Menus [MenuState.Main] = OnMainMenuGUI;&lt;br /&gt;
+		m_Menus [MenuState.Settings] = OnSettingsGUI;&lt;br /&gt;
+		m_Menus [MenuState.Credits] = OnCreditsGUI;&lt;br /&gt;
+		StartCoroutine (GetLogo ());&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;IEnumerator GetLogo ()&lt;br /&gt;
+	{&lt;br /&gt;
+		&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; www = new &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; (m_LogoURL);&lt;/p&gt;
+&lt;p&gt;yield return www;&lt;/p&gt;
+&lt;p&gt;if (www.error == null)&lt;br /&gt;
+		{&lt;br /&gt;
+			m_Logo = www.texture;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		m_Menus [m_CurrentState] ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;static void BeginStandardMenu (string title)&lt;br /&gt;
+	{&lt;br /&gt;
+		GUILayout.BeginArea (new Rect ((Screen.width &amp;#8211; m_StandardMenuSize.x) * 0.5f, (Screen.height &amp;#8211; m_StandardMenuSize.y) * 0.5f, m_StandardMenuSize.x, m_StandardMenuSize.y));&lt;br /&gt;
+			GUILayout.BeginVertical (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));&lt;br /&gt;
+				GUILayout.Label (title, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;static void EndStandardMenu ()&lt;br /&gt;
+	{&lt;br /&gt;
+		Color color;&lt;/p&gt;
+&lt;p&gt;GUILayout.BeginHorizontal ();&lt;br /&gt;
+					GUILayout.FlexibleSpace ();&lt;br /&gt;
+						color = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color;&lt;br /&gt;
+						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = Color.grey;&lt;br /&gt;
+						GUILayout.Label (&amp;quot;My game version 2.4X&amp;quot;);&lt;br /&gt;
+						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = color;&lt;br /&gt;
+					GUILayout.FlexibleSpace ();&lt;br /&gt;
+				GUILayout.EndHorizontal ();&lt;br /&gt;
+			GUILayout.EndVertical ();&lt;br /&gt;
+		GUILayout.EndArea ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void OnMainMenuGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		BeginStandardMenu (&amp;quot;Main menu&amp;quot;);&lt;br /&gt;
+			if (m_Logo != null)&lt;br /&gt;
+			{&lt;br /&gt;
+				GUILayout.BeginHorizontal ();&lt;br /&gt;
+					GUILayout.FlexibleSpace ();&lt;br /&gt;
+						GUILayout.Label (m_Logo);&lt;br /&gt;
+					GUILayout.FlexibleSpace ();&lt;br /&gt;
+				GUILayout.EndHorizontal ();&lt;br /&gt;
+			}&lt;br /&gt;
+			if (GUILayout.Button (&amp;quot;New game&amp;quot;))&lt;br /&gt;
+			{&lt;br /&gt;
+				Application.LoadLevel (&amp;quot;Level one&amp;quot;);&lt;br /&gt;
+			}&lt;br /&gt;
+			m_CurrentState = GUILayout.Button (&amp;quot;Settings&amp;quot;) ? MenuState.Settings : m_CurrentState;&lt;br /&gt;
+			m_CurrentState = GUILayout.Button (&amp;quot;Credits&amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;br /&gt;
+			GUILayout.FlexibleSpace ();&lt;br /&gt;
+		EndStandardMenu ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void OnSettingsGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		BeginStandardMenu (&amp;quot;Settings&amp;quot;);&lt;br /&gt;
+			m_Settings.m_ThisSetting = GUILayout.Toggle (m_Settings.m_ThisSetting, &amp;quot;This setting&amp;quot;);&lt;br /&gt;
+			m_Settings.m_ThatSetting = GUILayout.Toggle (m_Settings.m_ThatSetting, &amp;quot;That setting&amp;quot;);&lt;br /&gt;
+			m_Settings.m_TheOtherSetting = GUILayout.Toggle (m_Settings.m_TheOtherSetting, &amp;quot;The other setting&amp;quot;, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Button&amp;quot;));&lt;br /&gt;
+			GUILayout.FlexibleSpace ();&lt;br /&gt;
+			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;&lt;br /&gt;
+		EndStandardMenu ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void OnCreditsGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		BeginStandardMenu (&amp;quot;Credits&amp;quot;);&lt;br /&gt;
+			GUILayout.Label (&amp;quot;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &amp;#8211; as you can see &amp;#8211; resulted in much joy and success!&amp;quot;);&lt;br /&gt;
+				GUILayout.Space (20.0f);&lt;br /&gt;
+				GUILayout.BeginHorizontal ();&lt;br /&gt;
+					GUILayout.FlexibleSpace ();&lt;br /&gt;
+						GUILayout.Label (&amp;quot;The awesomestest people inc.&amp;quot;);&lt;br /&gt;
+				GUILayout.EndHorizontal ();&lt;/p&gt;
+&lt;p&gt;GUILayout.FlexibleSpace ();&lt;br /&gt;
+			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;&lt;br /&gt;
+		EndStandardMenu ();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010/03/Menu.zip&quot;&gt;Menu.zip&lt;/a&gt; &amp;#8211; built with Unity 2.6.1&lt;/p&gt;</description>
 				<published>Mon Mar 15 00:00:00 +0100 2010</published>
 				<link>http://angryant.com/2010/03/15/building-a-menu-of-delegates-and-enums/</link>
 			</item>
@@ -1698,6 +1696,276 @@ using System.Collections;&lt;/p&gt;
 &lt;p&gt;public void OnGUI()&lt;br /&gt;
 	{&lt;br /&gt;
 		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
+			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
+			GUILayout.FlexibleSpace();&lt;/p&gt;
+&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
+			{&lt;br /&gt;
+				UpdateList();&lt;br /&gt;
+			}&lt;br /&gt;
+		GUILayout.EndHorizontal();&lt;/p&gt;
+&lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
+&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
+			{&lt;br /&gt;
+				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
+				{&lt;br /&gt;
+					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
+					{&lt;br /&gt;
+						Selection.activeObject = gameObject;&lt;br /&gt;
+					}&lt;br /&gt;
+				}&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
+				<published>Mon Aug 31 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>UnitySteer</title>
+				<description>&lt;p&gt;Ok so I&amp;#8217;ve been quite busy lately and so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
+&lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
+&lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
+&lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Aug 19 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/08/19/unitysteer/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New and improved: Behave 1.0 released</title>
+				<description>&lt;p&gt;After lots of late night tinkering, Behave 1.0 is finally out. This version fixes all known issues with unity 2.5, brings in lessons learned from Path 1.0 meaning a smashing new interface plus lots of new additions.&lt;/p&gt;
+&lt;p&gt;The new tree editor contains interface improvements allowing for much faster tree building: A brand new component bar, sub-tree movement, integration with the standard unity inspector and more.&lt;/p&gt;
+&lt;p&gt;In this version, the Behave runtime have also received an update. More runtime data is more easily available from the tree and library classes and methods implemented in your agent scripts are now mapped directly (by name) to action and decorator invokes.&lt;/p&gt;
+&lt;p&gt;This site will be updated as soon as possible with all the changes and additions and the documentation will be brought up to speed.&lt;/p&gt;
+&lt;p&gt;So what are you waiting for? Head on over to the downloads section and get your copy today!&lt;/p&gt;</description>
+				<published>Mon May 18 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/05/18/new-and-improved-behave-10-released/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b and unity 2.5</title>
+				<description>&lt;p&gt;Apart from the hotfix, the following steps need to be followed when using Behave 0.3b in unity 2.5:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;When building an asset, make sure to use the shortcut for it and not the menu.&lt;/li&gt;
+	&lt;li&gt;Behave.dll needs to be in a subfolder of your Assets folder named &amp;#8220;Assets&amp;#8221;. That is, for instance, &amp;#8220;MyProject/Assets/Assets/Behave.dll&amp;#8221;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I&amp;#8217;m currently working on a new version of Behave which will resolve these and other issues apart from adding new features.&lt;/p&gt;</description>
+				<published>Wed Apr 08 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/04/08/behave-03b-and-unity-25/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b hotfix</title>
+				<description>&lt;p&gt;Changes in the unity 2.5 editor &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; has resulted in some bad issues in Behave 0.3b &amp;#8211; a hotfix to solve the most critical ones &amp;#8211; making the Behave editor interface usable again is available in the Behave downloads section.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ll be working on a more extensive rewrite. Stay tuned.&lt;/p&gt;</description>
+				<published>Fri Mar 20 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/20/behave-03b-hotfix/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path tutorial video available</title>
+				<description>&lt;p&gt;I just finished the first Path tutorial video. &lt;a href=&quot;/resources/path/TheBasics.mov&quot;&gt;Give it a look&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Thu Mar 19 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/19/path-tutorial-video-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path 1.0 launched!</title>
+				<description>&lt;p&gt;Earlier today unity 2.5 launched so here we go! Path 1.0 and a pretty new website is now online. Victory!&lt;/p&gt;</description>
+				<published>Wed Mar 18 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/18/path-10-launched/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Continued community tutorials</title>
+				<description>&lt;p&gt;Arges from the unity community has been keeping busy. His latest tutorial goes more in-depth with Behave and unity, providing an interesting and useful example to work with.&lt;/p&gt;
+&lt;p&gt;Have a read at &lt;a href=&quot;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&quot;&gt;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Dec 17 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Community tutorial</title>
+				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Sun Nov 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New tutorial</title>
+				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Fri Nov 28 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>First tutorial available</title>
+				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Tue Nov 04 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Optimised the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour&lt;/li&gt;
+		&lt;li&gt;When a compile fails, the Behave compiler is locked and unusable &amp;#8211; requiring a unity relaunch&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Implemented the following wishlist items:
+	&lt;ul&gt;
+		&lt;li&gt;Behaviour tree decorators&lt;/li&gt;
+		&lt;li&gt;Stand-alone edition of the Behave editor&lt;/li&gt;
+		&lt;li&gt;Behaviour tree debugging features&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Sun Nov 02 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/02/behave-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>unite '08 open-mic session</title>
+				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
+				<published>Sat Oct 25 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.2b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
+	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
+		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>UILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
 			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
 			GUILayout.FlexibleSpace();&lt;/p&gt;
 &lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
