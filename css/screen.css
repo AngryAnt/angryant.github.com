@@ -1,3 +1,173 @@
+@media only screen and (min-width: 850px)
+{
+	#site
+	{
+		width: 850px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#sidebar
+	{
+		width: 250px;
+		float: left;
+		padding-top: 60px;
+		position: fixed;
+	}
+	#container
+	{
+		width: 600px;
+		float: right;
+		padding-top: 50px;
+	}
+
+	#sidebar a
+	{
+		float: left;
+		clear: both;
+		margin-top: 10pt;
+		margin-left: 20pt;
+	}
+	#submenu a
+	{
+		font-size: 8pt;
+		margin-left: 35pt;
+		margin-top: 5pt;
+	}
+	#sidebar #external
+	{
+		padding-top: 10pt;
+		clear: both;
+	}
+	#sidebar #external a
+	{
+		margin-left: 0pt;
+		margin-top: 5pt;
+	}
+	#sidebar .comment
+	{
+		clear: both;
+		margin: 0pt;
+		padding: 0pt;
+		padding-top: 20pt;
+		width: 180px;
+	}
+
+	#pagemenu
+	{
+		position: fixed;
+		top: 60px;
+		right: 20px;
+		width: 150px;
+	}
+	#pagemenu a
+	{
+		float: left;
+		clear: both;
+	}
+}
+
+
+@media only screen and (max-width: 850px)
+{
+	#site
+	{
+		width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#sidebar
+	{
+		width: 600px;
+		padding-top: 50px;
+		clear: both;
+	}
+	.header
+	{
+		clear: none;
+	}
+	#subtitle
+	{
+		clear: none;
+	}
+	#sidebar a
+	{
+		float: left;
+		margin-right: 20pt;
+	}
+	#submenu
+	{
+		margin-left: 0;
+		margin-right: auto;
+	}
+	#submenu a
+	{
+		float: right;
+		margin-right: 0pt;
+		margin-left: 20pt;
+	}
+	#container
+	{
+		width: 600px;
+		padding-top: 70px;
+	}
+	#external
+	{
+		position: absolute;
+		top: 40px;
+		width: 600px;
+	}
+	#sidebar #external a
+	{
+		float: right;
+		margin-left: 10pt;
+		margin-right: 0pt;
+	}
+	#sidebar .comment
+	{
+		position: absolute;
+		top: 60px;
+		width: 200px;
+		padding-left: 400px;
+		text-align: right;
+		color: #BBB;
+	}
+}
+
+
+#sidebar a
+{
+	text-decoration: none;
+	color: #000;
+}
+#submenu a
+{
+	font-size: 8pt;
+}
+#sidebar #external
+{
+	font-size: 8pt;
+}
+#sidebar .comment
+{
+	font-size: 8pt;
+	line-height: 100%;
+}
+#pagemenu
+{
+	position: fixed;
+	top: 60px;
+	right: 20px;
+	width: 150px;
+}
+#pagemenu a
+{
+	color: black;
+	font-size: 8pt;
+	text-decoration: none;
+	color: #888;
+}
+
+
 body, html
 {
 	margin: 0px;
@@ -60,25 +230,6 @@ h3
 {
 	color: black;
 	width: 100%;
-}
-#site
-{
-	width: 850px;
-	margin-left: auto;
-	margin-right: auto;
-}
-#sidebar
-{
-	width: 250px;
-	float: left;
-	padding-top: 60px;
-	position: fixed;
-}
-#container
-{
-	width: 600px;
-	float: right;
-	padding-top: 50px;
 }
 #content a
 {
@@ -217,56 +368,4 @@ h3
 {
 	float: right;
 	padding: 10px;
-}
-#sidebar a
-{
-	text-decoration: none;
-	color: #000;
-	float: left;
-	clear: both;
-	margin-top: 10pt;
-	margin-left: 20pt;
-}
-#submenu a
-{
-	font-size: 8pt;
-	margin-left: 35pt;
-	margin-top: 5pt;
-}
-#sidebar #external
-{
-	padding-top: 10pt;
-	clear: both;
-	font-size: 8pt;
-}
-#sidebar #external a
-{
-	margin-left: 0pt;
-	margin-top: 5pt;
-}
-#sidebar .comment
-{
-	clear: both;
-	margin: 0pt;
-	padding: 0pt;
-	padding-top: 20pt;
-	width: 180px;
-	font-size: 8pt;
-	line-height: 100%;
-}
-#pagemenu
-{
-	position: fixed;
-	top: 60px;
-	right: 20px;
-	width: 150px;
-}
-#pagemenu a
-{
-	float: left;
-	clear: both;
-	color: black;
-	font-size: 8pt;
-	text-decoration: none;
-	color: #888;
 }
