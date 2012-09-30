@@ -70,143 +70,143 @@
 				<span class="date">04 Nov 2009</span>
 				<h1 id="Top">CopyInspector</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>Yea I know. It&#8217;s been a while. I do have two very good excuses though: 2.6 and Unite &#8216;09. If you enjoyed those then zip it and read on. If not, I&#8217;m really out of ammo and sorry for the delay.</p>
 <p>At Unite, I attended the talk by John Grden of infrared5 on the special (free) Unity for flash users day. During this session he complained about wanting to be able to copy his runtime transform changes inside the <span class="caps">IDE</span> (he was copying by way of paper notes it seemed). I decided to take up the challenge when he continued with &#8220;&#8230; but someone is probably going to show me how to do that after this&#8221; and after his talk I handed him a custom inspector editor script for solving that specific problem.</p>
 <p>Later at the conference I had some time to kill and did a rewrite to expand the script to be general for any component type. I didn&#8217;t have the time to hand John that version, but I suppose I&#8217;ll just email him a link to this post.</p>
-<ul>So anyway &#8211; lets talk implementation:<br />
-<li>Add CopyInspector.cs to Assets/Editor.</li>
-<li>Add CopyTransformInspector.cs to Assets/Editor.</li>
-<li>For each other component to be made copy/paste-able:<ul><br />
-<li>Add CopyYourComponentTypeInspector.cs to Assets/Editor.</li>
-<li>Rename it appropriately.</li>
-<li>Rename the class to match the file name.</li>
-<li>Change YourComponentType in &#8220;[CustomEditor (typeof (YourComponentType))]&#8221; to the type of component you wish to affect.</li>
-<p></li></ul></p>
-<p></li></ul></p>
+<p>So anyway &#8211; lets talk implementation:</p>
+<ul>
+	<li>Add CopyInspector.cs to Assets/Editor.</li>
+	<li>Add CopyTransformInspector.cs to Assets/Editor.</li>
+	<li>For each other component to be made copy/paste-able:
+	<ul>
+		<li>Add CopyYourComponentTypeInspector.cs to Assets/Editor.</li>
+		<li>Rename it appropriately.</li>
+		<li>Rename the class to match the file name.</li>
+		<li>Change YourComponentType in &#8220;[CustomEditor (typeof (YourComponentType))]&#8221; to the type of component you wish to affect.</li>
+	</ul></li>
+</ul>
+<p><img src="http://eej.dk/angryant/wp-content/uploads/2009/11/CopyTransformInspector.png" alt="" /></p>
 <p>You&#8217;ll notice that CopyTransformInspector has some additional code to it. This is due to the fact that this inspector is rendered non-standard and the code provided just replicates that.</p>
-<p>[caption id=&#8220;attachment_339&#8221; align=&#8220;aligncenter&#8221; width=&#8220;260&#8221; caption=&#8220;The copy transform inspector&#8221;]<img src="http://eej.dk/angryant/wp-content/uploads/2009/11/CopyTransformInspector.png" alt="The copy transform inspector" title="CopyTransformInspector" width="260" height="149" class="size-full wp-image-339" />[/caption]</p>
 <p>Not really sure why syntax highlighting is not kicking in&#8230; Will have a look at that later.</p>
 <p>Codes!</p>
 <p>CopyInspector.cs<br />
-<pre class="textmate-source"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEditor</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections.Generic</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Reflection</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> CopyInspector : <span class="support support_class support_class_unity">Editor</span><br />
+<script src='https://gist.github.com/3806123.js?file=CopyInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;</p>
+<p>public class CopyInspector : Editor<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">static</span> System.Type m_OriginalType;<br />
-    <span class="storage storage_modifier storage_modifier_csharp">static</span> Dictionary &lt;PropertyInfo, <span class="storage storage_type storage_type_csharp">object</span>&gt; m_Values;</p>
-<span class="storage storage_modifier storage_modifier_csharp">private</span> List <PropertyInfo> GetProperties (<span class="support support_class support_class_unity">Component</span> component)
-{
-List &lt;<span class="storage storage_type storage_type_csharp">string</span>&gt; ignoredProperties;
-List <PropertyInfo> properties;
-properties = <span class="keyword keyword_control keyword_control_csharp">new</span> List <PropertyInfo> ();
-ignoredProperties = <span class="keyword keyword_control keyword_control_csharp">new</span> List &lt;<span class="storage storage_type storage_type_csharp">string</span>&gt; ();
-<span class="keyword keyword_control keyword_control_csharp">foreach</span> (PropertyInfo propertyInfo <span class="storage storage_modifier storage_modifier_csharp">in</span> <span class="keyword keyword_operator keyword_operator_csharp">typeof</span> (<span class="support support_class support_class_unity">Component</span>).GetProperties ())
-{
-ignoredProperties.Add (propertyInfo.Name);
-}
-<span class="keyword keyword_control keyword_control_csharp">foreach</span> (PropertyInfo propertyInfo <span class="storage storage_modifier storage_modifier_csharp">in</span> component.GetType ().GetProperties ())
-{
-<span class="keyword keyword_control keyword_control_csharp">if</span> (ignoredProperties.Contains (propertyInfo.Name))
-{
-<span class="keyword keyword_control keyword_control_csharp">continue</span>;
-}
-properties.Add (propertyInfo);
-}
-<span class="keyword keyword_control keyword_control_csharp">return</span> properties;
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public override </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnInspectorGUI</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        DrawDefaultInspector ();<br />
-        OnCopyInspectorGUI ();<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnCopyInspectorGUI</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="storage storage_type storage_type_csharp">bool</span> enabled;<br />
-        List <PropertyInfo> properties;<br />
-        <span class="support support_class support_class_unity">Component</span> component;</p>
-component = target <span class="keyword keyword_operator keyword_operator_csharp">as</span> <span class="support support_class support_class_unity">Component</span>;
-<span class="keyword keyword_control keyword_control_csharp">if</span> (component == <span class="constant constant_language constant_language_csharp">null</span>)
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span>;
-}
-<span class="support support_class support_class_unity">GUILayout</span>.<span class="support support_class support_class_unity">Space</span> (<span class="constant constant_numeric constant_numeric_csharp">10.0f</span>);
-<span class="support support_class support_class_unity">Color</span> backgroundColor = <span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.backgroundColor;
-<span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.backgroundColor = <span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity">Color</span> (<span class="constant constant_numeric constant_numeric_csharp">0.8f</span>, <span class="constant constant_numeric constant_numeric_csharp">0.8f</span>, <span class="constant constant_numeric constant_numeric_csharp">0.8f</span>);
-<span class="support support_class support_class_unity">GUILayout</span>.BeginVertical (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Toolbar</span>&quot;);
-<span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.backgroundColor = backgroundColor;
-<span class="support support_class support_class_unity">GUILayout</span>.BeginHorizontal ();
-<span class="support support_class support_class_unity">GUILayout</span>.<span class="support support_class support_class_unity">Space</span> (<span class="constant constant_numeric constant_numeric_csharp">10.0f</span>);
-<span class="support support_class support_class_unity">GUILayout</span>.Label (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Copied: </span>&quot; + (m_OriginalType != <span class="constant constant_language constant_language_csharp">null</span> ? m_OriginalType.Name : &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Nothing</span>&quot;), &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;MiniLabel</span>&quot;);
-<span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace ();
-<span class="keyword keyword_control keyword_control_csharp">if</span> (<span class="support support_class support_class_unity">GUILayout</span>.Button (<span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity">GUIContent</span> (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Copy</span>&quot;, &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Copy component values</span>&quot;), &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;MiniLabel</span>&quot;))
-{
-m_OriginalType = target.GetType ();
-properties = GetProperties (component);
-m_Values = <span class="keyword keyword_control keyword_control_csharp">new</span> Dictionary &lt;PropertyInfo, <span class="storage storage_type storage_type_csharp">object</span>&gt; ();
-<span class="keyword keyword_control keyword_control_csharp">foreach</span> (PropertyInfo property <span class="storage storage_modifier storage_modifier_csharp">in</span> properties)
-{
-m_Values [property] = property.GetValue (component, <span class="constant constant_language constant_language_csharp">null</span>);
-}
-}
-enabled = <span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.enabled;
-<span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.enabled = target.GetType () == m_OriginalType;
-<span class="support support_class support_class_unity">GUILayout</span>.<span class="support support_class support_class_unity">Space</span> (<span class="constant constant_numeric constant_numeric_csharp">10.0f</span>);
-<span class="keyword keyword_control keyword_control_csharp">if</span> (<span class="support support_class support_class_unity">GUILayout</span>.Button (<span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity">GUIContent</span> (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Paste</span>&quot;, &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Paste component values</span>&quot;), &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;MiniLabel</span>&quot;))
-{
-properties = GetProperties (component);
-<span class="keyword keyword_control keyword_control_csharp">foreach</span> (PropertyInfo property <span class="storage storage_modifier storage_modifier_csharp">in</span> properties)
-{
-<span class="keyword keyword_control keyword_control_csharp">if</span> (!property.CanWrite)
-{
-<span class="keyword keyword_control keyword_control_csharp">continue</span>;
-}
-property.SetValue (component, m_Values [property], <span class="constant constant_language constant_language_csharp">null</span>);
-}
-}
-<span class="support support_class support_class_unity">GUILayout</span>.<span class="support support_class support_class_unity">Space</span> (<span class="constant constant_numeric constant_numeric_csharp">10.0f</span>);
-<span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.enabled = enabled;
-<span class="support support_class support_class_unity">GUILayout</span>.EndHorizontal ();
-<span class="support support_class support_class_unity">GUILayout</span>.EndVertical ();
-<span class="support support_class support_class_unity">GUILayout</span>.<span class="support support_class support_class_unity">Space</span> (-<span class="constant constant_numeric constant_numeric_csharp">2.0f</span>);
-}
-<p>}</span></pre></p>
+	static System.Type m_OriginalType;<br />
+	static Dictionary object&gt; m_Values;</p>
+<p>private List  GetProperties (Component component)<br />
+	{<br />
+		List &lt;string&gt; ignoredProperties;<br />
+		List  properties;</p>
+<p>properties = new List  ();<br />
+		ignoredProperties = new List &lt;string&gt; ();<br />
+		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())<br />
+		{<br />
+			ignoredProperties.Add (propertyInfo.Name);<br />
+		}</p>
+<p>foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())<br />
+		{<br />
+			if (ignoredProperties.Contains (propertyInfo.Name))<br />
+			{<br />
+				continue;<br />
+			}<br />
+			properties.Add (propertyInfo);<br />
+		}</p>
+<p>return properties;<br />
+	}</p>
+<p>public override void OnInspectorGUI ()<br />
+	{<br />
+		DrawDefaultInspector ();<br />
+		OnCopyInspectorGUI ();<br />
+	}</p>
+<p>public void OnCopyInspectorGUI ()<br />
+	{<br />
+		bool enabled;<br />
+		List  properties;<br />
+		Component component;</p>
+<p>component = target as Component;</p>
+<p>if (component == null)<br />
+		{<br />
+			return;<br />
+		}</p>
+<p>GUILayout.Space (10.0f);</p>
+<p>Color backgroundColor = <span class="caps">GUI</span>.backgroundColor;</p>
+<p><span class="caps">GUI</span>.backgroundColor = new Color (0.8f, 0.8f, 0.8f);</p>
+<p>GUILayout.BeginVertical (&quot;Toolbar&quot;);</p>
+<p><span class="caps">GUI</span>.backgroundColor = backgroundColor;</p>
+<p>GUILayout.BeginHorizontal ();</p>
+<p>GUILayout.Space (10.0f);</p>
+<p>GUILayout.Label (&quot;Copied: &quot; + (m_OriginalType != null ? m_OriginalType.Name : &quot;Nothing&quot;), &quot;MiniLabel&quot;);</p>
+<p>GUILayout.FlexibleSpace ();</p>
+<p>if (GUILayout.Button (new GUIContent (&quot;Copy&quot;, &quot;Copy component values&quot;), &quot;MiniLabel&quot;))<br />
+				{<br />
+					m_OriginalType = target.GetType ();</p>
+<p>properties = GetProperties (component);</p>
+<p>m_Values = new Dictionary object&gt; ();<br />
+					foreach (PropertyInfo property in properties)<br />
+					{<br />
+						m_Values [property] = property.GetValue (component, null);<br />
+					}<br />
+				}</p>
+<p>enabled = <span class="caps">GUI</span>.enabled;<br />
+				<span class="caps">GUI</span>.enabled = target.GetType () == m_OriginalType;</p>
+<p>GUILayout.Space (10.0f);</p>
+<p>if (GUILayout.Button (new GUIContent (&quot;Paste&quot;, &quot;Paste component values&quot;), &quot;MiniLabel&quot;))<br />
+				{<br />
+					properties = GetProperties (component);<br />
+					foreach (PropertyInfo property in properties)<br />
+					{<br />
+						if (!property.CanWrite)<br />
+						{<br />
+							continue;<br />
+						}</p>
+<p>property.SetValue (component, m_Values [property], null);<br />
+					}<br />
+				}</p>
+<p>GUILayout.Space (10.0f);</p>
+<p><span class="caps">GUI</span>.enabled = enabled;</p>
+<p>GUILayout.EndHorizontal ();</p>
+<p>GUILayout.EndVertical ();</p>
+<p>GUILayout.Space (-2.0f);<br />
+	}<br />
+}</code></pre></noscript></div></p>
 <p>CopyTransformInspector.cs<br />
-<pre class="textmate-source"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEditor</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span></p>
-<p>[<span class="support support_class support_class_unity">CustomEditor</span> (<span class="keyword keyword_operator keyword_operator_csharp">typeof</span> (<span class="support support_class support_class_unity">Transform</span>))]<br />
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> CopyTransformInspector : CopyInspector<br />
+<script src='https://gist.github.com/3806123.js?file=CopyTransformInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
+using UnityEditor;
+using System.Collections;</p>
+<p>[CustomEditor (typeof (Transform))]<br />
+public class CopyTransformInspector : CopyInspector<br />
 {<br />
-<span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public override </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnInspectorGUI</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">Transform</span> transform;<br />
-        <span class="support support_class support_class_unity">Vector3</span> localPosition, localScale;<br />
-        <span class="support support_class support_class_unity">Quaternion</span> localRotation;</p>
-transform = target <span class="keyword keyword_operator keyword_operator_csharp">as</span> <span class="support support_class support_class_unity">Transform</span>;
-localPosition = <span class="support support_class support_class_unity">EditorGUILayout</span>.Vector3Field (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Position</span>&quot;, transform.localPosition);
-localRotation = <span class="support support_class support_class_unity">Quaternion</span>.Euler (<span class="support support_class support_class_unity">EditorGUILayout</span>.Vector3Field (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Rotation</span>&quot;, transform.localRotation.eulerAngles));
-localScale = <span class="support support_class support_class_unity">EditorGUILayout</span>.Vector3Field (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Scale</span>&quot;, transform.localScale);
-<span class="keyword keyword_control keyword_control_csharp">if</span> (<span class="support support_class support_class_unity"><span class="caps">GUI</span></span>.changed)
-{
-transform.localPosition = localPosition;
-transform.localRotation = localRotation;
-transform.localScale = localScale;
-}
-OnCopyInspectorGUI ();
-}
-<p>}</span></pre></p>
+	public override void OnInspectorGUI ()<br />
+	{<br />
+		Transform transform;<br />
+		Vector3 localPosition, localScale;<br />
+		Quaternion localRotation;</p>
+<p>transform = target as Transform;</p>
+<p>localPosition = EditorGUILayout.Vector3Field (&quot;Position&quot;, transform.localPosition);<br />
+		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&quot;Rotation&quot;, transform.localRotation.eulerAngles));<br />
+		localScale = EditorGUILayout.Vector3Field (&quot;Scale&quot;, transform.localScale);</p>
+<p>if (<span class="caps">GUI</span>.changed)<br />
+		{<br />
+			transform.localPosition = localPosition;<br />
+			transform.localRotation = localRotation;<br />
+			transform.localScale = localScale;<br />
+		}</p>
+<p>OnCopyInspectorGUI ();<br />
+	}<br />
+}</code></pre></noscript></div></p>
 <p>CopyYourComponentTypeInspector.cs<br />
-<pre class="textmate-source"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEditor</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span></p>
-<p>[<span class="support support_class support_class_unity">CustomEditor</span> (<span class="keyword keyword_operator keyword_operator_csharp">typeof</span> (YourComponentType))]<br />
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> CopyYourComponentTypeInspector : CopyInspector{}</span></pre></p></p>
+<script src='https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
+using UnityEditor;
+using System.Collections;</p>
+<p>[CustomEditor (typeof (YourComponentType))]<br />
+public class CopyYourComponentTypeInspector : CopyInspector{}</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">

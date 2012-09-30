@@ -1106,137 +1106,139 @@ m_MessageString += &amp;#8220;&amp;#8221;string string_quoted string_quoted_doub
 				<description>&lt;p&gt;Yea I know. It&amp;#8217;s been a while. I do have two very good excuses though: 2.6 and Unite &amp;#8216;09. If you enjoyed those then zip it and read on. If not, I&amp;#8217;m really out of ammo and sorry for the delay.&lt;/p&gt;
 &lt;p&gt;At Unite, I attended the talk by John Grden of infrared5 on the special (free) Unity for flash users day. During this session he complained about wanting to be able to copy his runtime transform changes inside the &lt;span class=&quot;caps&quot;&gt;IDE&lt;/span&gt; (he was copying by way of paper notes it seemed). I decided to take up the challenge when he continued with &amp;#8220;&amp;#8230; but someone is probably going to show me how to do that after this&amp;#8221; and after his talk I handed him a custom inspector editor script for solving that specific problem.&lt;/p&gt;
 &lt;p&gt;Later at the conference I had some time to kill and did a rewrite to expand the script to be general for any component type. I didn&amp;#8217;t have the time to hand John that version, but I suppose I&amp;#8217;ll just email him a link to this post.&lt;/p&gt;
-&lt;ul&gt;So anyway &amp;#8211; lets talk implementation:&lt;br /&gt;
-&lt;li&gt;Add CopyInspector.cs to Assets/Editor.&lt;/li&gt;
-&lt;li&gt;Add CopyTransformInspector.cs to Assets/Editor.&lt;/li&gt;
-&lt;li&gt;For each other component to be made copy/paste-able:&lt;ul&gt;&lt;br /&gt;
-&lt;li&gt;Add CopyYourComponentTypeInspector.cs to Assets/Editor.&lt;/li&gt;
-&lt;li&gt;Rename it appropriately.&lt;/li&gt;
-&lt;li&gt;Rename the class to match the file name.&lt;/li&gt;
-&lt;li&gt;Change YourComponentType in &amp;#8220;[CustomEditor (typeof (YourComponentType))]&amp;#8221; to the type of component you wish to affect.&lt;/li&gt;
-&lt;p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;
+&lt;p&gt;So anyway &amp;#8211; lets talk implementation:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Add CopyInspector.cs to Assets/Editor.&lt;/li&gt;
+	&lt;li&gt;Add CopyTransformInspector.cs to Assets/Editor.&lt;/li&gt;
+	&lt;li&gt;For each other component to be made copy/paste-able:
+	&lt;ul&gt;
+		&lt;li&gt;Add CopyYourComponentTypeInspector.cs to Assets/Editor.&lt;/li&gt;
+		&lt;li&gt;Rename it appropriately.&lt;/li&gt;
+		&lt;li&gt;Rename the class to match the file name.&lt;/li&gt;
+		&lt;li&gt;Change YourComponentType in &amp;#8220;[CustomEditor (typeof (YourComponentType))]&amp;#8221; to the type of component you wish to affect.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;http://eej.dk/angryant/wp-content/uploads/2009/11/CopyTransformInspector.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;You&amp;#8217;ll notice that CopyTransformInspector has some additional code to it. This is due to the fact that this inspector is rendered non-standard and the code provided just replicates that.&lt;/p&gt;
-&lt;p&gt;[caption id=&amp;#8220;attachment_339&amp;#8221; align=&amp;#8220;aligncenter&amp;#8221; width=&amp;#8220;260&amp;#8221; caption=&amp;#8220;The copy transform inspector&amp;#8221;]&lt;img src=&quot;http://eej.dk/angryant/wp-content/uploads/2009/11/CopyTransformInspector.png&quot; alt=&quot;The copy transform inspector&quot; title=&quot;CopyTransformInspector&quot; width=&quot;260&quot; height=&quot;149&quot; class=&quot;size-full wp-image-339&quot; /&gt;[/caption]&lt;/p&gt;
 &lt;p&gt;Not really sure why syntax highlighting is not kicking in&amp;#8230; Will have a look at that later.&lt;/p&gt;
 &lt;p&gt;Codes!&lt;/p&gt;
 &lt;p&gt;CopyInspector.cs&lt;br /&gt;
-&lt;pre class=&quot;textmate-source&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEditor&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections.Generic&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Reflection&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; CopyInspector : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Editor&lt;/span&gt;&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806123.js?file=CopyInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;&lt;/p&gt;
+&lt;p&gt;public class CopyInspector : Editor&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; System.Type m_OriginalType;&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; Dictionary &amp;lt;PropertyInfo, &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;object&lt;/span&gt;&amp;gt; m_Values;&lt;/p&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; List &lt;PropertyInfo&gt; GetProperties (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; component)
-{
-List &amp;lt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt;&amp;gt; ignoredProperties;
-List &lt;PropertyInfo&gt; properties;
-properties = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; List &lt;PropertyInfo&gt; ();
-ignoredProperties = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; List &amp;lt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt;&amp;gt; ();
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt; (PropertyInfo propertyInfo &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt;).GetProperties ())
-{
-ignoredProperties.Add (propertyInfo.Name);
-}
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt; (PropertyInfo propertyInfo &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; component.GetType ().GetProperties ())
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (ignoredProperties.Contains (propertyInfo.Name))
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;continue&lt;/span&gt;;
-}
-properties.Add (propertyInfo);
-}
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; properties;
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public override &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnInspectorGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        DrawDefaultInspector ();&lt;br /&gt;
-        OnCopyInspectorGUI ();&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnCopyInspectorGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; enabled;&lt;br /&gt;
-        List &lt;PropertyInfo&gt; properties;&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt; component;&lt;/p&gt;
-component = target &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Component&lt;/span&gt;;
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (component == &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;)
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt;;
-}
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt; backgroundColor = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.backgroundColor;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.backgroundColor = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Color&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.8f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.8f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.8f&lt;/span&gt;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginVertical (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Toolbar&lt;/span&gt;&amp;quot;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.backgroundColor = backgroundColor;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Label (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Copied: &lt;/span&gt;&amp;quot; + (m_OriginalType != &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt; ? m_OriginalType.Name : &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Nothing&lt;/span&gt;&amp;quot;), &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;MiniLabel&lt;/span&gt;&amp;quot;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUIContent&lt;/span&gt; (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Copy&lt;/span&gt;&amp;quot;, &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Copy component values&lt;/span&gt;&amp;quot;), &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;MiniLabel&lt;/span&gt;&amp;quot;))
-{
-m_OriginalType = target.GetType ();
-properties = GetProperties (component);
-m_Values = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; Dictionary &amp;lt;PropertyInfo, &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;object&lt;/span&gt;&amp;gt; ();
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt; (PropertyInfo property &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; properties)
-{
-m_Values [property] = property.GetValue (component, &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;);
-}
-}
-enabled = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.enabled;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.enabled = target.GetType () == m_OriginalType;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;);
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Button (&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUIContent&lt;/span&gt; (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Paste&lt;/span&gt;&amp;quot;, &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Paste component values&lt;/span&gt;&amp;quot;), &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;MiniLabel&lt;/span&gt;&amp;quot;))
-{
-properties = GetProperties (component);
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;foreach&lt;/span&gt; (PropertyInfo property &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;in&lt;/span&gt; properties)
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (!property.CanWrite)
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;continue&lt;/span&gt;;
-}
-property.SetValue (component, m_Values [property], &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;);
-}
-}
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;10.0f&lt;/span&gt;);
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.enabled = enabled;
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndHorizontal ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndVertical ();
-&lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Space&lt;/span&gt; (-&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;2.0f&lt;/span&gt;);
-}
-&lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	static System.Type m_OriginalType;&lt;br /&gt;
+	static Dictionary object&amp;gt; m_Values;&lt;/p&gt;
+&lt;p&gt;private List  GetProperties (Component component)&lt;br /&gt;
+	{&lt;br /&gt;
+		List &amp;lt;string&amp;gt; ignoredProperties;&lt;br /&gt;
+		List  properties;&lt;/p&gt;
+&lt;p&gt;properties = new List  ();&lt;br /&gt;
+		ignoredProperties = new List &amp;lt;string&amp;gt; ();&lt;br /&gt;
+		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())&lt;br /&gt;
+		{&lt;br /&gt;
+			ignoredProperties.Add (propertyInfo.Name);&lt;br /&gt;
+		}&lt;/p&gt;
+&lt;p&gt;foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())&lt;br /&gt;
+		{&lt;br /&gt;
+			if (ignoredProperties.Contains (propertyInfo.Name))&lt;br /&gt;
+			{&lt;br /&gt;
+				continue;&lt;br /&gt;
+			}&lt;br /&gt;
+			properties.Add (propertyInfo);&lt;br /&gt;
+		}&lt;/p&gt;
+&lt;p&gt;return properties;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public override void OnInspectorGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		DrawDefaultInspector ();&lt;br /&gt;
+		OnCopyInspectorGUI ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnCopyInspectorGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		bool enabled;&lt;br /&gt;
+		List  properties;&lt;br /&gt;
+		Component component;&lt;/p&gt;
+&lt;p&gt;component = target as Component;&lt;/p&gt;
+&lt;p&gt;if (component == null)&lt;br /&gt;
+		{&lt;br /&gt;
+			return;&lt;br /&gt;
+		}&lt;/p&gt;
+&lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
+&lt;p&gt;Color backgroundColor = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.backgroundColor;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.backgroundColor = new Color (0.8f, 0.8f, 0.8f);&lt;/p&gt;
+&lt;p&gt;GUILayout.BeginVertical (&amp;quot;Toolbar&amp;quot;);&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.backgroundColor = backgroundColor;&lt;/p&gt;
+&lt;p&gt;GUILayout.BeginHorizontal ();&lt;/p&gt;
+&lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
+&lt;p&gt;GUILayout.Label (&amp;quot;Copied: &amp;quot; + (m_OriginalType != null ? m_OriginalType.Name : &amp;quot;Nothing&amp;quot;), &amp;quot;MiniLabel&amp;quot;);&lt;/p&gt;
+&lt;p&gt;GUILayout.FlexibleSpace ();&lt;/p&gt;
+&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Copy&amp;quot;, &amp;quot;Copy component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))&lt;br /&gt;
+				{&lt;br /&gt;
+					m_OriginalType = target.GetType ();&lt;/p&gt;
+&lt;p&gt;properties = GetProperties (component);&lt;/p&gt;
+&lt;p&gt;m_Values = new Dictionary object&amp;gt; ();&lt;br /&gt;
+					foreach (PropertyInfo property in properties)&lt;br /&gt;
+					{&lt;br /&gt;
+						m_Values [property] = property.GetValue (component, null);&lt;br /&gt;
+					}&lt;br /&gt;
+				}&lt;/p&gt;
+&lt;p&gt;enabled = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled;&lt;br /&gt;
+				&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled = target.GetType () == m_OriginalType;&lt;/p&gt;
+&lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
+&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Paste&amp;quot;, &amp;quot;Paste component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))&lt;br /&gt;
+				{&lt;br /&gt;
+					properties = GetProperties (component);&lt;br /&gt;
+					foreach (PropertyInfo property in properties)&lt;br /&gt;
+					{&lt;br /&gt;
+						if (!property.CanWrite)&lt;br /&gt;
+						{&lt;br /&gt;
+							continue;&lt;br /&gt;
+						}&lt;/p&gt;
+&lt;p&gt;property.SetValue (component, m_Values [property], null);&lt;br /&gt;
+					}&lt;br /&gt;
+				}&lt;/p&gt;
+&lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled = enabled;&lt;/p&gt;
+&lt;p&gt;GUILayout.EndHorizontal ();&lt;/p&gt;
+&lt;p&gt;GUILayout.EndVertical ();&lt;/p&gt;
+&lt;p&gt;GUILayout.Space (-2.0f);&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;CopyTransformInspector.cs&lt;br /&gt;
-&lt;pre class=&quot;textmate-source&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEditor&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;[&lt;span class=&quot;support support_class support_class_unity&quot;&gt;CustomEditor&lt;/span&gt; (&lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;Transform&lt;/span&gt;))]&lt;br /&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; CopyTransformInspector : CopyInspector&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806123.js?file=CopyTransformInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+using System.Collections;&lt;/p&gt;
+&lt;p&gt;[CustomEditor (typeof (Transform))]&lt;br /&gt;
+public class CopyTransformInspector : CopyInspector&lt;br /&gt;
 {&lt;br /&gt;
-&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public override &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnInspectorGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Transform&lt;/span&gt; transform;&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Vector3&lt;/span&gt; localPosition, localScale;&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Quaternion&lt;/span&gt; localRotation;&lt;/p&gt;
-transform = target &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Transform&lt;/span&gt;;
-localPosition = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;EditorGUILayout&lt;/span&gt;.Vector3Field (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Position&lt;/span&gt;&amp;quot;, transform.localPosition);
-localRotation = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Quaternion&lt;/span&gt;.Euler (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;EditorGUILayout&lt;/span&gt;.Vector3Field (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Rotation&lt;/span&gt;&amp;quot;, transform.localRotation.eulerAngles));
-localScale = &lt;span class=&quot;support support_class support_class_unity&quot;&gt;EditorGUILayout&lt;/span&gt;.Vector3Field (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Scale&lt;/span&gt;&amp;quot;, transform.localScale);
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/span&gt;.changed)
-{
-transform.localPosition = localPosition;
-transform.localRotation = localRotation;
-transform.localScale = localScale;
-}
-OnCopyInspectorGUI ();
-}
-&lt;p&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	public override void OnInspectorGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		Transform transform;&lt;br /&gt;
+		Vector3 localPosition, localScale;&lt;br /&gt;
+		Quaternion localRotation;&lt;/p&gt;
+&lt;p&gt;transform = target as Transform;&lt;/p&gt;
+&lt;p&gt;localPosition = EditorGUILayout.Vector3Field (&amp;quot;Position&amp;quot;, transform.localPosition);&lt;br /&gt;
+		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&amp;quot;Rotation&amp;quot;, transform.localRotation.eulerAngles));&lt;br /&gt;
+		localScale = EditorGUILayout.Vector3Field (&amp;quot;Scale&amp;quot;, transform.localScale);&lt;/p&gt;
+&lt;p&gt;if (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.changed)&lt;br /&gt;
+		{&lt;br /&gt;
+			transform.localPosition = localPosition;&lt;br /&gt;
+			transform.localRotation = localRotation;&lt;br /&gt;
+			transform.localScale = localScale;&lt;br /&gt;
+		}&lt;/p&gt;
+&lt;p&gt;OnCopyInspectorGUI ();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;CopyYourComponentTypeInspector.cs&lt;br /&gt;
-&lt;pre class=&quot;textmate-source&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEditor&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;[&lt;span class=&quot;support support_class support_class_unity&quot;&gt;CustomEditor&lt;/span&gt; (&lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;typeof&lt;/span&gt; (YourComponentType))]&lt;br /&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; CopyYourComponentTypeInspector : CopyInspector{}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;</description>
+&lt;script src='https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+using System.Collections;&lt;/p&gt;
+&lt;p&gt;[CustomEditor (typeof (YourComponentType))]&lt;br /&gt;
+public class CopyYourComponentTypeInspector : CopyInspector{}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>Wed Nov 04 00:00:00 +0100 2009</published>
 				<link>http://angryant.com/2009/11/04/copyinspector/</link>
 			</item>
@@ -1722,6 +1724,245 @@ using System.Collections;&lt;/p&gt;
 			<item>
 				<title>UnitySteer</title>
 				<description>&lt;p&gt;Ok so I&amp;#8217;ve been quite busy lately and so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
+&lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
+&lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
+&lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Aug 19 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/08/19/unitysteer/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New and improved: Behave 1.0 released</title>
+				<description>&lt;p&gt;After lots of late night tinkering, Behave 1.0 is finally out. This version fixes all known issues with unity 2.5, brings in lessons learned from Path 1.0 meaning a smashing new interface plus lots of new additions.&lt;/p&gt;
+&lt;p&gt;The new tree editor contains interface improvements allowing for much faster tree building: A brand new component bar, sub-tree movement, integration with the standard unity inspector and more.&lt;/p&gt;
+&lt;p&gt;In this version, the Behave runtime have also received an update. More runtime data is more easily available from the tree and library classes and methods implemented in your agent scripts are now mapped directly (by name) to action and decorator invokes.&lt;/p&gt;
+&lt;p&gt;This site will be updated as soon as possible with all the changes and additions and the documentation will be brought up to speed.&lt;/p&gt;
+&lt;p&gt;So what are you waiting for? Head on over to the downloads section and get your copy today!&lt;/p&gt;</description>
+				<published>Mon May 18 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/05/18/new-and-improved-behave-10-released/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b and unity 2.5</title>
+				<description>&lt;p&gt;Apart from the hotfix, the following steps need to be followed when using Behave 0.3b in unity 2.5:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;When building an asset, make sure to use the shortcut for it and not the menu.&lt;/li&gt;
+	&lt;li&gt;Behave.dll needs to be in a subfolder of your Assets folder named &amp;#8220;Assets&amp;#8221;. That is, for instance, &amp;#8220;MyProject/Assets/Assets/Behave.dll&amp;#8221;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I&amp;#8217;m currently working on a new version of Behave which will resolve these and other issues apart from adding new features.&lt;/p&gt;</description>
+				<published>Wed Apr 08 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/04/08/behave-03b-and-unity-25/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b hotfix</title>
+				<description>&lt;p&gt;Changes in the unity 2.5 editor &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; has resulted in some bad issues in Behave 0.3b &amp;#8211; a hotfix to solve the most critical ones &amp;#8211; making the Behave editor interface usable again is available in the Behave downloads section.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ll be working on a more extensive rewrite. Stay tuned.&lt;/p&gt;</description>
+				<published>Fri Mar 20 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/20/behave-03b-hotfix/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path tutorial video available</title>
+				<description>&lt;p&gt;I just finished the first Path tutorial video. &lt;a href=&quot;/resources/path/TheBasics.mov&quot;&gt;Give it a look&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Thu Mar 19 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/19/path-tutorial-video-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path 1.0 launched!</title>
+				<description>&lt;p&gt;Earlier today unity 2.5 launched so here we go! Path 1.0 and a pretty new website is now online. Victory!&lt;/p&gt;</description>
+				<published>Wed Mar 18 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/18/path-10-launched/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Continued community tutorials</title>
+				<description>&lt;p&gt;Arges from the unity community has been keeping busy. His latest tutorial goes more in-depth with Behave and unity, providing an interesting and useful example to work with.&lt;/p&gt;
+&lt;p&gt;Have a read at &lt;a href=&quot;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&quot;&gt;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Dec 17 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Community tutorial</title>
+				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Sun Nov 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New tutorial</title>
+				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Fri Nov 28 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>First tutorial available</title>
+				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Tue Nov 04 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Optimised the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour&lt;/li&gt;
+		&lt;li&gt;When a compile fails, the Behave compiler is locked and unusable &amp;#8211; requiring a unity relaunch&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Implemented the following wishlist items:
+	&lt;ul&gt;
+		&lt;li&gt;Behaviour tree decorators&lt;/li&gt;
+		&lt;li&gt;Stand-alone edition of the Behave editor&lt;/li&gt;
+		&lt;li&gt;Behaviour tree debugging features&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Sun Nov 02 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/02/behave-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>unite '08 open-mic session</title>
+				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
+				<published>Sat Oct 25 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.2b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
+	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
+		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>nd so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
 &lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
 &lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
 &lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
