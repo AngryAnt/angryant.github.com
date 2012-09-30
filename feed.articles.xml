@@ -899,190 +899,195 @@ Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010
 			<item>
 				<title>Downloading the hydra</title>
 				<description>&lt;p&gt;So I&amp;#8217;ve seen some people asking how you would go about downloading executable code from an external location, reading it into memory and executing it in ones running application.&lt;/p&gt;
-&lt;p&gt;Now some readers might go &amp;#8220;eh? why the heck would someone want to do that?&amp;#8221;. Well first off, &lt;b&gt;its cool&lt;/b&gt;&amp;trade;, but seeing as that is rarely an argument which convinces decision makers, here&amp;#8217;s a few others:&lt;/p&gt;
-&lt;ul&gt;&lt;li&gt;Patching. The ability to modify the behaviour of your downloaded executable after distribution, without requiring re-download.&lt;/li&gt;
-&lt;li&gt;Highly dynamic online content. Say you&amp;#8217;re building a virtual world or something. You might want to have the ability to add more complex behaviours to downloaded content &amp;#8211; more than what a data-driven approach allows for.&lt;/li&gt;
-&lt;li&gt;Or how about expanding the capabilities of user generated content?&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;Now some readers might go &amp;#8220;eh? why the heck would someone want to do that?&amp;#8221;. Well first off, &lt;b&gt;its cool&lt;/b&gt;&amp;#8482;, but seeing as that is rarely an argument which convinces decision makers, here&amp;#8217;s a few others:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Patching. The ability to modify the behaviour of your downloaded executable after distribution, without requiring re-download.&lt;/li&gt;
+	&lt;li&gt;Highly dynamic online content. Say you&amp;#8217;re building a virtual world or something. You might want to have the ability to add more complex behaviours to downloaded content &amp;#8211; more than what a data-driven approach allows for.&lt;/li&gt;
+	&lt;li&gt;Or how about expanding the capabilities of user generated content?&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;There. Those are my alibis and I&amp;#8217;m sticking to them.&lt;/p&gt;
 &lt;p&gt;Now this example is quick and simple so as to not bloat the post too much. Regardless of your use, you&amp;#8217;ll likely be wanting to add in for instance some cache functionality for real-world use.&lt;/p&gt;
-&lt;p&gt;Right. So this example contains three pieces of eight, uh, code:&lt;br /&gt;
-&lt;ul&gt;&lt;li&gt;The loader utility &amp;#8211; responsible for downloading and making available the remote code.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;The assembly &amp;#8211; you know, the one we&amp;#8217;re downloading.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;An example handler. For easy re-use, I&amp;#8217;ve designed this example to allow for easy re-use of the loader utility by externalising handling of the assemblies via messages. This example handler shows some techniques for accessing the data of loaded assemblies.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;Using the example:&lt;br /&gt;
-&lt;ol&gt;&lt;li&gt;Download and save /Assets/WWWAssemblyLoader.cs, /Assets/NewBehaviourScript.cs and /MyAssembly.cs.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Download and install the mono runtime (or the .net equivalent on Windnows &amp;#8211; not tested, but should work just fine).&lt;/li&gt;&lt;br /&gt;
- &lt;li&gt;Build the assembly from the terminal &amp;#8211; using the build command supplied at the end of this post.&lt;/li&gt;&lt;br /&gt;
- &lt;li&gt;Upload the assembly to some host (save the &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; for later).&lt;/li&gt;&lt;br /&gt;
- &lt;li&gt;Open up your Unity project.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Add the WWWAssemblyLoader and NewBehaviourScript scripts to a GameObject and set the &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; property of the first to that of your uploaded assembly.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Press play.&lt;/li&gt;&lt;br /&gt;
-&lt;li&gt;Profit!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;
+&lt;p&gt;Right. So this example contains three pieces of eight, uh, code:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;The loader utility &amp;#8211; responsible for downloading and making available the remote code.&lt;/li&gt;
+	&lt;li&gt;The assembly &amp;#8211; you know, the one we&amp;#8217;re downloading.&lt;/li&gt;
+	&lt;li&gt;An example handler. For easy re-use, I&amp;#8217;ve designed this example to allow for easy re-use of the loader utility by externalising handling of the assemblies via messages. This example handler shows some techniques for accessing the data of loaded assemblies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Using the example:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Download and save /Assets/WWWAssemblyLoader.cs, /Assets/NewBehaviourScript.cs and /MyAssembly.cs.&lt;/li&gt;
+	&lt;li&gt;Download and install the mono runtime (or the .net equivalent on Windnows &amp;#8211; not tested, but should work just fine).&lt;/li&gt;
+	&lt;li&gt;Build the assembly from the terminal &amp;#8211; using the build command supplied at the end of this post.&lt;/li&gt;
+	&lt;li&gt;Upload the assembly to some host (save the &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; for later).&lt;/li&gt;
+	&lt;li&gt;Open up your Unity project.&lt;/li&gt;
+	&lt;li&gt;Add the WWWAssemblyLoader and NewBehaviourScript scripts to a GameObject and set the &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; property of the first to that of your uploaded assembly.&lt;/li&gt;
+	&lt;li&gt;Press play.&lt;/li&gt;
+	&lt;li&gt;Profit!&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;And now the codes!&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/Assets/WWWAssemblyLoader.cs&lt;/b&gt;&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Reflection&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; WWWAssemblyLoader : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;MonoBehaviour&lt;/span&gt;&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
+using System.Reflection;&lt;/p&gt;
+&lt;p&gt;public class WWWAssemblyLoader : MonoBehaviour&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; m_AssemblyURL;&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt;&lt;/span&gt; m_WWW;&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;bool&lt;/span&gt; m_Complete = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;true&lt;/span&gt;;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Start&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (m_AssemblyURL != &amp;quot;&amp;quot;)&lt;br /&gt;
-        {&lt;br /&gt;
-            ReloadAssembly (m_AssemblyURL);&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; AssemblyURL
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; m_AssemblyURL;
-}
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;set&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (m_AssemblyURL != &lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;value&lt;/span&gt;)
-{
-ReloadAssembly (&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;value&lt;/span&gt;);
-}
-}
-}
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;float&lt;/span&gt; Progress
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; m_Complete ? &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;1.0f&lt;/span&gt; : m_WWW.progress;
-}
-}
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; Error
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; m_ErrorString;
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;ReloadAssembly&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; url&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_Complete = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;false&lt;/span&gt;;&lt;br /&gt;
-        m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
-        m_AssemblyURL = url;&lt;br /&gt;
-        m_WWW = &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt;&lt;/span&gt; (m_AssemblyURL);&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;Update&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (!m_Complete)&lt;br /&gt;
-        {&lt;br /&gt;
-            &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (m_WWW.error != &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;)&lt;br /&gt;
-            {&lt;br /&gt;
-                m_ErrorString = m_WWW.error;&lt;br /&gt;
-                m_Complete = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;true&lt;/span&gt;;&lt;br /&gt;
-                SendMessage (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;OnAssemblyLoadFailed&lt;/span&gt;&amp;#8220;, m_AssemblyURL);&lt;br /&gt;
-            }&lt;br /&gt;
-            &amp;#8221;keyword keyword_control keyword_control_csharp&amp;quot;&amp;gt;else&lt;/span&gt; &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (m_WWW.isDone)&lt;br /&gt;
-            {&lt;br /&gt;
-                Assembly assembly = LoadAssembly ();&lt;br /&gt;
-                m_Complete = &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;true&lt;/span&gt;;&lt;br /&gt;
-                &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;if&lt;/span&gt; (assembly != &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;)&lt;br /&gt;
-                {&lt;br /&gt;
-                    &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Done&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-                    SendMessage (&amp;#8221;&lt;span class=&quot;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;OnAssemblyLoaded&lt;/span&gt;&amp;#8220;, &amp;#8221;keyword keyword_control keyword_control_csharp&amp;quot;&amp;gt;new&lt;/span&gt; WWWAssembly (m_AssemblyURL, assembly));&lt;br /&gt;
-                }&lt;br /&gt;
-                &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;else&lt;/span&gt;&lt;br /&gt;
-                {&lt;br /&gt;
-                    &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Failed&lt;/span&gt;&amp;#8220;);&lt;br /&gt;
-                    SendMessage (&amp;#8221;&lt;span class=&quot;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;OnAssemblyLoadFailed&lt;/span&gt;&amp;quot;, m_AssemblyURL);&lt;br /&gt;
-                }&lt;br /&gt;
-            }&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;Assembly&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;LoadAssembly&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;try&lt;/span&gt;&lt;br /&gt;
-        {&lt;br /&gt;
-            &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; Assembly.Load (m_WWW.bytes);&lt;br /&gt;
-        }&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;catch&lt;/span&gt; (System.Exception e)&lt;br /&gt;
-        {&lt;br /&gt;
-            m_ErrorString = e.ToString ();&lt;br /&gt;
-            &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;;&lt;br /&gt;
-        }&lt;br /&gt;
-    }&lt;br /&gt;
+	public string m_AssemblyURL;&lt;br /&gt;
+	private string m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
+	private &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; m_WWW;&lt;br /&gt;
+	private bool m_Complete = true;&lt;/p&gt;
+&lt;p&gt;public void Start ()&lt;br /&gt;
+	{&lt;br /&gt;
+		if (m_AssemblyURL != &amp;quot;&amp;quot;)&lt;br /&gt;
+		{&lt;br /&gt;
+			ReloadAssembly (m_AssemblyURL);&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public string AssemblyURL&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return m_AssemblyURL;&lt;br /&gt;
+		}&lt;br /&gt;
+		set&lt;br /&gt;
+		{&lt;br /&gt;
+			if (m_AssemblyURL != value)&lt;br /&gt;
+			{&lt;br /&gt;
+				ReloadAssembly (value);&lt;br /&gt;
+			}&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public float Progress&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return m_Complete ? 1.0f : m_WWW.progress;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public string Error&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return m_ErrorString;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void ReloadAssembly (string url)&lt;br /&gt;
+	{&lt;br /&gt;
+		m_Complete = false;&lt;br /&gt;
+		m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
+		m_AssemblyURL = url;&lt;br /&gt;
+		m_WWW = new &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; (m_AssemblyURL);&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void Update ()&lt;br /&gt;
+	{&lt;br /&gt;
+		if (!m_Complete)&lt;br /&gt;
+		{&lt;br /&gt;
+			if (m_WWW.error != null)&lt;br /&gt;
+			{&lt;br /&gt;
+				m_ErrorString = m_WWW.error;&lt;br /&gt;
+				m_Complete = true;&lt;br /&gt;
+				SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);&lt;br /&gt;
+			}&lt;br /&gt;
+			else if (m_WWW.isDone)&lt;br /&gt;
+			{&lt;br /&gt;
+				Assembly assembly = LoadAssembly ();&lt;br /&gt;
+				m_Complete = true;&lt;br /&gt;
+				if (assembly != null)&lt;br /&gt;
+				{&lt;br /&gt;
+					Debug.Log (&amp;quot;Done&amp;quot;);&lt;br /&gt;
+					SendMessage (&amp;quot;OnAssemblyLoaded&amp;quot;, new WWWAssembly (m_AssemblyURL, assembly));&lt;br /&gt;
+				}&lt;br /&gt;
+				else&lt;br /&gt;
+				{&lt;br /&gt;
+					Debug.Log (&amp;quot;Failed&amp;quot;);&lt;br /&gt;
+					SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);&lt;br /&gt;
+				}&lt;br /&gt;
+			}&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;private Assembly LoadAssembly ()&lt;br /&gt;
+	{&lt;br /&gt;
+		try&lt;br /&gt;
+		{&lt;br /&gt;
+			return Assembly.Load (m_WWW.bytes);&lt;br /&gt;
+		}&lt;br /&gt;
+		catch (System.Exception e)&lt;br /&gt;
+		{&lt;br /&gt;
+			m_ErrorString = e.ToString ();&lt;br /&gt;
+			return null;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;br /&gt;
 }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; WWWAssembly&lt;br /&gt;
+&lt;p&gt;public class WWWAssembly&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; m_URL;&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; Assembly m_Assembly;&lt;/p&gt;
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; m_URL;
-}
-}
-&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; Assembly Assembly
-{
-&lt;span class=&quot;keyword keyword_other keyword_other_csharp&quot;&gt;get&lt;/span&gt;
-{
-&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; m_Assembly;
-}
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;WWWAssembly&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; url, Assembly assembly&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_URL = url;&lt;br /&gt;
-        m_Assembly = assembly;&lt;br /&gt;
-    }&lt;br /&gt;
-}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	private string m_URL;&lt;br /&gt;
+	private Assembly m_Assembly;&lt;/p&gt;
+&lt;p&gt;public string &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt;&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return m_URL;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public Assembly Assembly&lt;br /&gt;
+	{&lt;br /&gt;
+		get&lt;br /&gt;
+		{&lt;br /&gt;
+			return m_Assembly;&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public WWWAssembly (string url, Assembly assembly)&lt;br /&gt;
+	{&lt;br /&gt;
+		m_URL = url;&lt;br /&gt;
+		m_Assembly = assembly;&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/Assets/NewBehaviourScript.cs&lt;/b&gt;&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Collections&lt;/span&gt;;&lt;/span&gt;&lt;br /&gt;
-&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;System.Reflection&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; NewBehaviourScript : &lt;span class=&quot;support support_class support_class_unity&quot;&gt;MonoBehaviour&lt;/span&gt;&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806151.js?file=NewBehaviourScript.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
+using System.Reflection;&lt;/p&gt;
+&lt;p&gt;public class NewBehaviourScript : MonoBehaviour&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; m_MessageString = &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Waiting for assembly&lt;/span&gt;&amp;quot;;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnAssemblyLoaded&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(WWWAssembly loadedAssembly&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_MessageString = &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Assembly &lt;/span&gt;&amp;quot; + loadedAssembly.&lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;&lt;span class=&quot;constant constant_character constant_character_escape constant_character_escape_csharp&quot;&gt;\n&lt;/span&gt;&lt;/span&gt;&amp;quot;;&lt;/p&gt;
-System.Type type = loadedAssembly.Assembly.GetType (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;MyClass&lt;/span&gt;&amp;quot;);
-FieldInfo field = type.GetField (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;myString&lt;/span&gt;&amp;quot;);
-m_MessageString += (field.GetValue (&lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;) &lt;span class=&quot;keyword keyword_operator keyword_operator_csharp&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt;) + &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;&lt;span class=&quot;constant constant_character constant_character_escape constant_character_escape_csharp&quot;&gt;\n&lt;/span&gt;&lt;/span&gt;&amp;quot;;
-&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;object&lt;/span&gt; instance = loadedAssembly.Assembly.CreateInstance (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;MyClass&lt;/span&gt;&amp;quot;);
-MethodInfo method = type.GetMethod (&amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;LogMyString&lt;/span&gt;&amp;quot;);
-m_MessageString += &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Return value: &lt;/span&gt;&amp;quot; + method.Invoke (instance, &lt;span class=&quot;constant constant_language constant_language_csharp&quot;&gt;null&lt;/span&gt;).ToString ();
-}
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnAssemblyLoadFailed&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; url&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        m_MessageString = &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;Failed to load assembly at &lt;/span&gt;&amp;quot; + url;&lt;br /&gt;
-    }&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;OnGUI&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginArea (&lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Rect&lt;/span&gt; (&lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.0f&lt;/span&gt;, &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;0.0f&lt;/span&gt;, &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Screen&lt;/span&gt;.width, &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Screen&lt;/span&gt;.height));&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.BeginHorizontal ();&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.Box (m_MessageString);&lt;br /&gt;
-                &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndHorizontal ();&lt;br /&gt;
-            &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.FlexibleSpace ();&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;GUILayout&lt;/span&gt;.EndArea ();&lt;br /&gt;
-    }&lt;br /&gt;
-}&lt;br /&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	private string m_MessageString = &amp;quot;Waiting for assembly&amp;quot;;&lt;/p&gt;
+&lt;p&gt;void OnAssemblyLoaded (WWWAssembly loadedAssembly)&lt;br /&gt;
+	{&lt;br /&gt;
+		m_MessageString = &amp;quot;Assembly &amp;quot; + loadedAssembly.&lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; + &amp;quot;\n&amp;quot;;&lt;/p&gt;
+&lt;p&gt;System.Type type = loadedAssembly.Assembly.GetType (&amp;quot;MyClass&amp;quot;);&lt;/p&gt;
+&lt;p&gt;FieldInfo field = type.GetField (&amp;quot;myString&amp;quot;);&lt;br /&gt;
+		m_MessageString += (field.GetValue (null) as string) + &amp;quot;\n&amp;quot;;&lt;/p&gt;
+&lt;p&gt;object instance = loadedAssembly.Assembly.CreateInstance (&amp;quot;MyClass&amp;quot;);&lt;br /&gt;
+		MethodInfo method = type.GetMethod (&amp;quot;LogMyString&amp;quot;);&lt;br /&gt;
+		m_MessageString += &amp;quot;Return value: &amp;quot; + method.Invoke (instance, null).ToString ();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void OnAssemblyLoadFailed (string url)&lt;br /&gt;
+	{&lt;br /&gt;
+		m_MessageString = &amp;quot;Failed to load assembly at &amp;quot; + url;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;void OnGUI ()&lt;br /&gt;
+	{&lt;br /&gt;
+		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));&lt;br /&gt;
+			GUILayout.FlexibleSpace ();&lt;br /&gt;
+			GUILayout.BeginHorizontal ();&lt;br /&gt;
+				GUILayout.FlexibleSpace ();&lt;br /&gt;
+				GUILayout.Box (m_MessageString);&lt;br /&gt;
+				GUILayout.FlexibleSpace ();&lt;br /&gt;
+			GUILayout.EndHorizontal ();&lt;br /&gt;
+			GUILayout.FlexibleSpace ();&lt;br /&gt;
+		GUILayout.EndArea ();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/MyAssembly.cs&lt;/b&gt;&lt;br /&gt;
-&lt;pre class=&quot;textmate-source idle&quot;&gt;&lt;span class=&quot;source source_csharp&quot;&gt;&lt;span class=&quot;meta meta_keyword meta_keyword_using meta_keyword_using_csharp&quot;&gt;&lt;span class=&quot;keyword keyword_other keyword_other_using&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_package entity_name_package_csharp&quot;&gt;UnityEngine&lt;/span&gt;;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;class&lt;/span&gt; MyClass&lt;br /&gt;
+&lt;script src='https://gist.github.com/3806151.js?file=MyAssembly.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;p&gt;public class MyClass&lt;br /&gt;
 {&lt;br /&gt;
-    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;string&lt;/span&gt; myString = &amp;#8220;&amp;#8221;string string_quoted string_quoted_double string_quoted_double_csharp&amp;quot;&amp;gt;This is my string from my class in my assembly&lt;/span&gt;&amp;quot;;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;meta meta_definition meta_definition_method meta_definition_method_csharp&quot;&gt;    &lt;span class=&quot;storage storage_modifier storage_modifier_csharp&quot;&gt;public &lt;/span&gt;&lt;span class=&quot;storage storage_type storage_type_csharp&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;entity entity_name entity_name_function entity_name_function_csharp&quot;&gt;LogMyString&lt;/span&gt; &lt;span class=&quot;meta meta_definition meta_definition_param-list meta_definition_param-list_csharp&quot;&gt;(&lt;/span&gt;)&lt;/span&gt;&lt;br /&gt;
-    {&lt;br /&gt;
-        &lt;span class=&quot;support support_class support_class_unity&quot;&gt;Debug&lt;/span&gt;.Log (myString);&lt;br /&gt;
-        &lt;span class=&quot;keyword keyword_control keyword_control_csharp&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;2&lt;/span&gt; + &lt;span class=&quot;constant constant_numeric constant_numeric_csharp&quot;&gt;2&lt;/span&gt;;&lt;br /&gt;
-    }&lt;br /&gt;
-}&lt;/span&gt;&lt;/pre&gt;&lt;/p&gt;
+	public static string myString = &amp;quot;This is my string from my class in my assembly&amp;quot;;&lt;/p&gt;
+&lt;p&gt;public int LogMyString ()&lt;br /&gt;
+	{&lt;br /&gt;
+		Debug.Log (myString);&lt;br /&gt;
+		return 2 + 2;&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;The assembly compile terminal command&lt;/b&gt;&lt;br /&gt;
-&lt;i&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/i&gt;&lt;/p&gt;</description>
+&lt;script src='https://gist.github.com/3806151.js?file=Build.sh'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>Tue Jan 05 00:00:00 +0100 2010</published>
 				<link>http://angryant.com/2010/01/05/downloading-the-hydra/</link>
 			</item>
@@ -1660,6 +1665,309 @@ void OnGUI()
 	&lt;li&gt;Place it in /Assets/Editor in your project.&lt;/li&gt;
 	&lt;li&gt;Launch the window from the Component menu &amp;#8211; should be the last item titled &amp;#8220;Component lister&amp;#8221;.&lt;/li&gt;
 	&lt;li&gt;Click &amp;#8220;Refresh&amp;#8221; to list all components in your scene and the GameObjects to which they are attached.&lt;/li&gt;
+	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Codes:&lt;br /&gt;
+&lt;script src='https://gist.github.com/3804708.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+using System.Collections;&lt;/p&gt;
+&lt;p&gt;public class ComponentLister : EditorWindow&lt;br /&gt;
+{&lt;br /&gt;
+	private Hashtable sets = new Hashtable();&lt;br /&gt;
+	private Vector2 scrollPosition;&lt;/p&gt;
+&lt;p&gt;[ MenuItem( &amp;quot;Component/Component lister&amp;quot; ) ]&lt;br /&gt;
+	public static void Launch()&lt;br /&gt;
+	{&lt;br /&gt;
+		EditorWindow window = GetWindow( typeof( ComponentLister ) );&lt;br /&gt;
+		window.Show();&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void UpdateList()&lt;br /&gt;
+	{&lt;br /&gt;
+		Object[] objects;&lt;/p&gt;
+&lt;p&gt;sets.Clear();&lt;/p&gt;
+&lt;p&gt;objects = FindObjectsOfType( typeof( Component ) );&lt;br /&gt;
+		foreach( Component component in objects )&lt;br /&gt;
+		{&lt;br /&gt;
+			if( !sets.ContainsKey( component.GetType() ) )&lt;br /&gt;
+			{&lt;br /&gt;
+				sets[ component.GetType() ] = new ArrayList();&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );&lt;br /&gt;
+		}&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;public void OnGUI()&lt;br /&gt;
+	{&lt;br /&gt;
+		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
+			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
+			GUILayout.FlexibleSpace();&lt;/p&gt;
+&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
+			{&lt;br /&gt;
+				UpdateList();&lt;br /&gt;
+			}&lt;br /&gt;
+		GUILayout.EndHorizontal();&lt;/p&gt;
+&lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
+&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
+			{&lt;br /&gt;
+				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
+				{&lt;br /&gt;
+					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
+					{&lt;br /&gt;
+						Selection.activeObject = gameObject;&lt;br /&gt;
+					}&lt;br /&gt;
+				}&lt;br /&gt;
+			}&lt;/p&gt;
+&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
+	}&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
+				<published>Mon Aug 31 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>UnitySteer</title>
+				<description>&lt;p&gt;Ok so I&amp;#8217;ve been quite busy lately and so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
+&lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
+&lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
+&lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Aug 19 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/08/19/unitysteer/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New and improved: Behave 1.0 released</title>
+				<description>&lt;p&gt;After lots of late night tinkering, Behave 1.0 is finally out. This version fixes all known issues with unity 2.5, brings in lessons learned from Path 1.0 meaning a smashing new interface plus lots of new additions.&lt;/p&gt;
+&lt;p&gt;The new tree editor contains interface improvements allowing for much faster tree building: A brand new component bar, sub-tree movement, integration with the standard unity inspector and more.&lt;/p&gt;
+&lt;p&gt;In this version, the Behave runtime have also received an update. More runtime data is more easily available from the tree and library classes and methods implemented in your agent scripts are now mapped directly (by name) to action and decorator invokes.&lt;/p&gt;
+&lt;p&gt;This site will be updated as soon as possible with all the changes and additions and the documentation will be brought up to speed.&lt;/p&gt;
+&lt;p&gt;So what are you waiting for? Head on over to the downloads section and get your copy today!&lt;/p&gt;</description>
+				<published>Mon May 18 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/05/18/new-and-improved-behave-10-released/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b and unity 2.5</title>
+				<description>&lt;p&gt;Apart from the hotfix, the following steps need to be followed when using Behave 0.3b in unity 2.5:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;When building an asset, make sure to use the shortcut for it and not the menu.&lt;/li&gt;
+	&lt;li&gt;Behave.dll needs to be in a subfolder of your Assets folder named &amp;#8220;Assets&amp;#8221;. That is, for instance, &amp;#8220;MyProject/Assets/Assets/Behave.dll&amp;#8221;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I&amp;#8217;m currently working on a new version of Behave which will resolve these and other issues apart from adding new features.&lt;/p&gt;</description>
+				<published>Wed Apr 08 00:00:00 +0200 2009</published>
+				<link>http://angryant.com/2009/04/08/behave-03b-and-unity-25/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b hotfix</title>
+				<description>&lt;p&gt;Changes in the unity 2.5 editor &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; has resulted in some bad issues in Behave 0.3b &amp;#8211; a hotfix to solve the most critical ones &amp;#8211; making the Behave editor interface usable again is available in the Behave downloads section.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ll be working on a more extensive rewrite. Stay tuned.&lt;/p&gt;</description>
+				<published>Fri Mar 20 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/20/behave-03b-hotfix/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path tutorial video available</title>
+				<description>&lt;p&gt;I just finished the first Path tutorial video. &lt;a href=&quot;/resources/path/TheBasics.mov&quot;&gt;Give it a look&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Thu Mar 19 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/19/path-tutorial-video-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path 1.0 launched!</title>
+				<description>&lt;p&gt;Earlier today unity 2.5 launched so here we go! Path 1.0 and a pretty new website is now online. Victory!&lt;/p&gt;</description>
+				<published>Wed Mar 18 00:00:00 +0100 2009</published>
+				<link>http://angryant.com/2009/03/18/path-10-launched/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Continued community tutorials</title>
+				<description>&lt;p&gt;Arges from the unity community has been keeping busy. His latest tutorial goes more in-depth with Behave and unity, providing an interesting and useful example to work with.&lt;/p&gt;
+&lt;p&gt;Have a read at &lt;a href=&quot;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&quot;&gt;http://www.arges-systems.com/articles/14/behavior-trees-branching-paths-with-selectors&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Wed Dec 17 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Community tutorial</title>
+				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
+				<published>Sun Nov 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>New tutorial</title>
+				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Fri Nov 28 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>First tutorial available</title>
+				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+				<published>Tue Nov 04 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.3b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Optimised the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour&lt;/li&gt;
+		&lt;li&gt;When a compile fails, the Behave compiler is locked and unusable &amp;#8211; requiring a unity relaunch&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Implemented the following wishlist items:
+	&lt;ul&gt;
+		&lt;li&gt;Behaviour tree decorators&lt;/li&gt;
+		&lt;li&gt;Stand-alone edition of the Behave editor&lt;/li&gt;
+		&lt;li&gt;Behaviour tree debugging features&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Sun Nov 02 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/11/02/behave-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>unite '08 open-mic session</title>
+				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
+				<published>Sat Oct 25 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.2b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
+	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
+	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
+	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
+	&lt;li&gt;Fixed the following editor bugs from the bug list:
+	&lt;ul&gt;
+		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
+		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
+		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Wed Sep 24 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/24/behave-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave 0.1b</title>
+				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Some documentation is available&lt;/li&gt;
+	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
+	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
+	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
+	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Tue Sep 09 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/09/behave-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Behave pre-release</title>
+				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
+&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
+&lt;p&gt;Specs:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
+	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
+	&lt;li&gt;Requires no additional installations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Features:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
+	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
+	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
+	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
+	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>Mon Sep 08 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.3b</title>
+				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
+				<published>Tue Apr 15 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.2b</title>
+				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
+				<published>Sat Apr 12 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path beta 0.1b</title>
+				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
+&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
+&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
+&lt;p&gt;Dig in!&lt;/p&gt;</description>
+				<published>Sat Apr 05 00:00:00 +0200 2008</published>
+				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
+			</item>
+			
+		
+			
+			<item>
+				<title>Path pre-release</title>
+				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
+&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
+				<published>Sun Mar 30 00:00:00 +0100 2008</published>
+				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
+			</item>
+			
+		
+	</channel>
+</rss>attached.&lt;/li&gt;
 	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Codes:&lt;br /&gt;

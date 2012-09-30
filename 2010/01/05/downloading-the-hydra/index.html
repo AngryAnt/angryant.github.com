@@ -70,194 +70,197 @@
 				<span class="date">05 Jan 2010</span>
 				<h1 id="Top">Downloading the hydra</h1>
 				
-					<i><small>This page has not yet been cleaned up after the site move. Please have patience as I get to the last corners of the site.</small></i>
-				
 				<div id="content">
 					<p class="post"><p>So I&#8217;ve seen some people asking how you would go about downloading executable code from an external location, reading it into memory and executing it in ones running application.</p>
-<p>Now some readers might go &#8220;eh? why the heck would someone want to do that?&#8221;. Well first off, <b>its cool</b>&trade;, but seeing as that is rarely an argument which convinces decision makers, here&#8217;s a few others:</p>
-<ul><li>Patching. The ability to modify the behaviour of your downloaded executable after distribution, without requiring re-download.</li>
-<li>Highly dynamic online content. Say you&#8217;re building a virtual world or something. You might want to have the ability to add more complex behaviours to downloaded content &#8211; more than what a data-driven approach allows for.</li>
-<li>Or how about expanding the capabilities of user generated content?</li></ul>
+<p>Now some readers might go &#8220;eh? why the heck would someone want to do that?&#8221;. Well first off, <b>its cool</b>&#8482;, but seeing as that is rarely an argument which convinces decision makers, here&#8217;s a few others:</p>
+<ul>
+	<li>Patching. The ability to modify the behaviour of your downloaded executable after distribution, without requiring re-download.</li>
+	<li>Highly dynamic online content. Say you&#8217;re building a virtual world or something. You might want to have the ability to add more complex behaviours to downloaded content &#8211; more than what a data-driven approach allows for.</li>
+	<li>Or how about expanding the capabilities of user generated content?</li>
+</ul>
 <p>There. Those are my alibis and I&#8217;m sticking to them.</p>
 <p>Now this example is quick and simple so as to not bloat the post too much. Regardless of your use, you&#8217;ll likely be wanting to add in for instance some cache functionality for real-world use.</p>
-<p>Right. So this example contains three pieces of eight, uh, code:<br />
-<ul><li>The loader utility &#8211; responsible for downloading and making available the remote code.</li><br />
-<li>The assembly &#8211; you know, the one we&#8217;re downloading.</li><br />
-<li>An example handler. For easy re-use, I&#8217;ve designed this example to allow for easy re-use of the loader utility by externalising handling of the assemblies via messages. This example handler shows some techniques for accessing the data of loaded assemblies.</li></ul></p>
-<p>Using the example:<br />
-<ol><li>Download and save /Assets/WWWAssemblyLoader.cs, /Assets/NewBehaviourScript.cs and /MyAssembly.cs.</li><br />
-<li>Download and install the mono runtime (or the .net equivalent on Windnows &#8211; not tested, but should work just fine).</li><br />
- <li>Build the assembly from the terminal &#8211; using the build command supplied at the end of this post.</li><br />
- <li>Upload the assembly to some host (save the <span class="caps">URL</span> for later).</li><br />
- <li>Open up your Unity project.</li><br />
-<li>Add the WWWAssemblyLoader and NewBehaviourScript scripts to a GameObject and set the <span class="caps">URL</span> property of the first to that of your uploaded assembly.</li><br />
-<li>Press play.</li><br />
-<li>Profit!</li></ol></p>
+<p>Right. So this example contains three pieces of eight, uh, code:</p>
+<ul>
+	<li>The loader utility &#8211; responsible for downloading and making available the remote code.</li>
+	<li>The assembly &#8211; you know, the one we&#8217;re downloading.</li>
+	<li>An example handler. For easy re-use, I&#8217;ve designed this example to allow for easy re-use of the loader utility by externalising handling of the assemblies via messages. This example handler shows some techniques for accessing the data of loaded assemblies.</li>
+</ul>
+<p>Using the example:</p>
+<ol>
+	<li>Download and save /Assets/WWWAssemblyLoader.cs, /Assets/NewBehaviourScript.cs and /MyAssembly.cs.</li>
+	<li>Download and install the mono runtime (or the .net equivalent on Windnows &#8211; not tested, but should work just fine).</li>
+	<li>Build the assembly from the terminal &#8211; using the build command supplied at the end of this post.</li>
+	<li>Upload the assembly to some host (save the <span class="caps">URL</span> for later).</li>
+	<li>Open up your Unity project.</li>
+	<li>Add the WWWAssemblyLoader and NewBehaviourScript scripts to a GameObject and set the <span class="caps">URL</span> property of the first to that of your uploaded assembly.</li>
+	<li>Press play.</li>
+	<li>Profit!</li>
+</ol>
 <p>And now the codes!</p>
 <p><b>/Assets/WWWAssemblyLoader.cs</b><br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Reflection</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> WWWAssemblyLoader : <span class="support support_class support_class_unity">MonoBehaviour</span><br />
+<script src='https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs'></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
+using System.Reflection;</p>
+<p>public class WWWAssemblyLoader : MonoBehaviour<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">string</span> m_AssemblyURL;<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="storage storage_type storage_type_csharp">string</span> m_ErrorString = &quot;&quot;;<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="support support_class support_class_unity"><span class="caps">WWW</span></span> m_WWW;<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="storage storage_type storage_type_csharp">bool</span> m_Complete = <span class="constant constant_language constant_language_csharp">true</span>;</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Start</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">if</span> (m_AssemblyURL != &quot;&quot;)<br />
-        {<br />
-            ReloadAssembly (m_AssemblyURL);<br />
-        }<br />
-    }</p>
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">string</span> AssemblyURL
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> m_AssemblyURL;
-}
-<span class="keyword keyword_other keyword_other_csharp">set</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">if</span> (m_AssemblyURL != <span class="keyword keyword_other keyword_other_csharp">value</span>)
-{
-ReloadAssembly (<span class="keyword keyword_other keyword_other_csharp">value</span>);
-}
-}
-}
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">float</span> Progress
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> m_Complete ? <span class="constant constant_numeric constant_numeric_csharp">1.0f</span> : m_WWW.progress;
-}
-}
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">string</span> Error
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> m_ErrorString;
-}
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">ReloadAssembly</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="storage storage_type storage_type_csharp">string</span> url</span>)</span><br />
-    {<br />
-        m_Complete = <span class="constant constant_language constant_language_csharp">false</span>;<br />
-        m_ErrorString = &quot;&quot;;<br />
-        m_AssemblyURL = url;<br />
-        m_WWW = <span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity"><span class="caps">WWW</span></span> (m_AssemblyURL);<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">Update</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">if</span> (!m_Complete)<br />
-        {<br />
-            <span class="keyword keyword_control keyword_control_csharp">if</span> (m_WWW.error != <span class="constant constant_language constant_language_csharp">null</span>)<br />
-            {<br />
-                m_ErrorString = m_WWW.error;<br />
-                m_Complete = <span class="constant constant_language constant_language_csharp">true</span>;<br />
-                SendMessage (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;OnAssemblyLoadFailed</span>&#8220;, m_AssemblyURL);<br />
-            }<br />
-            &#8221;keyword keyword_control keyword_control_csharp&quot;&gt;else</span> <span class="keyword keyword_control keyword_control_csharp">if</span> (m_WWW.isDone)<br />
-            {<br />
-                Assembly assembly = LoadAssembly ();<br />
-                m_Complete = <span class="constant constant_language constant_language_csharp">true</span>;<br />
-                <span class="keyword keyword_control keyword_control_csharp">if</span> (assembly != <span class="constant constant_language constant_language_csharp">null</span>)<br />
-                {<br />
-                    <span class="support support_class support_class_unity">Debug</span>.Log (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Done</span>&#8220;);<br />
-                    SendMessage (&#8221;<span class="string string_quoted string_quoted_double string_quoted_double_csharp">OnAssemblyLoaded</span>&#8220;, &#8221;keyword keyword_control keyword_control_csharp&quot;&gt;new</span> WWWAssembly (m_AssemblyURL, assembly));<br />
-                }<br />
-                <span class="keyword keyword_control keyword_control_csharp">else</span><br />
-                {<br />
-                    <span class="support support_class support_class_unity">Debug</span>.Log (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Failed</span>&#8220;);<br />
-                    SendMessage (&#8221;<span class="string string_quoted string_quoted_double string_quoted_double_csharp">OnAssemblyLoadFailed</span>&quot;, m_AssemblyURL);<br />
-                }<br />
-            }<br />
-        }<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">private </span><span class="storage storage_type storage_type_csharp">Assembly</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">LoadAssembly</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="keyword keyword_control keyword_control_csharp">try</span><br />
-        {<br />
-            <span class="keyword keyword_control keyword_control_csharp">return</span> Assembly.Load (m_WWW.bytes);<br />
-        }<br />
-        <span class="keyword keyword_control keyword_control_csharp">catch</span> (System.Exception e)<br />
-        {<br />
-            m_ErrorString = e.ToString ();<br />
-            <span class="keyword keyword_control keyword_control_csharp">return</span> <span class="constant constant_language constant_language_csharp">null</span>;<br />
-        }<br />
-    }<br />
+	public string m_AssemblyURL;<br />
+	private string m_ErrorString = &quot;&quot;;<br />
+	private <span class="caps">WWW</span> m_WWW;<br />
+	private bool m_Complete = true;</p>
+<p>public void Start ()<br />
+	{<br />
+		if (m_AssemblyURL != &quot;&quot;)<br />
+		{<br />
+			ReloadAssembly (m_AssemblyURL);<br />
+		}<br />
+	}</p>
+<p>public string AssemblyURL<br />
+	{<br />
+		get<br />
+		{<br />
+			return m_AssemblyURL;<br />
+		}<br />
+		set<br />
+		{<br />
+			if (m_AssemblyURL != value)<br />
+			{<br />
+				ReloadAssembly (value);<br />
+			}<br />
+		}<br />
+	}</p>
+<p>public float Progress<br />
+	{<br />
+		get<br />
+		{<br />
+			return m_Complete ? 1.0f : m_WWW.progress;<br />
+		}<br />
+	}</p>
+<p>public string Error<br />
+	{<br />
+		get<br />
+		{<br />
+			return m_ErrorString;<br />
+		}<br />
+	}</p>
+<p>public void ReloadAssembly (string url)<br />
+	{<br />
+		m_Complete = false;<br />
+		m_ErrorString = &quot;&quot;;<br />
+		m_AssemblyURL = url;<br />
+		m_WWW = new <span class="caps">WWW</span> (m_AssemblyURL);<br />
+	}</p>
+<p>public void Update ()<br />
+	{<br />
+		if (!m_Complete)<br />
+		{<br />
+			if (m_WWW.error != null)<br />
+			{<br />
+				m_ErrorString = m_WWW.error;<br />
+				m_Complete = true;<br />
+				SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);<br />
+			}<br />
+			else if (m_WWW.isDone)<br />
+			{<br />
+				Assembly assembly = LoadAssembly ();<br />
+				m_Complete = true;<br />
+				if (assembly != null)<br />
+				{<br />
+					Debug.Log (&quot;Done&quot;);<br />
+					SendMessage (&quot;OnAssemblyLoaded&quot;, new WWWAssembly (m_AssemblyURL, assembly));<br />
+				}<br />
+				else<br />
+				{<br />
+					Debug.Log (&quot;Failed&quot;);<br />
+					SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);<br />
+				}<br />
+			}<br />
+		}<br />
+	}</p>
+<p>private Assembly LoadAssembly ()<br />
+	{<br />
+		try<br />
+		{<br />
+			return Assembly.Load (m_WWW.bytes);<br />
+		}<br />
+		catch (System.Exception e)<br />
+		{<br />
+			m_ErrorString = e.ToString ();<br />
+			return null;<br />
+		}<br />
+	}<br />
 }</p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> WWWAssembly<br />
+<p>public class WWWAssembly<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="storage storage_type storage_type_csharp">string</span> m_URL;<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> Assembly m_Assembly;</p>
-<span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">string</span> <span class="caps">URL</span>
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> m_URL;
-}
-}
-<span class="storage storage_modifier storage_modifier_csharp">public</span> Assembly Assembly
-{
-<span class="keyword keyword_other keyword_other_csharp">get</span>
-{
-<span class="keyword keyword_control keyword_control_csharp">return</span> m_Assembly;
-}
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_type storage_type_csharp">public</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">WWWAssembly</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="storage storage_type storage_type_csharp">string</span> url, Assembly assembly</span>)</span><br />
-    {<br />
-        m_URL = url;<br />
-        m_Assembly = assembly;<br />
-    }<br />
-}</span></pre></p>
+	private string m_URL;<br />
+	private Assembly m_Assembly;</p>
+<p>public string <span class="caps">URL</span><br />
+	{<br />
+		get<br />
+		{<br />
+			return m_URL;<br />
+		}<br />
+	}</p>
+<p>public Assembly Assembly<br />
+	{<br />
+		get<br />
+		{<br />
+			return m_Assembly;<br />
+		}<br />
+	}</p>
+<p>public WWWAssembly (string url, Assembly assembly)<br />
+	{<br />
+		m_URL = url;<br />
+		m_Assembly = assembly;<br />
+	}<br />
+}</code></pre></noscript></div></p>
 <p><b>/Assets/NewBehaviourScript.cs</b><br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Collections</span>;</span><br />
-<span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">System.Reflection</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> NewBehaviourScript : <span class="support support_class support_class_unity">MonoBehaviour</span><br />
+<script src='https://gist.github.com/3806151.js?file=NewBehaviourScript.cs'></script><div><noscript><pre><code>using UnityEngine;
+using System.Collections;
+using System.Reflection;</p>
+<p>public class NewBehaviourScript : MonoBehaviour<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">private</span> <span class="storage storage_type storage_type_csharp">string</span> m_MessageString = &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Waiting for assembly</span>&quot;;</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnAssemblyLoaded</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(WWWAssembly loadedAssembly</span>)</span><br />
-    {<br />
-        m_MessageString = &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Assembly </span>&quot; + loadedAssembly.<span class="caps">URL</span> + &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;<span class="constant constant_character constant_character_escape constant_character_escape_csharp">\n</span></span>&quot;;</p>
-System.Type type = loadedAssembly.Assembly.GetType (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;MyClass</span>&quot;);
-FieldInfo field = type.GetField (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;myString</span>&quot;);
-m_MessageString += (field.GetValue (<span class="constant constant_language constant_language_csharp">null</span>) <span class="keyword keyword_operator keyword_operator_csharp">as</span> <span class="storage storage_type storage_type_csharp">string</span>) + &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;<span class="constant constant_character constant_character_escape constant_character_escape_csharp">\n</span></span>&quot;;
-<span class="storage storage_type storage_type_csharp">object</span> instance = loadedAssembly.Assembly.CreateInstance (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;MyClass</span>&quot;);
-MethodInfo method = type.GetMethod (&#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;LogMyString</span>&quot;);
-m_MessageString += &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Return value: </span>&quot; + method.Invoke (instance, <span class="constant constant_language constant_language_csharp">null</span>).ToString ();
-}
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnAssemblyLoadFailed</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(<span class="storage storage_type storage_type_csharp">string</span> url</span>)</span><br />
-    {<br />
-        m_MessageString = &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;Failed to load assembly at </span>&quot; + url;<br />
-    }</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_type storage_type_csharp">void</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">OnGUI</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">GUILayout</span>.BeginArea (<span class="keyword keyword_control keyword_control_csharp">new</span> <span class="support support_class support_class_unity">Rect</span> (<span class="constant constant_numeric constant_numeric_csharp">0.0f</span>, <span class="constant constant_numeric constant_numeric_csharp">0.0f</span>, <span class="support support_class support_class_unity">Screen</span>.width, <span class="support support_class support_class_unity">Screen</span>.height));<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace ();<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.BeginHorizontal ();<br />
-                <span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace ();<br />
-                <span class="support support_class support_class_unity">GUILayout</span>.Box (m_MessageString);<br />
-                <span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace ();<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.EndHorizontal ();<br />
-            <span class="support support_class support_class_unity">GUILayout</span>.FlexibleSpace ();<br />
-        <span class="support support_class support_class_unity">GUILayout</span>.EndArea ();<br />
-    }<br />
-}<br />
-</span></pre></p>
+	private string m_MessageString = &quot;Waiting for assembly&quot;;</p>
+<p>void OnAssemblyLoaded (WWWAssembly loadedAssembly)<br />
+	{<br />
+		m_MessageString = &quot;Assembly &quot; + loadedAssembly.<span class="caps">URL</span> + &quot;\n&quot;;</p>
+<p>System.Type type = loadedAssembly.Assembly.GetType (&quot;MyClass&quot;);</p>
+<p>FieldInfo field = type.GetField (&quot;myString&quot;);<br />
+		m_MessageString += (field.GetValue (null) as string) + &quot;\n&quot;;</p>
+<p>object instance = loadedAssembly.Assembly.CreateInstance (&quot;MyClass&quot;);<br />
+		MethodInfo method = type.GetMethod (&quot;LogMyString&quot;);<br />
+		m_MessageString += &quot;Return value: &quot; + method.Invoke (instance, null).ToString ();<br />
+	}</p>
+<p>void OnAssemblyLoadFailed (string url)<br />
+	{<br />
+		m_MessageString = &quot;Failed to load assembly at &quot; + url;<br />
+	}</p>
+<p>void OnGUI ()<br />
+	{<br />
+		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));<br />
+			GUILayout.FlexibleSpace ();<br />
+			GUILayout.BeginHorizontal ();<br />
+				GUILayout.FlexibleSpace ();<br />
+				GUILayout.Box (m_MessageString);<br />
+				GUILayout.FlexibleSpace ();<br />
+			GUILayout.EndHorizontal ();<br />
+			GUILayout.FlexibleSpace ();<br />
+		GUILayout.EndArea ();<br />
+	}<br />
+}</code></pre></noscript></div></p>
 <p><b>/MyAssembly.cs</b><br />
-<pre class="textmate-source idle"><span class="source source_csharp"><span class="meta meta_keyword meta_keyword_using meta_keyword_using_csharp"><span class="keyword keyword_other keyword_other_using">using</span> <span class="entity entity_name entity_name_package entity_name_package_csharp">UnityEngine</span>;</span></p>
-<p><span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_type storage_type_csharp">class</span> MyClass<br />
+<script src='https://gist.github.com/3806151.js?file=MyAssembly.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
+<p>public class MyClass<br />
 {<br />
-    <span class="storage storage_modifier storage_modifier_csharp">public</span> <span class="storage storage_modifier storage_modifier_csharp">static</span> <span class="storage storage_type storage_type_csharp">string</span> myString = &#8220;&#8221;string string_quoted string_quoted_double string_quoted_double_csharp&quot;&gt;This is my string from my class in my assembly</span>&quot;;</p>
-<p><span class="meta meta_definition meta_definition_method meta_definition_method_csharp">    <span class="storage storage_modifier storage_modifier_csharp">public </span><span class="storage storage_type storage_type_csharp">int</span> <span class="entity entity_name entity_name_function entity_name_function_csharp">LogMyString</span> <span class="meta meta_definition meta_definition_param-list meta_definition_param-list_csharp">(</span>)</span><br />
-    {<br />
-        <span class="support support_class support_class_unity">Debug</span>.Log (myString);<br />
-        <span class="keyword keyword_control keyword_control_csharp">return</span> <span class="constant constant_numeric constant_numeric_csharp">2</span> + <span class="constant constant_numeric constant_numeric_csharp">2</span>;<br />
-    }<br />
-}</span></pre></p>
+	public static string myString = &quot;This is my string from my class in my assembly&quot;;</p>
+<p>public int LogMyString ()<br />
+	{<br />
+		Debug.Log (myString);<br />
+		return 2 + 2;<br />
+	}<br />
+}</code></pre></noscript></div></p>
 <p><b>The assembly compile terminal command</b><br />
-<i>mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs</i></p></p>
+<script src='https://gist.github.com/3806151.js?file=Build.sh'></script><div><noscript><pre><code>mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
