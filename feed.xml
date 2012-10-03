@@ -6,6 +6,23 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Invading Planet from your couch</title>
+				<description>&lt;p&gt;So yesterday was Tuesday which would normally mean I head to the local hackerspace and play around with my RC car and &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board. However that plan was completely shot down by girlfriend homework leading to required baby juggling. Which is always fun.&lt;/p&gt;
+&lt;p&gt;Obviously I did not let that deter me from getting some hacking done anyway, so I picked up another project I&amp;#8217;d had on my &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; for a while.&lt;/p&gt;
+&lt;p&gt;You see I quite like my home entertainment setup. So much that aside from music, reading and the occasional iOS game, I only consume entertainment from my couch.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2012-10-03-Invading-Planet-from-your-couch/CouchEntertainment.jpg&quot; title=&quot;The view from my couch&quot; alt=&quot;The view from my couch&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;comment&quot;&gt;Photo shows Star Craft II running in order to appease the SC2 gang at work which is not at all impressed with the amount of hours I manage to spend training with them. I tend to play more Alpha Centauri and Galactic Civilizations II ;)&lt;/p&gt;
+&lt;p&gt;That includes the occasional gaming on my mini which I mostly use for TV and videos through Plex&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, so launching a game means hiding or quitting Plex, finding the game in whatever launcher, running it and then reversing when done.&lt;/p&gt;
+&lt;p&gt;Now, I&amp;#8217;m lazy and I miss a feature of Plex 8 which allowed you to launch apps from within Plex &amp;#8211; right from your apple remote. So my hacking session last evening was creating a small Plex plugin which brings that feature back &amp;#8211; as I have been unable to find a pre-existing solution from someone else.&lt;/p&gt;
+&lt;p&gt;And it works just lovely. I now only need to select AppTV from my Plex main menu, select Alpha Centauri, get out my bluetooth mouse and keyboard and get gaming.&lt;/p&gt;
+&lt;p&gt;And you can too! Go find the &lt;a href=&quot;https://github.com/AngryAnt/AppTV&quot;&gt;AppTV project on github&lt;/a&gt; and have some fun :)&lt;/p&gt;
+&lt;p&gt;Oh and if you add something cool, pull requests would be awesome.&lt;/p&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;http://plexapp.com&quot;&gt;Plex&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Wed Oct 03 00:00:00 +0200 2012</published>
+				<link>http://angryant.com/2012/10/03/Invading-Planet-from-your-couch/</link>
+			</item>
+		
+			<item>
 				<title>Mountain Lion and laggy bluetooth and duct-tape</title>
 				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed recent occasional slow-downs in the response time from those devices.&lt;/p&gt;
 &lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
@@ -163,19 +180,5 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 				<link>http://angryant.com/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
 			</item>
 		
-			<item>
-				<title>First IGDA Unity SIG this evening</title>
-				<description>&lt;p&gt;Quick announcement for anyone in or around the &lt;span class=&quot;caps&quot;&gt;CPH&lt;/span&gt; area: I&amp;#8217;m doing the first of six &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity SIGs (Special Interest Groups) this evening, with Joe Robins.&lt;/p&gt;
-&lt;p&gt;The event is held at the IT University of Copenhagen and starts at 1800. Anyone can attend (for free) and this first &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; will be a general introduction to Unity &amp;#8211; basic principles of the engine, workflow and such. The following five SIGs will dive into various specific areas of Unity.&lt;/p&gt;
-&lt;p&gt;For more information and the full program, see the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; DK blog:&lt;br /&gt;
-&lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;</description>
-				<published>Thu Mar 10 00:00:00 +0100 2011</published>
-				<link>http://angryant.com/2011/03/10/first-igda-unity-sig-this-evening/</link>
-			</item>
-		
 	</channel>
-</rss>st-igda-unity-sig-this-evening/</link>
-			</item>
-		
-	</channel>
-</rss>>
+</rss>

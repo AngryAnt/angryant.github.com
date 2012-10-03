@@ -7,6 +7,25 @@
 		
 			
 			<item>
+				<title>Invading Planet from your couch</title>
+				<description>&lt;p&gt;So yesterday was Tuesday which would normally mean I head to the local hackerspace and play around with my RC car and &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board. However that plan was completely shot down by girlfriend homework leading to required baby juggling. Which is always fun.&lt;/p&gt;
+&lt;p&gt;Obviously I did not let that deter me from getting some hacking done anyway, so I picked up another project I&amp;#8217;d had on my &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; for a while.&lt;/p&gt;
+&lt;p&gt;You see I quite like my home entertainment setup. So much that aside from music, reading and the occasional iOS game, I only consume entertainment from my couch.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2012-10-03-Invading-Planet-from-your-couch/CouchEntertainment.jpg&quot; title=&quot;The view from my couch&quot; alt=&quot;The view from my couch&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;comment&quot;&gt;Photo shows Star Craft II running in order to appease the SC2 gang at work which is not at all impressed with the amount of hours I manage to spend training with them. I tend to play more Alpha Centauri and Galactic Civilizations II ;)&lt;/p&gt;
+&lt;p&gt;That includes the occasional gaming on my mini which I mostly use for TV and videos through Plex&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, so launching a game means hiding or quitting Plex, finding the game in whatever launcher, running it and then reversing when done.&lt;/p&gt;
+&lt;p&gt;Now, I&amp;#8217;m lazy and I miss a feature of Plex 8 which allowed you to launch apps from within Plex &amp;#8211; right from your apple remote. So my hacking session last evening was creating a small Plex plugin which brings that feature back &amp;#8211; as I have been unable to find a pre-existing solution from someone else.&lt;/p&gt;
+&lt;p&gt;And it works just lovely. I now only need to select AppTV from my Plex main menu, select Alpha Centauri, get out my bluetooth mouse and keyboard and get gaming.&lt;/p&gt;
+&lt;p&gt;And you can too! Go find the &lt;a href=&quot;https://github.com/AngryAnt/AppTV&quot;&gt;AppTV project on github&lt;/a&gt; and have some fun :)&lt;/p&gt;
+&lt;p&gt;Oh and if you add something cool, pull requests would be awesome.&lt;/p&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;http://plexapp.com&quot;&gt;Plex&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Wed Oct 03 00:00:00 +0200 2012</published>
+				<link>http://angryant.com/2012/10/03/Invading-Planet-from-your-couch/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Mountain Lion and laggy bluetooth and duct-tape</title>
 				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed recent occasional slow-downs in the response time from those devices.&lt;/p&gt;
 &lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
@@ -1965,42 +1984,7 @@ using System.Collections;&lt;/p&gt;
 			
 		
 	</channel>
-</rss>UILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
-			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
-			GUILayout.FlexibleSpace();&lt;/p&gt;
-&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
-			{&lt;br /&gt;
-				UpdateList();&lt;br /&gt;
-			}&lt;br /&gt;
-		GUILayout.EndHorizontal();&lt;/p&gt;
-&lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
-&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
-			{&lt;br /&gt;
-				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
-				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
-				{&lt;br /&gt;
-					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
-					{&lt;br /&gt;
-						Selection.activeObject = gameObject;&lt;br /&gt;
-					}&lt;br /&gt;
-				}&lt;br /&gt;
-			}&lt;/p&gt;
-&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
-	}&lt;br /&gt;
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
-				<published>Mon Aug 31 00:00:00 +0200 2009</published>
-				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>UnitySteer</title>
-				<description>&lt;p&gt;Ok so I&amp;#8217;ve been quite busy lately and so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
-&lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
-&lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
-&lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
-				<published>Wed Aug 19 00:00:00 +0200 2009</published>
+</rss>			<published>Wed Aug 19 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/08/19/unitysteer/</link>
 			</item>
 			
