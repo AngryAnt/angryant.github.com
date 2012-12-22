@@ -6,6 +6,27 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Automagic Unity Android Java gadget OF DOOM!</title>
+				<description>&lt;p&gt;Ok maybe not that dramatic, but pretty handy if you&amp;#8217;re working with Unity Android and doing some Java plugin work.&lt;/p&gt;
+&lt;p&gt;I hadn&amp;#8217;t really touched Unity Android specific code since setting up automatic testing of it, so a few months back I wanted to remedy that by diving in head-first with an obvious not-hello-world sort of project.&lt;/p&gt;
+&lt;p&gt;For christmas of 2011, my awesome parents had bought me a &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. I wanted to push some more boundaries of mine and do some hacking which couldn&amp;#8217;t all be contained in an email attachment and the &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; seemed a great start for that.&lt;/p&gt;
+&lt;p&gt;In short, the &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board is a small, inexpensive IO board with a &lt;span class=&quot;caps&quot;&gt;USB&lt;/span&gt; interface and Android drivers &amp;#8211; allowing you to connect your Android phone to it and control its 48 IO ports from software running on that phone.&lt;/p&gt;
+&lt;p&gt;Obviously I had to write that software as a Unity project and I hope I&amp;#8217;ll get some more time to polish up the last bits of the soft- and hardware for it soonish and tell you some more about it.&lt;/p&gt;
+&lt;p&gt;Anywho, that&amp;#8217;s enough background. Long story short, I obviously started out (after consulting the Unity documentation on how to work with the Java interface with Unity Android which I would need to access the &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; driver) by doing some editor scripting to reduce my iteration time on the Java I needed. Wisely I predicted that my Java would be so terribly rusty that I would need a significant number of iterations.&lt;/p&gt;
+&lt;p&gt;Basically what I wanted was to get rid of the multiple steps needed for compiling, signing and assembling a Java plugin. Initially I just hacked together a perl script to reduce those steps to one line of shell execution, but that still meant more context switching than I wanted.&lt;/p&gt;
+&lt;p&gt;So I leveled up the hack by having a Unity asset post processor automatically execute the perl script whenever a Java file got imported in the plugins directory &amp;#8211; re-routing any output from it to the Unity console.&lt;/p&gt;
+&lt;p&gt;That was really awesome. I would make a change in my Java, save it, switch to Unity and see all my horrible compiler errors right there in the console. And as this was my only Android project, I was quite happy with my hack &amp;#8211; proceeding to kill my compiler errors and build my &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; project.&lt;/p&gt;
+&lt;p&gt;Some friends had been poking me about cleaning up and generalising the hack a bit more and luck would have it that in my christmas vacation I spent a lot of time being sick. So I used some time here and there to clean up the Unity Android plugin builder and yesterday I pushed it to github &amp;#8211; without any project specific bits, without perl and somewhat more user friendly.&lt;/p&gt;
+&lt;p&gt;Check it out and let me know what you think. If anything is broken or you&amp;#8217;d like to request a change or addition, please use the github issues feature:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/JavaPluginBuilder&quot;&gt;The JavaPluginBuilder repository on github&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;https://www.sparkfun.com/products/10748&quot;&gt;The &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board&lt;/a&gt;&lt;/p&gt;</description>
+				<published>Sat Dec 22 00:00:00 +0100 2012</published>
+				<link>http://angryant.com/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/</link>
+			</item>
+		
+			<item>
 				<title>Invading Planet from your couch</title>
 				<description>&lt;p&gt;So yesterday was Tuesday which would normally mean I head to the local hackerspace and play around with my RC car and &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board. However that plan was completely shot down by girlfriend homework leading to required baby juggling. Which is always fun.&lt;/p&gt;
 &lt;p&gt;Obviously I did not let that deter me from getting some hacking done anyway, so I picked up another project I&amp;#8217;d had on my &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; for a while.&lt;/p&gt;
@@ -163,21 +184,6 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;/ul&gt;</description>
 				<published>Sat Apr 23 00:00:00 +0200 2011</published>
 				<link>http://angryant.com/2011/04/23/igda-unity-sig-slides/</link>
-			</item>
-		
-			<item>
-				<title>Second Unity IGDA SIG this evening: Scene construction and AI</title>
-				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;A week has passed and the second of six Unity specific &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; SIGs is upon us. Like last time, the event will take place at the IT University, Copenhagen, Denmark at 1800.&lt;/p&gt;
-&lt;p&gt;We will meet in the reception and from there move to the auditorium. The originally planned physics bit of todays &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; has been rescheduled to next thursday, where Jonas Echterhoff will be in town and give the talk. Jonas is the man with the plan of the PhysX integration in Unity, so added awesomenessness!&lt;/p&gt;
-&lt;p&gt;This means that today Joe Robins will be talking about scene construction and I will be covering AI in Unity.&lt;/p&gt;
-&lt;p&gt;For this thursday we should be lucky and get even more Unity Tech people to participate in the discussion bit of the &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt;. And remember afterwards we&amp;#8217;re doing the bar meet and given it&amp;#8217;s Saint Patricks, we&amp;#8217;re likely to be a good group of people moving from bar to bar.&lt;/p&gt;
-&lt;p&gt;The original &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post w. schedule:&lt;br /&gt;
-&lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post on the rescheduling of the physics talk:&lt;br /&gt;
-&lt;a href=&quot;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&quot;&gt;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&lt;/a&gt;&lt;/p&gt;</description>
-				<published>Thu Mar 17 00:00:00 +0100 2011</published>
-				<link>http://angryant.com/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
 			</item>
 		
 	</channel>

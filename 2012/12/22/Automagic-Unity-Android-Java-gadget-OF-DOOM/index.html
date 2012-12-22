@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Pick me! Pick me! - </title>
+		<title>AngryAnt - Automagic Unity Android Java gadget OF DOOM! - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +27,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Pick me! Pick me!</div>
+<div id="subtitle">Automagic Unity Android Java gadget OF DOOM!</div>
 
 	
 		<a href="/">Home</a>
@@ -68,102 +68,35 @@
 
 			</div>
 			<div id="container">
-				<span class="date">10 Mar 2010</span>
-				<h1 id="Top">Pick me! Pick me!</h1>
+				<span class="date">22 Dec 2012</span>
+				<h1 id="Top">Automagic Unity Android Java gadget OF DOOM!</h1>
 				
 				<div id="content">
-					<p class="post"><p>Say you&#8217;re developing an <span class="caps">RTS</span> or maybe a connect-the-dots sort of game. What would be the easiest way to go about handling object selection? This is my suggested solution.</p>
-<p>In the given example, I&#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.</p>
-<p>First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&#8217;ve simply put it right after the MonoBehaviour used for testing it.</p>
-<p>SelectionManager<br />
-<script src='https://gist.github.com/3804386.js?file=SelectionManager.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
-<p>public class SelectionManager<br />
-{<br />
-	private static GameObject s_ActiveSelection;</p>
-<p>public static GameObject ActiveSelection<br />
-	{<br />
-		get<br />
-		{<br />
-			return s_ActiveSelection;<br />
-		}<br />
-		set<br />
-		{<br />
-			s_ActiveSelection = value;<br />
-		}<br />
-	}</p>
-<p>public static void Select (GameObject gameObject, bool selectionValue)<br />
-	{<br />
-		if (selectionValue)<br />
-		{<br />
-			Select (gameObject);<br />
-		}<br />
-		else<br />
-		{<br />
-			Deselect (gameObject);<br />
-		}<br />
-	}</p>
-<p>public static void Select (GameObject gameObject)<br />
-	{<br />
-		ActiveSelection = gameObject;<br />
-	}</p>
-<p>public static void Deselect (GameObject gameObject)<br />
-	{<br />
-		if (ActiveSelection == gameObject)<br />
-		{<br />
-			ActiveSelection = null;<br />
-		}<br />
-	}</p>
-<p>public static bool IsSelected (GameObject gameObject)<br />
-	{<br />
-		return ActiveSelection == gameObject;<br />
-	}<br />
-}<br />
-</code></pre></noscript></div></p>
-<p>And the promised MonoBehaviour using the SelectionManager class:<br />
-<script src='https://gist.github.com/3804386.js?file=SelectableObject.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
-<p>public class SelectableObject : MonoBehaviour<br />
-{<br />
-	public Rect m_SelectionWindowRect = new Rect (10.0f, 10.0f, 300.0f, 100.0f);</p>
-<p>public void OnMouseDown ()<br />
-	{<br />
-		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));<br />
-	}</p>
-<p>public void OnDisable ()<br />
-	{<br />
-		SelectionManager.Deselect (gameObject);<br />
-	}</p>
-<p>public void Update ()<br />
-	{<br />
-		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;<br />
-	}</p>
-<p>public void OnGUI ()<br />
-	{<br />
-		if (SelectionManager.IsSelected (gameObject))<br />
-		{<br />
-			m_SelectionWindowRect = <span class="caps">GUI</span>.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);<br />
-		}<br />
-	}</p>
-<p>void SelectionWindow (int id)<br />
-	{<br />
-		GUILayout.Box (&quot;I am the selection and my name is &quot; + gameObject.name);<br />
-		<span class="caps">GUI</span>.DragWindow ();<br />
-	}<br />
-}<br />
-</code></pre></noscript></div></p>
-<p>And that is all there is to it. By popular demand, I&#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:<br />
-<a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'>SelectableObject</a></p></p>
+					<p class="post"><p>Ok maybe not that dramatic, but pretty handy if you&#8217;re working with Unity Android and doing some Java plugin work.</p>
+<p>I hadn&#8217;t really touched Unity Android specific code since setting up automatic testing of it, so a few months back I wanted to remedy that by diving in head-first with an obvious not-hello-world sort of project.</p>
+<p>For christmas of 2011, my awesome parents had bought me a <span class="caps">IOIO</span> board<sup class="footnote" id="fnr1"><a href="#fn1">1</a></sup>. I wanted to push some more boundaries of mine and do some hacking which couldn&#8217;t all be contained in an email attachment and the <span class="caps">IOIO</span> seemed a great start for that.</p>
+<p>In short, the <span class="caps">IOIO</span> board is a small, inexpensive IO board with a <span class="caps">USB</span> interface and Android drivers &#8211; allowing you to connect your Android phone to it and control its 48 IO ports from software running on that phone.</p>
+<p>Obviously I had to write that software as a Unity project and I hope I&#8217;ll get some more time to polish up the last bits of the soft- and hardware for it soonish and tell you some more about it.</p>
+<p>Anywho, that&#8217;s enough background. Long story short, I obviously started out (after consulting the Unity documentation on how to work with the Java interface with Unity Android which I would need to access the <span class="caps">IOIO</span> driver) by doing some editor scripting to reduce my iteration time on the Java I needed. Wisely I predicted that my Java would be so terribly rusty that I would need a significant number of iterations.</p>
+<p>Basically what I wanted was to get rid of the multiple steps needed for compiling, signing and assembling a Java plugin. Initially I just hacked together a perl script to reduce those steps to one line of shell execution, but that still meant more context switching than I wanted.</p>
+<p>So I leveled up the hack by having a Unity asset post processor automatically execute the perl script whenever a Java file got imported in the plugins directory &#8211; re-routing any output from it to the Unity console.</p>
+<p>That was really awesome. I would make a change in my Java, save it, switch to Unity and see all my horrible compiler errors right there in the console. And as this was my only Android project, I was quite happy with my hack &#8211; proceeding to kill my compiler errors and build my <span class="caps">IOIO</span> project.</p>
+<p>Some friends had been poking me about cleaning up and generalising the hack a bit more and luck would have it that in my christmas vacation I spent a lot of time being sick. So I used some time here and there to clean up the Unity Android plugin builder and yesterday I pushed it to github &#8211; without any project specific bits, without perl and somewhat more user friendly.</p>
+<p>Check it out and let me know what you think. If anything is broken or you&#8217;d like to request a change or addition, please use the github issues feature:</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/JavaPluginBuilder">The JavaPluginBuilder repository on github</a></li>
+</ul>
+<p class="footnote" id="fn1"><a href="#fnr1"><sup>1</sup></a> <a href="https://www.sparkfun.com/products/10748">The <span class="caps">IOIO</span> board</a></p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/" class="titleSmall">Automagic Unity Android Java gadget OF DOOM!</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -365,10 +298,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
