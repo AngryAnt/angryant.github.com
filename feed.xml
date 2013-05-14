@@ -6,6 +6,16 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Five years of Unity expertise looking for contracts</title>
+				<description>&lt;p&gt;On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &amp;#8211; doing consulting / contract work.&lt;/p&gt;
+&lt;p&gt;I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.&lt;/p&gt;
+&lt;p&gt;So I am available for contracts from July 1st, offering up among other things, my five years of Unity expertise. For more details on the things that I do there is this site and my &lt;a href=&quot;http://eej.dk&quot;&gt;LinkedIn profile&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;And, well, that&amp;#8217;s pretty much it. Want to play? Please use the handy contact form I set up: &lt;a href=&quot;/contracting&quot;&gt;Handy contact form&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Tue May 14 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/</link>
+			</item>
+		
+			<item>
 				<title>Automagic Unity Android Java gadget OF DOOM!</title>
 				<description>&lt;p&gt;Ok maybe not that dramatic, but pretty handy if you&amp;#8217;re working with Unity Android and doing some Java plugin work.&lt;/p&gt;
 &lt;p&gt;I hadn&amp;#8217;t really touched Unity Android specific code since setting up automatic testing of it, so a few months back I wanted to remedy that by diving in head-first with an obvious not-hello-world sort of project.&lt;/p&gt;
@@ -172,18 +182,6 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Thu Apr 28 00:00:00 +0200 2011</published>
 				<link>http://angryant.com/2011/04/28/behave-1-3-released/</link>
-			</item>
-		
-			<item>
-				<title>IGDA Unity SIG slides</title>
-				<description>&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;OHAI&lt;/span&gt;! Sorry about the delay &amp;#8211; things have been a bit hectic around here. Per request, I&amp;#8217;m making available exports of three of my slideshows from the recent &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity SIGs. I hope you&amp;#8217;ll find them useful:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;/resources/posts/2011-04-23-igda-unity-sig-slides/AI%20in%20Unity.pdf&quot;&gt;AI in Unity&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;/resources/posts/2011-04-23-igda-unity-sig-slides/Network.pdf&quot;&gt;Network&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;/resources/posts/2011-04-23-igda-unity-sig-slides/Unity%20GUI.pdf&quot;&gt;Unity &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>Sat Apr 23 00:00:00 +0200 2011</published>
-				<link>http://angryant.com/2011/04/23/igda-unity-sig-slides/</link>
 			</item>
 		
 	</channel>

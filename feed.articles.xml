@@ -7,6 +7,18 @@
 		
 			
 			<item>
+				<title>Five years of Unity expertise looking for contracts</title>
+				<description>&lt;p&gt;On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &amp;#8211; doing consulting / contract work.&lt;/p&gt;
+&lt;p&gt;I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.&lt;/p&gt;
+&lt;p&gt;So I am available for contracts from July 1st, offering up among other things, my five years of Unity expertise. For more details on the things that I do there is this site and my &lt;a href=&quot;http://eej.dk&quot;&gt;LinkedIn profile&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;And, well, that&amp;#8217;s pretty much it. Want to play? Please use the handy contact form I set up: &lt;a href=&quot;/contracting&quot;&gt;Handy contact form&lt;/a&gt;.&lt;/p&gt;</description>
+				<published>Tue May 14 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Automagic Unity Android Java gadget OF DOOM!</title>
 				<description>&lt;p&gt;Ok maybe not that dramatic, but pretty handy if you&amp;#8217;re working with Unity Android and doing some Java plugin work.&lt;/p&gt;
 &lt;p&gt;I hadn&amp;#8217;t really touched Unity Android specific code since setting up automatic testing of it, so a few months back I wanted to remedy that by diving in head-first with an obvious not-hello-world sort of project.&lt;/p&gt;
@@ -2007,33 +2019,7 @@ using System.Collections;&lt;/p&gt;
 			
 		
 	</channel>
-</rss>shed>Wed Dec 17 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/12/17/community-tutorial-2/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Community tutorial</title>
-				<description>&lt;p&gt;Arges from the unity community just made a tutorial on Behave available. Check it out at &lt;a href=&quot;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&quot;&gt;http://www.arges-systems.com/articles/2/behavior-trees-in-unity-with-behave&lt;/a&gt; .&lt;/p&gt;</description>
-				<published>Sun Nov 30 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/11/30/community-tutorial/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>New tutorial</title>
-				<description>&lt;p&gt;Just added a second tutorial &amp;#8220;Taking advantage of &lt;span class=&quot;caps&quot;&gt;OOP&lt;/span&gt; in agents&amp;#8221;. It is now available in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
-				<published>Fri Nov 28 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/11/28/new-tutorial/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>First tutorial available</title>
-				<description>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
+</rss>escription>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
 				<published>Tue Nov 04 00:00:00 +0100 2008</published>
 				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
 			</item>

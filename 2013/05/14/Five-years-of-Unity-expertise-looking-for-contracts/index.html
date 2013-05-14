@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - CopyInspector - </title>
+		<title>AngryAnt - Five years of Unity expertise looking for contracts - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +27,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">CopyInspector</div>
+<div id="subtitle">Five years of Unity expertise looking for contracts</div>
 
 	
 		<a href="/">Home</a>
@@ -68,158 +68,24 @@
 
 			</div>
 			<div id="container">
-				<span class="date">04 Nov 2009</span>
-				<h1 id="Top">CopyInspector</h1>
+				<span class="date">14 May 2013</span>
+				<h1 id="Top">Five years of Unity expertise looking for contracts</h1>
 				
 				<div id="content">
-					<p class="post"><p>Yea I know. It&#8217;s been a while. I do have two very good excuses though: 2.6 and Unite &#8216;09. If you enjoyed those then zip it and read on. If not, I&#8217;m really out of ammo and sorry for the delay.</p>
-<p>At Unite, I attended the talk by John Grden of infrared5 on the special (free) Unity for flash users day. During this session he complained about wanting to be able to copy his runtime transform changes inside the <span class="caps">IDE</span> (he was copying by way of paper notes it seemed). I decided to take up the challenge when he continued with &#8220;&#8230; but someone is probably going to show me how to do that after this&#8221; and after his talk I handed him a custom inspector editor script for solving that specific problem.</p>
-<p>Later at the conference I had some time to kill and did a rewrite to expand the script to be general for any component type. I didn&#8217;t have the time to hand John that version, but I suppose I&#8217;ll just email him a link to this post.</p>
-<p>So anyway &#8211; lets talk implementation:</p>
-<ul>
-	<li>Add CopyInspector.cs to Assets/Editor.</li>
-	<li>Add CopyTransformInspector.cs to Assets/Editor.</li>
-	<li>For each other component to be made copy/paste-able:
-	<ul>
-		<li>Add CopyYourComponentTypeInspector.cs to Assets/Editor.</li>
-		<li>Rename it appropriately.</li>
-		<li>Rename the class to match the file name.</li>
-		<li>Change YourComponentType in &#8220;[CustomEditor (typeof (YourComponentType))]&#8221; to the type of component you wish to affect.</li>
-	</ul></li>
-</ul>
-<p><img src="http://eej.dk/angryant/wp-content/uploads/2009/11/CopyTransformInspector.png" alt="" /></p>
-<p>You&#8217;ll notice that CopyTransformInspector has some additional code to it. This is due to the fact that this inspector is rendered non-standard and the code provided just replicates that.</p>
-<p>Not really sure why syntax highlighting is not kicking in&#8230; Will have a look at that later.</p>
-<p>Codes!</p>
-<p>CopyInspector.cs<br />
-<script src='https://gist.github.com/3806123.js?file=CopyInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;</p>
-<p>public class CopyInspector : Editor<br />
-{<br />
-	static System.Type m_OriginalType;<br />
-	static Dictionary object&gt; m_Values;</p>
-<p>private List  GetProperties (Component component)<br />
-	{<br />
-		List &lt;string&gt; ignoredProperties;<br />
-		List  properties;</p>
-<p>properties = new List  ();<br />
-		ignoredProperties = new List &lt;string&gt; ();<br />
-		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())<br />
-		{<br />
-			ignoredProperties.Add (propertyInfo.Name);<br />
-		}</p>
-<p>foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())<br />
-		{<br />
-			if (ignoredProperties.Contains (propertyInfo.Name))<br />
-			{<br />
-				continue;<br />
-			}<br />
-			properties.Add (propertyInfo);<br />
-		}</p>
-<p>return properties;<br />
-	}</p>
-<p>public override void OnInspectorGUI ()<br />
-	{<br />
-		DrawDefaultInspector ();<br />
-		OnCopyInspectorGUI ();<br />
-	}</p>
-<p>public void OnCopyInspectorGUI ()<br />
-	{<br />
-		bool enabled;<br />
-		List  properties;<br />
-		Component component;</p>
-<p>component = target as Component;</p>
-<p>if (component == null)<br />
-		{<br />
-			return;<br />
-		}</p>
-<p>GUILayout.Space (10.0f);</p>
-<p>Color backgroundColor = <span class="caps">GUI</span>.backgroundColor;</p>
-<p><span class="caps">GUI</span>.backgroundColor = new Color (0.8f, 0.8f, 0.8f);</p>
-<p>GUILayout.BeginVertical (&quot;Toolbar&quot;);</p>
-<p><span class="caps">GUI</span>.backgroundColor = backgroundColor;</p>
-<p>GUILayout.BeginHorizontal ();</p>
-<p>GUILayout.Space (10.0f);</p>
-<p>GUILayout.Label (&quot;Copied: &quot; + (m_OriginalType != null ? m_OriginalType.Name : &quot;Nothing&quot;), &quot;MiniLabel&quot;);</p>
-<p>GUILayout.FlexibleSpace ();</p>
-<p>if (GUILayout.Button (new GUIContent (&quot;Copy&quot;, &quot;Copy component values&quot;), &quot;MiniLabel&quot;))<br />
-				{<br />
-					m_OriginalType = target.GetType ();</p>
-<p>properties = GetProperties (component);</p>
-<p>m_Values = new Dictionary object&gt; ();<br />
-					foreach (PropertyInfo property in properties)<br />
-					{<br />
-						m_Values [property] = property.GetValue (component, null);<br />
-					}<br />
-				}</p>
-<p>enabled = <span class="caps">GUI</span>.enabled;<br />
-				<span class="caps">GUI</span>.enabled = target.GetType () == m_OriginalType;</p>
-<p>GUILayout.Space (10.0f);</p>
-<p>if (GUILayout.Button (new GUIContent (&quot;Paste&quot;, &quot;Paste component values&quot;), &quot;MiniLabel&quot;))<br />
-				{<br />
-					properties = GetProperties (component);<br />
-					foreach (PropertyInfo property in properties)<br />
-					{<br />
-						if (!property.CanWrite)<br />
-						{<br />
-							continue;<br />
-						}</p>
-<p>property.SetValue (component, m_Values [property], null);<br />
-					}<br />
-				}</p>
-<p>GUILayout.Space (10.0f);</p>
-<p><span class="caps">GUI</span>.enabled = enabled;</p>
-<p>GUILayout.EndHorizontal ();</p>
-<p>GUILayout.EndVertical ();</p>
-<p>GUILayout.Space (-2.0f);<br />
-	}<br />
-}</code></pre></noscript></div></p>
-<p>CopyTransformInspector.cs<br />
-<script src='https://gist.github.com/3806123.js?file=CopyTransformInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
-using UnityEditor;
-using System.Collections;</p>
-<p>[CustomEditor (typeof (Transform))]<br />
-public class CopyTransformInspector : CopyInspector<br />
-{<br />
-	public override void OnInspectorGUI ()<br />
-	{<br />
-		Transform transform;<br />
-		Vector3 localPosition, localScale;<br />
-		Quaternion localRotation;</p>
-<p>transform = target as Transform;</p>
-<p>localPosition = EditorGUILayout.Vector3Field (&quot;Position&quot;, transform.localPosition);<br />
-		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&quot;Rotation&quot;, transform.localRotation.eulerAngles));<br />
-		localScale = EditorGUILayout.Vector3Field (&quot;Scale&quot;, transform.localScale);</p>
-<p>if (<span class="caps">GUI</span>.changed)<br />
-		{<br />
-			transform.localPosition = localPosition;<br />
-			transform.localRotation = localRotation;<br />
-			transform.localScale = localScale;<br />
-		}</p>
-<p>OnCopyInspectorGUI ();<br />
-	}<br />
-}</code></pre></noscript></div></p>
-<p>CopyYourComponentTypeInspector.cs<br />
-<script src='https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
-using UnityEditor;
-using System.Collections;</p>
-<p>[CustomEditor (typeof (YourComponentType))]<br />
-public class CopyYourComponentTypeInspector : CopyInspector{}</code></pre></noscript></div></p></p>
+					<p class="post"><p>On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &#8211; doing consulting / contract work.</p>
+<p>I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.</p>
+<p>So I am available for contracts from July 1st, offering up among other things, my five years of Unity expertise. For more details on the things that I do there is this site and my <a href="http://eej.dk">LinkedIn profile</a>.</p>
+<p>And, well, that&#8217;s pretty much it. Want to play? Please use the handy contact form I set up: <a href="/contracting">Handy contact form</a>.</p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/" class="titleSmall">Five years of Unity expertise looking for contracts</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -451,10 +317,9 @@ public class CopyYourComponentTypeInspector : CopyInspector{}</code></pre></nosc
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
