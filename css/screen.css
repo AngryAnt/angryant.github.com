@@ -51,6 +51,16 @@
 		padding-top: 20pt;
 		width: 180px;
 	}
+	#sidebar #logo
+	{
+		position: fixed;
+		bottom: 20pt;
+		padding-top: 20pt;
+		padding-left: auto;
+		padding-right: auto;
+		opacity: 0.1;
+		filter:alpha(opacity=10);
+	}
 
 	#pagemenu
 	{
@@ -127,9 +137,19 @@
 		position: absolute;
 		top: 60px;
 		width: 200px;
-		padding-left: 400px;
+		padding-left: 360px;
 		text-align: right;
 		color: #BBB;
+	}
+	#sidebar #logo
+	{
+		position: absolute;
+		top: 60px;
+		padding-left: 575px;
+		width: 20px;
+		height: 20px;
+		opacity: 0.5;
+		filter:alpha(opacity=50);
 	}
 }
 
