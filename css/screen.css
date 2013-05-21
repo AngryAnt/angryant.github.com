@@ -154,6 +154,12 @@
 }
 
 
+#container img
+{
+	max-width: 600px;
+}
+
+
 #sidebar a
 {
 	text-decoration: none;

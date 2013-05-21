@@ -7,6 +7,27 @@
 		
 			
 			<item>
+				<title>Talks and progress</title>
+				<description>&lt;p&gt;Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.&lt;/p&gt;
+&lt;p&gt;2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).&lt;/p&gt;
+&lt;p&gt;Beforehand, I had been playing around with the Oculus Rift devkits we had received in the Unity Copenhagen office and at &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; a guy from Road To VR caught me for an interview about this. If you are interested in Unity and Oculus Rift, you can find the interview linked from the &lt;a href=&quot;/videos/&quot;&gt;video section&lt;/a&gt; of this site.&lt;/p&gt;
+&lt;p&gt;Following &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; I had a week at home to reset my time-zone orientation again, before heading to this years Unite Asia tour (re-branded from last years Unity Asia Bootcamp). So that week obviously went completely into talk prep.&lt;/p&gt;
+&lt;p&gt;Unfortunately the talk recordings are not yet available, but as soon as they are, I will make sure to link them from the &lt;a href=&quot;/videos/&quot;&gt;video section&lt;/a&gt;, where you can also find recordings and example source from last years Unity Asia Bootcamp.&lt;/p&gt;
+&lt;p&gt;After the two weeks blast through Asia, I had taken three weeks of vacation to reset an at this point quite messed up time-zone orientation. While I did spend some time relaxing, however I of-course had a hard time not using such a great opportunity to make some headway on Behave 2.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/share/behave2peek.png&quot; title=&quot;Sneak peek at Behave 2&quot; alt=&quot;Sneak peek at Behave 2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Remaining tasks are mainly polish items and one fix for iOS &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compilation &amp;#8211; specifically I have moved serialization to use ProtoBuf-net for better performance and flexibility, however this library requires slightly different implementation for &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compatibility than regular &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; platforms.&lt;/p&gt;
+&lt;p&gt;I hope to get this wrapped up and shipped very soon, however right now I am sitting on the train to Malmö &amp;#8211; headed to the Unite Nordic conference. Tomorrow at the conference (May 22nd) I am scheduled to give two talks &amp;#8211; &amp;#8220;Unity Hacks&amp;#8221; at 10:00 and &amp;#8220;Cross-platform Considerations&amp;#8221; at 14:30.&lt;/p&gt;
+&lt;p&gt;&amp;#8220;Unity Hacks&amp;#8221; is a repeat from Unite Asia, so if you don&amp;#8217;t want to wait for the videos on that one, tomorrow is your chance for some great Unity hackery. For the complete conference schedule, see the &lt;a href=&quot;http://unity3d.com/unite/nordic/&quot;&gt;Unite Nordic website&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, after much consideration I decided to end my time at Unity Technologies. It has been great fun, but now seems the right time to get out and stretch my legs a bit. I do so by starting contracting again and if you&amp;#8217;re interested in working together, please use &lt;a href=&quot;/contracting&quot;&gt;the form&lt;/a&gt; I have provided for that purpose.&lt;/p&gt;
+&lt;p&gt;Or if you are at Unite Nordic or Nordic Game which follows right after, feel free to give me a poke there.&lt;/p&gt;
+&lt;p&gt;Until next time!&lt;/p&gt;</description>
+				<published>Tue May 21 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/05/21/Talks-and-progress/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Five years of Unity expertise looking for contracts</title>
 				<description>&lt;p&gt;On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &amp;#8211; doing consulting / contract work.&lt;/p&gt;
 &lt;p&gt;I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.&lt;/p&gt;
@@ -2019,89 +2040,7 @@ using System.Collections;&lt;/p&gt;
 			
 		
 	</channel>
-</rss>escription>&lt;p&gt;Check it out in the Tutorials section of the Documentation page.&lt;/p&gt;</description>
-				<published>Tue Nov 04 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/11/04/first-tutorial-available/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Behave 0.3b</title>
-				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
-	&lt;li&gt;Optimised the compiler&lt;/li&gt;
-	&lt;li&gt;Fixed the following editor bugs from the bug list:
-	&lt;ul&gt;
-		&lt;li&gt;When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour&lt;/li&gt;
-		&lt;li&gt;When a compile fails, the Behave compiler is locked and unusable &amp;#8211; requiring a unity relaunch&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-	&lt;li&gt;Implemented the following wishlist items:
-	&lt;ul&gt;
-		&lt;li&gt;Behaviour tree decorators&lt;/li&gt;
-		&lt;li&gt;Stand-alone edition of the Behave editor&lt;/li&gt;
-		&lt;li&gt;Behaviour tree debugging features&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>Sun Nov 02 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/11/02/behave-03b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>unite '08 open-mic session</title>
-				<description>&lt;p&gt;At this years unite, David and Tom (of unity3D) persuaded me to do an open mic session a day into the conference. I&amp;#8217;ve been informed that this session was captured on video, so as soon as it is available to me, I&amp;#8217;ll make it available here. I had one day of preparation for this while attending the conference, so I have no idea of its usefulness, but I guess it&amp;#8217;s better than nothing. Stay tuned.&lt;/p&gt;</description>
-				<published>Sat Oct 25 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/10/25/unite-08-open-mic-session/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Behave 0.2b</title>
-				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Made the demo project a whole lot more interesting&lt;/li&gt;
-	&lt;li&gt;Implemented the editor wish list item: Ability to move trees between collections&lt;/li&gt;
-	&lt;li&gt;Various tweaks to the editor UI&lt;/li&gt;
-	&lt;li&gt;Fixed a ton of bugs in the compiler&lt;/li&gt;
-	&lt;li&gt;Fixed the following editor bugs from the bug list:
-	&lt;ul&gt;
-		&lt;li&gt;Not able to delete collections from library&lt;/li&gt;
-		&lt;li&gt;Not able to delete trees from library&lt;/li&gt;
-		&lt;li&gt;Not able to rename collections from library&lt;/li&gt;
-		&lt;li&gt;Not able to rename trees from library&lt;/li&gt;
-		&lt;li&gt;Missing &amp;#8220;tree has been changed, save changes?&amp;#8221; dialog&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>Wed Sep 24 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/09/24/behave-02b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Behave 0.1b</title>
-				<description>&lt;p&gt;Fixes and additions:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Some documentation is available&lt;/li&gt;
-	&lt;li&gt;Compiler is now creating sensible output&lt;/li&gt;
-	&lt;li&gt;A simple test tree and script using it is provided with the demo&lt;/li&gt;
-	&lt;li&gt;Documentation is linked directly from the unity help menu&lt;/li&gt;
-	&lt;li&gt;Less spamming of the log with debug information&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>Tue Sep 09 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/09/09/behave-01b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Behave pre-release</title>
-				<description>&lt;p&gt;The purpose of this pre-release is to let the curious try the waters. It is shiny, but don&amp;#8217;t build a project around it just yet.&lt;/p&gt;
-&lt;p&gt;Currently the editor is functional, assets can be loaded and saved, the compiler runs and results can be tested. However some minor features are not yet available in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
+</rss>in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
 &lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
 &lt;p&gt;Specs:&lt;/p&gt;
 &lt;ul&gt;

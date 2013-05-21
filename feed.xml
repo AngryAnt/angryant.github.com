@@ -6,6 +6,25 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Talks and progress</title>
+				<description>&lt;p&gt;Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.&lt;/p&gt;
+&lt;p&gt;2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).&lt;/p&gt;
+&lt;p&gt;Beforehand, I had been playing around with the Oculus Rift devkits we had received in the Unity Copenhagen office and at &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; a guy from Road To VR caught me for an interview about this. If you are interested in Unity and Oculus Rift, you can find the interview linked from the &lt;a href=&quot;/videos/&quot;&gt;video section&lt;/a&gt; of this site.&lt;/p&gt;
+&lt;p&gt;Following &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; I had a week at home to reset my time-zone orientation again, before heading to this years Unite Asia tour (re-branded from last years Unity Asia Bootcamp). So that week obviously went completely into talk prep.&lt;/p&gt;
+&lt;p&gt;Unfortunately the talk recordings are not yet available, but as soon as they are, I will make sure to link them from the &lt;a href=&quot;/videos/&quot;&gt;video section&lt;/a&gt;, where you can also find recordings and example source from last years Unity Asia Bootcamp.&lt;/p&gt;
+&lt;p&gt;After the two weeks blast through Asia, I had taken three weeks of vacation to reset an at this point quite messed up time-zone orientation. While I did spend some time relaxing, however I of-course had a hard time not using such a great opportunity to make some headway on Behave 2.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/share/behave2peek.png&quot; title=&quot;Sneak peek at Behave 2&quot; alt=&quot;Sneak peek at Behave 2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Remaining tasks are mainly polish items and one fix for iOS &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compilation &amp;#8211; specifically I have moved serialization to use ProtoBuf-net for better performance and flexibility, however this library requires slightly different implementation for &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compatibility than regular &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; platforms.&lt;/p&gt;
+&lt;p&gt;I hope to get this wrapped up and shipped very soon, however right now I am sitting on the train to Malmö &amp;#8211; headed to the Unite Nordic conference. Tomorrow at the conference (May 22nd) I am scheduled to give two talks &amp;#8211; &amp;#8220;Unity Hacks&amp;#8221; at 10:00 and &amp;#8220;Cross-platform Considerations&amp;#8221; at 14:30.&lt;/p&gt;
+&lt;p&gt;&amp;#8220;Unity Hacks&amp;#8221; is a repeat from Unite Asia, so if you don&amp;#8217;t want to wait for the videos on that one, tomorrow is your chance for some great Unity hackery. For the complete conference schedule, see the &lt;a href=&quot;http://unity3d.com/unite/nordic/&quot;&gt;Unite Nordic website&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, after much consideration I decided to end my time at Unity Technologies. It has been great fun, but now seems the right time to get out and stretch my legs a bit. I do so by starting contracting again and if you&amp;#8217;re interested in working together, please use &lt;a href=&quot;/contracting&quot;&gt;the form&lt;/a&gt; I have provided for that purpose.&lt;/p&gt;
+&lt;p&gt;Or if you are at Unite Nordic or Nordic Game which follows right after, feel free to give me a poke there.&lt;/p&gt;
+&lt;p&gt;Until next time!&lt;/p&gt;</description>
+				<published>Tue May 21 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/05/21/Talks-and-progress/</link>
+			</item>
+		
+			<item>
 				<title>Five years of Unity expertise looking for contracts</title>
 				<description>&lt;p&gt;On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &amp;#8211; doing consulting / contract work.&lt;/p&gt;
 &lt;p&gt;I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.&lt;/p&gt;
@@ -146,42 +165,6 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;p&gt;Have fun!&lt;/p&gt;</description>
 				<published>Sun Oct 09 00:00:00 +0200 2011</published>
 				<link>http://angryant.com/2011/10/09/so-ive-been-a-bit-busy-lately/</link>
-			</item>
-		
-			<item>
-				<title>Behave 1.3 released</title>
-				<description>&lt;p&gt;After quite a long break (including shifting around at utech, doing a Path release etc.), Behave is finally getting another update!&lt;/p&gt;
-&lt;p&gt;This release is primarily a bugfix and editor polish release. One thing I&amp;#8217;d like to highlight though is the addition of agent blueprints. From the changelog:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;- Added agent blueprints &amp;#8211; connecting to agent handlers through virtual methods rather than reflected handlers.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Generally this enables you to more explicitly tie up handlers and cuts down on tree initialization time. Oh and of-course you gain auto-completion when setting up your handlers.&lt;/p&gt;
-&lt;p&gt;Anyway, here&amp;#8217;s the whole changelog:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Fixed priority selector init flag resetting.&lt;/li&gt;
-	&lt;li&gt;Fixed reference handling on tree renaming and deletion.&lt;/li&gt;
-	&lt;li&gt;Fixed references still pointing at old collection post collection duplication.&lt;/li&gt;
-	&lt;li&gt;Fixed compilation of actions and decorators with non-integral float parameters.&lt;/li&gt;
-	&lt;li&gt;Fixed &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; list behaviours.&lt;/li&gt;
-	&lt;li&gt;Fixed passing context back and forth between referenced trees and referrer.&lt;/li&gt;
-	&lt;li&gt;Fixed reordering connections not causing save state to be set.&lt;/li&gt;
-	&lt;li&gt;Various &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; tweaks.&lt;/li&gt;
-	&lt;li&gt;Runtime optimisations.&lt;/li&gt;
-	&lt;li&gt;Enabled scrolling of the tree list in the debugger window.&lt;/li&gt;
-	&lt;li&gt;Exposed Tree.ReflectForwards.&lt;/li&gt;
-	&lt;li&gt;Added Tree.ResetForwards.&lt;/li&gt;
-	&lt;li&gt;Added agent blueprints &amp;#8211; connecting to agent handlers through virtual methods rather than reflected handlers.&lt;/li&gt;
-	&lt;li&gt;Made connections selectable in the tree editor via the connection nub.&lt;/li&gt;
-	&lt;li&gt;Moved connection managing from the inspector to the tree editor, where it is more visible and handy.&lt;/li&gt;
-	&lt;li&gt;Added support for disabling connections &amp;#8211; for faster, less destructive debugging.&lt;/li&gt;
-	&lt;li&gt;Double-click reference component to jump to referenced tree.&lt;/li&gt;
-	&lt;li&gt;Changed &amp;#8220;Cannot update unregistered tree&amp;#8221; handling from an exception to an error message. Still need more info.&lt;/li&gt;
-	&lt;li&gt;Now showing string and float parameters in the tree editor if either is set.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
-				<published>Thu Apr 28 00:00:00 +0200 2011</published>
-				<link>http://angryant.com/2011/04/28/behave-1-3-released/</link>
 			</item>
 		
 	</channel>
