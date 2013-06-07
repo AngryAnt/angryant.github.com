@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Path beta 0.3b - </title>
+		<title>AngryAnt - The implicit local network interface - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +27,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Path beta 0.3b</div>
+<div id="subtitle">The implicit local network interface</div>
 
 	
 		<a href="/">Home</a>
@@ -74,23 +74,127 @@
 
 			</div>
 			<div id="container">
-				<span class="date">15 Apr 2008</span>
-				<h1 id="Top">Path beta 0.3b</h1>
+				<span class="date">07 Jun 2013</span>
+				<h1 id="Top">The implicit local network interface</h1>
 				
 				<div id="content">
-					<p class="post"><p>Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.</p></p>
+					<p class="post"><p>I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.</p>
+<h1>Story time</h1>
+<p>You are playing some amazingly addictive game on your iOS device when commuting home. Let&#8217;s say it&#8217;s a Mario clone.</p>
+<p>As you arrive home, you want more of this gaming goodness. So you switch on your television and use AirPlay to continue the game on your TV, controls on your iOS device, via your Apple TV or other AirServer hosting, TV connected, device.</p>
+<p>Now your good friend Bob comes by (you forgot to lock the door, so he walks straight in). Obviously this game is too good to put down, so in stead you instruct Bob to buy a copy of it. Bob pulls out his android phone, jumps on your wifi, downloads the game and starts playing.</p>
+<p>At one point in Bobs game he sees this funky spinning portal in the level and opts to tap it. And poof! Bobs character is sucked into your game on the TV.</p>
+<p>Unfortunately Bob is a terrible player of this game and ruins your score, but it was pretty cool to try this game in multiplayer mode.</p>
+<h1>Do want!</h1>
+<p>The above scenario may sound complex to set up, but like so many other cases, it is just a nice combination of simpler bits. So let&#8217;s look into how we enable something like this in our (Unity based) game.</p>
+<p>First up, AirPlay support was recently added to Unity and I posted <a href="https://gist.github.com/AngryAnt/5160204">a gist</a> to help people get started with it.</p>
+<p>Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &#8211; not internet play like Journey did it.</p>
+<p>For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &#8220;Unity, Network Code, and You&#8221; &#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the <a href="/videos/">video</a> section of this site.</p>
+<p>So with those parts in place, we just need a bit of glue &#8211; namely the broadcasting of games on your local network. This gist deals with just that:<br />
+<script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'></script><div><noscript><pre><code>if (m_BroadcastTimer == null)
+// Setup broadcast of hosting service
+{
+	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);</p>
+<p>try<br />
+	{<br />
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);</p>
+<p>m_BroadcastSocket.SetSocketOption (<br />
+			SocketOptionLevel.IP,<br />
+			SocketOptionName.AddMembership,<br />
+			new MulticastOption (broadcastGroup)<br />
+		);</p>
+<p>m_BroadcastSocket.SetSocketOption (<br />
+			SocketOptionLevel.IP,<br />
+			SocketOptionName.MulticastTimeToLive,<br />
+			1<br />
+		);</p>
+<p>m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));<br />
+	}<br />
+	catch (Exception e)<br />
+	{<br />
+		Debug.LogError (string.Format (<br />
+			&quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&quot;,<br />
+			kBroadcastGroup,<br />
+			kBroadcastPort,<br />
+			e<br />
+		));</p>
+<p>return false;<br />
+	}</p>
+<p>m_BroadcastTimer = new Timer (kBroadcastDelay);</p>
+<p>m_BroadcastTimer.Elapsed += new ElapsedEventHandler (<br />
+		(object s, ElapsedEventArgs e) =&gt;<br />
+		{<br />
+			m_BroadcastSocket.Send (GetBroadcastBytes ());<br />
+		}<br />
+	);<br />
+	m_BroadcastTimer.Enabled = true;<br />
+}</p>
+<p>return true;</p>
+<p>// &#8230;</p>
+<p>byte[] GetBroadcastBytes ()<br />
+{<br />
+	/*<br />
+		Return byte array containing IP and port of our host socket plus meta data<br />
+		such as current level and perhaps location (for portal placement)<br />
+	*/<br />
+}</code></pre></noscript></div></p>
+<p>Let&#8217;s go over the interface for this gist:</p>
+<p><strong>kBroadcastGroup</strong> and <strong>kBroadcastPort</strong> are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &#8211; all that matters is that both broadcaster and receiver use the same keys.</p>
+<p><strong>m_BroadcastTimer</strong> and <strong>kBroadcastDelay</strong> control how often <strong>m_BroadcastSocket</strong> will send out the broadcast message generated by <strong>GetBroadcastBytes</strong>.</p>
+<p>This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:</p>
+<script src='https://gist.github.com/5730611.js?file=Seeker.cs'></script><div><noscript><pre><code>if (m_SeekerSocket == null)
+{
+	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+	try
+	{
+		m_SeekerSocket.Bind (new IPEndPoint (IPAddress.Any, kBroadcastPort));
+
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);
+
+		m_SeekerSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup, IPAddress.Any)
+		);
+
+		ReadBroadcasts ();
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;quot;Exception when attempting to set up service listener ({0}:{1}): {2}&amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
+		));
+
+		m_SeekerSocket.Dispose ();
+	}
+}
+
+// ...
+
+void ReadBroadcasts ()
+{
+	/*
+		Now set up periodic or event-driven reading from m_SeekerSocket, parsing
+		broadcast packages containing IP, port and meta data of locally available games
+	*/
+}</code></pre></noscript></div>
+<p>Like with the broadcaster, <strong>kBroadcastGroup</strong> and <strong>kBroadcastPort</strong> are used with the same values to make sure we are listening on the same multi-cast setup as the broadcaster.</p>
+<p><strong>m_SeekerSocket</strong> is the socket on which broadcasts will be received &#8211; just like you would on any other reception socket.</p>
+<p>And that is all there is to it. I hope you found it useful.</p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/06/07/The-implicit-local-network-interface/" class="titleSmall">The implicit local network interface</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -460,10 +564,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								

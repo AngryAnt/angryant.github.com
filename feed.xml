@@ -6,6 +6,119 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>The implicit local network interface</title>
+				<description>&lt;p&gt;I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.&lt;/p&gt;
+&lt;h1&gt;Story time&lt;/h1&gt;
+&lt;p&gt;You are playing some amazingly addictive game on your iOS device when commuting home. Let&amp;#8217;s say it&amp;#8217;s a Mario clone.&lt;/p&gt;
+&lt;p&gt;As you arrive home, you want more of this gaming goodness. So you switch on your television and use AirPlay to continue the game on your TV, controls on your iOS device, via your Apple TV or other AirServer hosting, TV connected, device.&lt;/p&gt;
+&lt;p&gt;Now your good friend Bob comes by (you forgot to lock the door, so he walks straight in). Obviously this game is too good to put down, so in stead you instruct Bob to buy a copy of it. Bob pulls out his android phone, jumps on your wifi, downloads the game and starts playing.&lt;/p&gt;
+&lt;p&gt;At one point in Bobs game he sees this funky spinning portal in the level and opts to tap it. And poof! Bobs character is sucked into your game on the TV.&lt;/p&gt;
+&lt;p&gt;Unfortunately Bob is a terrible player of this game and ruins your score, but it was pretty cool to try this game in multiplayer mode.&lt;/p&gt;
+&lt;h1&gt;Do want!&lt;/h1&gt;
+&lt;p&gt;The above scenario may sound complex to set up, but like so many other cases, it is just a nice combination of simpler bits. So let&amp;#8217;s look into how we enable something like this in our (Unity based) game.&lt;/p&gt;
+&lt;p&gt;First up, AirPlay support was recently added to Unity and I posted &lt;a href=&quot;https://gist.github.com/AngryAnt/5160204&quot;&gt;a gist&lt;/a&gt; to help people get started with it.&lt;/p&gt;
+&lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
+&lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
+&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:&lt;br /&gt;
+&lt;script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
+// Setup broadcast of hosting service
+{
+	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
+&lt;p&gt;try&lt;br /&gt;
+	{&lt;br /&gt;
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
+			SocketOptionLevel.IP,&lt;br /&gt;
+			SocketOptionName.AddMembership,&lt;br /&gt;
+			new MulticastOption (broadcastGroup)&lt;br /&gt;
+		);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
+			SocketOptionLevel.IP,&lt;br /&gt;
+			SocketOptionName.MulticastTimeToLive,&lt;br /&gt;
+			1&lt;br /&gt;
+		);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));&lt;br /&gt;
+	}&lt;br /&gt;
+	catch (Exception e)&lt;br /&gt;
+	{&lt;br /&gt;
+		Debug.LogError (string.Format (&lt;br /&gt;
+			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,&lt;br /&gt;
+			kBroadcastGroup,&lt;br /&gt;
+			kBroadcastPort,&lt;br /&gt;
+			e&lt;br /&gt;
+		));&lt;/p&gt;
+&lt;p&gt;return false;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;m_BroadcastTimer = new Timer (kBroadcastDelay);&lt;/p&gt;
+&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (&lt;br /&gt;
+		(object s, ElapsedEventArgs e) =&amp;gt;&lt;br /&gt;
+		{&lt;br /&gt;
+			m_BroadcastSocket.Send (GetBroadcastBytes ());&lt;br /&gt;
+		}&lt;br /&gt;
+	);&lt;br /&gt;
+	m_BroadcastTimer.Enabled = true;&lt;br /&gt;
+}&lt;/p&gt;
+&lt;p&gt;return true;&lt;/p&gt;
+&lt;p&gt;// &amp;#8230;&lt;/p&gt;
+&lt;p&gt;byte[] GetBroadcastBytes ()&lt;br /&gt;
+{&lt;br /&gt;
+	/*&lt;br /&gt;
+		Return byte array containing IP and port of our host socket plus meta data&lt;br /&gt;
+		such as current level and perhaps location (for portal placement)&lt;br /&gt;
+	*/&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s go over the interface for this gist:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;m_BroadcastTimer&lt;/strong&gt; and &lt;strong&gt;kBroadcastDelay&lt;/strong&gt; control how often &lt;strong&gt;m_BroadcastSocket&lt;/strong&gt; will send out the broadcast message generated by &lt;strong&gt;GetBroadcastBytes&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:&lt;/p&gt;
+&lt;script src='https://gist.github.com/5730611.js?file=Seeker.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_SeekerSocket == null)
+{
+	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+	try
+	{
+		m_SeekerSocket.Bind (new IPEndPoint (IPAddress.Any, kBroadcastPort));
+
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);
+
+		m_SeekerSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup, IPAddress.Any)
+		);
+
+		ReadBroadcasts ();
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;amp;quot;Exception when attempting to set up service listener ({0}:{1}): {2}&amp;amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
+		));
+
+		m_SeekerSocket.Dispose ();
+	}
+}
+
+// ...
+
+void ReadBroadcasts ()
+{
+	/*
+		Now set up periodic or event-driven reading from m_SeekerSocket, parsing
+		broadcast packages containing IP, port and meta data of locally available games
+	*/
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;p&gt;Like with the broadcaster, &lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are used with the same values to make sure we are listening on the same multi-cast setup as the broadcaster.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;m_SeekerSocket&lt;/strong&gt; is the socket on which broadcasts will be received &amp;#8211; just like you would on any other reception socket.&lt;/p&gt;
+&lt;p&gt;And that is all there is to it. I hope you found it useful.&lt;/p&gt;</description>
+				<published>Fri Jun 07 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/06/07/The-implicit-local-network-interface/</link>
+			</item>
+		
+			<item>
 				<title>Talks and progress</title>
 				<description>&lt;p&gt;Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.&lt;/p&gt;
 &lt;p&gt;2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).&lt;/p&gt;
@@ -149,22 +262,6 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>Wed Nov 30 00:00:00 +0100 2011</published>
 				<link>http://angryant.com/2011/11/30/behave-1-4-released/</link>
-			</item>
-		
-			<item>
-				<title>So I've been a bit busy lately</title>
-				<description>&lt;p&gt;Little under half a year later and I&amp;#8217;m still here. Things have been rather hectic since my last update. In Copenhagen we conquered more office space and my team moved in there. I made some demos (&lt;a href=&quot;http://u3d.as/content/unity-technologies/third-person-mmo-controller/1Wt&quot;&gt;Third Person &lt;span class=&quot;caps&quot;&gt;MMO&lt;/span&gt; Controller&lt;/a&gt; and &lt;a href=&quot;http://u3d.as/content/unity-technologies/astro-dude/24Y&quot;&gt;Astro Dude&lt;/a&gt;), went to &lt;a href=&quot;http://gameaiconf.com/&quot;&gt;a conference&lt;/a&gt;, worked on &lt;a href=&quot;http://blogs.unity3d.com/2011/06/16/unity-roadmap-2011/&quot;&gt;a Unity release&lt;/a&gt; and pitched in to realize &lt;a href=&quot;http://unity3d.com/unite/&quot;&gt;another killer conference&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;By the way at that last conference I did a talk titled &amp;#8220;AI in Unity&amp;#8221; &amp;#8211; the goal of which was to try and demystify the concept of AI a bit. I&amp;#8217;ll make some noise when we have the recording of it available.&lt;/p&gt;
-&lt;p&gt;Oh and I fixed the comments on the blog, so I&amp;#8217;ve just cleared out 300-something spam posts. Anyone got advice on how to avoid this on a WordPress blog? (Read: I&amp;#8217;m too lazy to change blogging system if anyone suggests that). Oh and therefore I enabled the &amp;#8220;must approve comments&amp;#8221; thingy. Not sure if that is going to help anything, but at least it will reduce the noise on your end.&lt;/p&gt;
-&lt;p&gt;So what is next then? Well I&amp;#8217;ve got a few things I&amp;#8217;d like to release in a Behave point upgrade and then the plan is to move on to 2.0 which will hold some backwards-compatibility breaking changes.&lt;/p&gt;
-&lt;p&gt;At Unity there&amp;#8217;s a bit more 3.5 stuff to do and some even awesomererer demos on the way. The extra awesomeness has been underway for quite a while, so I&amp;#8217;m very excited to get this out soon.&lt;/p&gt;
-&lt;p&gt;I very recently started playing around with some &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; mechanics in my spare time (had a day off after Unite and couldn&amp;#8217;t sit still). It&amp;#8217;s so spare time that the plan is to have no additional plans. Let&amp;#8217;s see where that goes.&lt;/p&gt;
-&lt;p&gt;Ah and I&amp;#8217;ll work with &lt;a href=&quot;http://www.blender.org/blenderorg/blender-foundation/&quot;&gt;some groovy dudes&lt;/a&gt; on getting a &lt;a href=&quot;http://copenhagen.startupweekend.org/&quot;&gt;3D themed workshop event&lt;/a&gt; up and going early next year. I don&amp;#8217;t think it has been announced yet, but it will be awesome &amp;#8211; and full of Unity of-course. That should hit right before &lt;a href=&quot;http://nordicgamejam.org/&quot;&gt;the other groovy thing&lt;/a&gt; I&amp;#8217;m working on again this year with more &lt;a href=&quot;http://igda.dk/&quot;&gt;awesome dudes and dudettes&lt;/a&gt;. Fun times!&lt;/p&gt;
-&lt;p&gt;What else? Oh yea. With my low bandwidth for updates, I&amp;#8217;ve increasingly turned to &lt;a href=&quot;http://twitter.com/#!/angryant&quot;&gt;twitter&lt;/a&gt; and the &lt;a href=&quot;https://gist.github.com/AngryAnt&quot;&gt;gist&lt;/a&gt; feature of &lt;a href=&quot;https://github.com/AngryAnt&quot;&gt;github&lt;/a&gt;. Hopefully I will have the time to do some good reads in the Tips and Tricks section soon, but the gist setup is just so very quick.&lt;/p&gt;
-&lt;p&gt;I probably forgot a ton of stuff, but hopefully this was a good reboot of this blog thing. Let&amp;#8217;s see what happens. Maybe I could start blogging about that &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing if it accidentally turns interesting. We&amp;#8217;ll see.&lt;/p&gt;
-&lt;p&gt;Have fun!&lt;/p&gt;</description>
-				<published>Sun Oct 09 00:00:00 +0200 2011</published>
-				<link>http://angryant.com/2011/10/09/so-ive-been-a-bit-busy-lately/</link>
 			</item>
 		
 	</channel>

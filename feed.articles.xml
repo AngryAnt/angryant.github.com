@@ -7,6 +7,121 @@
 		
 			
 			<item>
+				<title>The implicit local network interface</title>
+				<description>&lt;p&gt;I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.&lt;/p&gt;
+&lt;h1&gt;Story time&lt;/h1&gt;
+&lt;p&gt;You are playing some amazingly addictive game on your iOS device when commuting home. Let&amp;#8217;s say it&amp;#8217;s a Mario clone.&lt;/p&gt;
+&lt;p&gt;As you arrive home, you want more of this gaming goodness. So you switch on your television and use AirPlay to continue the game on your TV, controls on your iOS device, via your Apple TV or other AirServer hosting, TV connected, device.&lt;/p&gt;
+&lt;p&gt;Now your good friend Bob comes by (you forgot to lock the door, so he walks straight in). Obviously this game is too good to put down, so in stead you instruct Bob to buy a copy of it. Bob pulls out his android phone, jumps on your wifi, downloads the game and starts playing.&lt;/p&gt;
+&lt;p&gt;At one point in Bobs game he sees this funky spinning portal in the level and opts to tap it. And poof! Bobs character is sucked into your game on the TV.&lt;/p&gt;
+&lt;p&gt;Unfortunately Bob is a terrible player of this game and ruins your score, but it was pretty cool to try this game in multiplayer mode.&lt;/p&gt;
+&lt;h1&gt;Do want!&lt;/h1&gt;
+&lt;p&gt;The above scenario may sound complex to set up, but like so many other cases, it is just a nice combination of simpler bits. So let&amp;#8217;s look into how we enable something like this in our (Unity based) game.&lt;/p&gt;
+&lt;p&gt;First up, AirPlay support was recently added to Unity and I posted &lt;a href=&quot;https://gist.github.com/AngryAnt/5160204&quot;&gt;a gist&lt;/a&gt; to help people get started with it.&lt;/p&gt;
+&lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
+&lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
+&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:&lt;br /&gt;
+&lt;script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
+// Setup broadcast of hosting service
+{
+	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
+&lt;p&gt;try&lt;br /&gt;
+	{&lt;br /&gt;
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
+			SocketOptionLevel.IP,&lt;br /&gt;
+			SocketOptionName.AddMembership,&lt;br /&gt;
+			new MulticastOption (broadcastGroup)&lt;br /&gt;
+		);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
+			SocketOptionLevel.IP,&lt;br /&gt;
+			SocketOptionName.MulticastTimeToLive,&lt;br /&gt;
+			1&lt;br /&gt;
+		);&lt;/p&gt;
+&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));&lt;br /&gt;
+	}&lt;br /&gt;
+	catch (Exception e)&lt;br /&gt;
+	{&lt;br /&gt;
+		Debug.LogError (string.Format (&lt;br /&gt;
+			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,&lt;br /&gt;
+			kBroadcastGroup,&lt;br /&gt;
+			kBroadcastPort,&lt;br /&gt;
+			e&lt;br /&gt;
+		));&lt;/p&gt;
+&lt;p&gt;return false;&lt;br /&gt;
+	}&lt;/p&gt;
+&lt;p&gt;m_BroadcastTimer = new Timer (kBroadcastDelay);&lt;/p&gt;
+&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (&lt;br /&gt;
+		(object s, ElapsedEventArgs e) =&amp;gt;&lt;br /&gt;
+		{&lt;br /&gt;
+			m_BroadcastSocket.Send (GetBroadcastBytes ());&lt;br /&gt;
+		}&lt;br /&gt;
+	);&lt;br /&gt;
+	m_BroadcastTimer.Enabled = true;&lt;br /&gt;
+}&lt;/p&gt;
+&lt;p&gt;return true;&lt;/p&gt;
+&lt;p&gt;// &amp;#8230;&lt;/p&gt;
+&lt;p&gt;byte[] GetBroadcastBytes ()&lt;br /&gt;
+{&lt;br /&gt;
+	/*&lt;br /&gt;
+		Return byte array containing IP and port of our host socket plus meta data&lt;br /&gt;
+		such as current level and perhaps location (for portal placement)&lt;br /&gt;
+	*/&lt;br /&gt;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s go over the interface for this gist:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;m_BroadcastTimer&lt;/strong&gt; and &lt;strong&gt;kBroadcastDelay&lt;/strong&gt; control how often &lt;strong&gt;m_BroadcastSocket&lt;/strong&gt; will send out the broadcast message generated by &lt;strong&gt;GetBroadcastBytes&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:&lt;/p&gt;
+&lt;script src='https://gist.github.com/5730611.js?file=Seeker.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_SeekerSocket == null)
+{
+	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+	try
+	{
+		m_SeekerSocket.Bind (new IPEndPoint (IPAddress.Any, kBroadcastPort));
+
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);
+
+		m_SeekerSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup, IPAddress.Any)
+		);
+
+		ReadBroadcasts ();
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;amp;quot;Exception when attempting to set up service listener ({0}:{1}): {2}&amp;amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
+		));
+
+		m_SeekerSocket.Dispose ();
+	}
+}
+
+// ...
+
+void ReadBroadcasts ()
+{
+	/*
+		Now set up periodic or event-driven reading from m_SeekerSocket, parsing
+		broadcast packages containing IP, port and meta data of locally available games
+	*/
+}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;p&gt;Like with the broadcaster, &lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are used with the same values to make sure we are listening on the same multi-cast setup as the broadcaster.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;m_SeekerSocket&lt;/strong&gt; is the socket on which broadcasts will be received &amp;#8211; just like you would on any other reception socket.&lt;/p&gt;
+&lt;p&gt;And that is all there is to it. I hope you found it useful.&lt;/p&gt;</description>
+				<published>Fri Jun 07 00:00:00 +0200 2013</published>
+				<link>http://angryant.com/2013/06/07/The-implicit-local-network-interface/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Talks and progress</title>
 				<description>&lt;p&gt;Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.&lt;/p&gt;
 &lt;p&gt;2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).&lt;/p&gt;
@@ -2040,136 +2155,7 @@ using System.Collections;&lt;/p&gt;
 			
 		
 	</channel>
-</rss>in the editor, compile results are faulty to say the least and very little testing has been done. Run it at your own risk as usual.&lt;/p&gt;
-&lt;p&gt;Finally the license will be revised. Currently I just duplicated the license from the Path project in order to get this boat floating asap. Documentation will be available shortly.&lt;/p&gt;
-&lt;p&gt;Specs:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Available for indie as well as pro&lt;/li&gt;
-	&lt;li&gt;Can run in webplayers as well as stand-alone&lt;/li&gt;
-	&lt;li&gt;Requires no additional installations&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Features:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Implements behaviour trees&lt;/li&gt;
-	&lt;li&gt;Re-use common behaviour by reference&lt;/li&gt;
-	&lt;li&gt;Drag and drop editor interface inside the unity editor&lt;/li&gt;
-	&lt;li&gt;Simple connection to character actions via C# interface&lt;/li&gt;
-	&lt;li&gt;Designed trees are built to .net assembly code for maximum performance&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>Mon Sep 08 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/09/08/behave-pre-release/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Path beta 0.3b</title>
-				<description>&lt;p&gt;Fixed some more bugs and improved on the path seeking algorithm which is now not limited to a single orientation of an entire mesh. For instance a PathFinder will now be able to walk up the walls, across the ceiling and back onto the floor if you so desire.&lt;/p&gt;</description>
-				<published>Tue Apr 15 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/04/15/path-beta-03b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Path beta 0.2b</title>
-				<description>&lt;p&gt;In this version several bugfixes have been implemented and additional debugging information has been made available. See online documentation for more information on bug reporting.&lt;/p&gt;</description>
-				<published>Sat Apr 12 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/04/12/path-beta-02b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Path beta 0.1b</title>
-				<description>&lt;p&gt;In this version, the interface of the Path library has gone through some radical changes and should be much easier to use and adapt to special needs.&lt;/p&gt;
-&lt;p&gt;The demo project now also includes a unit controller for units using the unity character controller interface which also demos how animation could be used in Path projects.&lt;/p&gt;
-&lt;p&gt;Also a range of bugs have been corrected (and no doubt new ones introduces so please toss all the feedback you can come by at me). Last but not the least Path is now almost feature complete which means feature requests will be considered at this point.&lt;/p&gt;
-&lt;p&gt;Dig in!&lt;/p&gt;</description>
-				<published>Sat Apr 05 00:00:00 +0200 2008</published>
-				<link>http://angryant.com/2008/04/05/path-beta-01b/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>Path pre-release</title>
-				<description>&lt;p&gt;This version of the Path project implements the A* algorithm on a user-provided NavMesh. It includes support for multiple inter-connected NavMeshes in one scene and provides an easy to use interface for requesting and handling calculated pathes.&lt;/p&gt;
-&lt;p&gt;Updates and feedback takes place on the unity forums: Pathfinding in unity.&lt;/p&gt;</description>
-				<published>Sun Mar 30 00:00:00 +0100 2008</published>
-				<link>http://angryant.com/2008/03/30/path-pre-release/</link>
-			</item>
-			
-		
-	</channel>
-</rss>attached.&lt;/li&gt;
-	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Codes:&lt;br /&gt;
-&lt;script src='https://gist.github.com/3804708.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
-using UnityEditor;
-using System.Collections;&lt;/p&gt;
-&lt;p&gt;public class ComponentLister : EditorWindow&lt;br /&gt;
-{&lt;br /&gt;
-	private Hashtable sets = new Hashtable();&lt;br /&gt;
-	private Vector2 scrollPosition;&lt;/p&gt;
-&lt;p&gt;[ MenuItem( &amp;quot;Component/Component lister&amp;quot; ) ]&lt;br /&gt;
-	public static void Launch()&lt;br /&gt;
-	{&lt;br /&gt;
-		EditorWindow window = GetWindow( typeof( ComponentLister ) );&lt;br /&gt;
-		window.Show();&lt;br /&gt;
-	}&lt;/p&gt;
-&lt;p&gt;public void UpdateList()&lt;br /&gt;
-	{&lt;br /&gt;
-		Object[] objects;&lt;/p&gt;
-&lt;p&gt;sets.Clear();&lt;/p&gt;
-&lt;p&gt;objects = FindObjectsOfType( typeof( Component ) );&lt;br /&gt;
-		foreach( Component component in objects )&lt;br /&gt;
-		{&lt;br /&gt;
-			if( !sets.ContainsKey( component.GetType() ) )&lt;br /&gt;
-			{&lt;br /&gt;
-				sets[ component.GetType() ] = new ArrayList();&lt;br /&gt;
-			}&lt;/p&gt;
-&lt;p&gt;( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );&lt;br /&gt;
-		}&lt;br /&gt;
-	}&lt;/p&gt;
-&lt;p&gt;public void OnGUI()&lt;br /&gt;
-	{&lt;br /&gt;
-		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
-			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
-			GUILayout.FlexibleSpace();&lt;/p&gt;
-&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
-			{&lt;br /&gt;
-				UpdateList();&lt;br /&gt;
-			}&lt;br /&gt;
-		GUILayout.EndHorizontal();&lt;/p&gt;
-&lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
-&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
-			{&lt;br /&gt;
-				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
-				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
-				{&lt;br /&gt;
-					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
-					{&lt;br /&gt;
-						Selection.activeObject = gameObject;&lt;br /&gt;
-					}&lt;br /&gt;
-				}&lt;br /&gt;
-			}&lt;/p&gt;
-&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
-	}&lt;br /&gt;
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
-				<published>Mon Aug 31 00:00:00 +0200 2009</published>
-				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>
-			</item>
-			
-		
-			
-			<item>
-				<title>UnitySteer</title>
-				<description>&lt;p&gt;Ok so I&amp;#8217;ve been quite busy lately and so I haven&amp;#8217;t been updating the site as much as I should. In the beginning of July, UnitySteer was released. Ricardo Mendez of &lt;a href=&quot;http://arges-systems.com&quot;&gt;Arges Systems&lt;/a&gt; did the majority of the work and I did some early coding and design on the project.&lt;/p&gt;
-&lt;p&gt;UnitySteer is a collection of steering behaviours &amp;#8211; enabling complex movement behaviour by combining the default behaviour set or creating new custom ones. The project is based on OpenSteerDotNet which is a .net port of OpenSteer. During the implementation of the Unity interface, however, a lot of the existing code base was either rewritten or discarded completely, so code based on the previous OpenSteer versions is not directly compatible.&lt;/p&gt;
-&lt;p&gt;For more information, check out &lt;a href=&quot;http://www.arges-systems.com/articles/35/unitysteer-steering-components-for-unity&quot;&gt;Ricardo&amp;#8217;s blog post&lt;/a&gt; and the &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteer/tree/master&quot;&gt;library&lt;/a&gt; and &lt;a href=&quot;http://github.com/ricardojmendez/UnitySteerExamples/tree/master&quot;&gt;examples&lt;/a&gt; repositories.&lt;/p&gt;
-&lt;p&gt;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
+</rss>;UnitySteer is open source, released under the &lt;a href=&quot;http://www.opensource.org/licenses/mit-license.php&quot;&gt;&lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; license&lt;/a&gt; .&lt;/p&gt;</description>
 				<published>Wed Aug 19 00:00:00 +0200 2009</published>
 				<link>http://angryant.com/2009/08/19/unitysteer/</link>
 			</item>

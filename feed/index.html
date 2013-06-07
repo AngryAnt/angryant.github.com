@@ -82,25 +82,125 @@
 				<div id="content">
 					
 
-	<a href="/2013/05/21/Talks-and-progress/" class="date">21 May 2013</a>
-	<a href="/2013/05/21/Talks-and-progress/" class="title">Talks and progress</a>
+	<a href="/2013/06/07/The-implicit-local-network-interface/" class="date">07 Jun 2013</a>
+	<a href="/2013/06/07/The-implicit-local-network-interface/" class="title">The implicit local network interface</a>
 	<p class="post">
-	<p>Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.</p>
-<p>2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy <span class="caps">GDC</span> with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).</p>
-<p>Beforehand, I had been playing around with the Oculus Rift devkits we had received in the Unity Copenhagen office and at <span class="caps">GDC</span> a guy from Road To VR caught me for an interview about this. If you are interested in Unity and Oculus Rift, you can find the interview linked from the <a href="/videos/">video section</a> of this site.</p>
-<p>Following <span class="caps">GDC</span> I had a week at home to reset my time-zone orientation again, before heading to this years Unite Asia tour (re-branded from last years Unity Asia Bootcamp). So that week obviously went completely into talk prep.</p>
-<p>Unfortunately the talk recordings are not yet available, but as soon as they are, I will make sure to link them from the <a href="/videos/">video section</a>, where you can also find recordings and example source from last years Unity Asia Bootcamp.</p>
-<p>After the two weeks blast through Asia, I had taken three weeks of vacation to reset an at this point quite messed up time-zone orientation. While I did spend some time relaxing, however I of-course had a hard time not using such a great opportunity to make some headway on Behave 2.</p>
-<p><img src="/resources/share/behave2peek.png" title="Sneak peek at Behave 2" alt="Sneak peek at Behave 2" /></p>
-<p>Remaining tasks are mainly polish items and one fix for iOS <span class="caps">AOT</span> compilation &#8211; specifically I have moved serialization to use ProtoBuf-net for better performance and flexibility, however this library requires slightly different implementation for <span class="caps">AOT</span> compatibility than regular <span class="caps">JIT</span> platforms.</p>
-<p>I hope to get this wrapped up and shipped very soon, however right now I am sitting on the train to Malmö &#8211; headed to the Unite Nordic conference. Tomorrow at the conference (May 22nd) I am scheduled to give two talks &#8211; &#8220;Unity Hacks&#8221; at 10:00 and &#8220;Cross-platform Considerations&#8221; at 14:30.</p>
-<p>&#8220;Unity Hacks&#8221; is a repeat from Unite Asia, so if you don&#8217;t want to wait for the videos on that one, tomorrow is your chance for some great Unity hackery. For the complete conference schedule, see the <a href="http://unity3d.com/unite/nordic/">Unite Nordic website</a>.</p>
-<p>Finally, after much consideration I decided to end my time at Unity Technologies. It has been great fun, but now seems the right time to get out and stretch my legs a bit. I do so by starting contracting again and if you&#8217;re interested in working together, please use <a href="/contracting">the form</a> I have provided for that purpose.</p>
-<p>Or if you are at Unite Nordic or Nordic Game which follows right after, feel free to give me a poke there.</p>
-<p>Until next time!</p>
+	<p>I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.</p>
+<h1>Story time</h1>
+<p>You are playing some amazingly addictive game on your iOS device when commuting home. Let&#8217;s say it&#8217;s a Mario clone.</p>
+<p>As you arrive home, you want more of this gaming goodness. So you switch on your television and use AirPlay to continue the game on your TV, controls on your iOS device, via your Apple TV or other AirServer hosting, TV connected, device.</p>
+<p>Now your good friend Bob comes by (you forgot to lock the door, so he walks straight in). Obviously this game is too good to put down, so in stead you instruct Bob to buy a copy of it. Bob pulls out his android phone, jumps on your wifi, downloads the game and starts playing.</p>
+<p>At one point in Bobs game he sees this funky spinning portal in the level and opts to tap it. And poof! Bobs character is sucked into your game on the TV.</p>
+<p>Unfortunately Bob is a terrible player of this game and ruins your score, but it was pretty cool to try this game in multiplayer mode.</p>
+<h1>Do want!</h1>
+<p>The above scenario may sound complex to set up, but like so many other cases, it is just a nice combination of simpler bits. So let&#8217;s look into how we enable something like this in our (Unity based) game.</p>
+<p>First up, AirPlay support was recently added to Unity and I posted <a href="https://gist.github.com/AngryAnt/5160204">a gist</a> to help people get started with it.</p>
+<p>Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &#8211; not internet play like Journey did it.</p>
+<p>For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &#8220;Unity, Network Code, and You&#8221; &#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the <a href="/videos/">video</a> section of this site.</p>
+<p>So with those parts in place, we just need a bit of glue &#8211; namely the broadcasting of games on your local network. This gist deals with just that:<br />
+<script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'></script><div><noscript><pre><code>if (m_BroadcastTimer == null)
+// Setup broadcast of hosting service
+{
+	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);</p>
+<p>try<br />
+	{<br />
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);</p>
+<p>m_BroadcastSocket.SetSocketOption (<br />
+			SocketOptionLevel.IP,<br />
+			SocketOptionName.AddMembership,<br />
+			new MulticastOption (broadcastGroup)<br />
+		);</p>
+<p>m_BroadcastSocket.SetSocketOption (<br />
+			SocketOptionLevel.IP,<br />
+			SocketOptionName.MulticastTimeToLive,<br />
+			1<br />
+		);</p>
+<p>m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));<br />
+	}<br />
+	catch (Exception e)<br />
+	{<br />
+		Debug.LogError (string.Format (<br />
+			&quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&quot;,<br />
+			kBroadcastGroup,<br />
+			kBroadcastPort,<br />
+			e<br />
+		));</p>
+<p>return false;<br />
+	}</p>
+<p>m_BroadcastTimer = new Timer (kBroadcastDelay);</p>
+<p>m_BroadcastTimer.Elapsed += new ElapsedEventHandler (<br />
+		(object s, ElapsedEventArgs e) =&gt;<br />
+		{<br />
+			m_BroadcastSocket.Send (GetBroadcastBytes ());<br />
+		}<br />
+	);<br />
+	m_BroadcastTimer.Enabled = true;<br />
+}</p>
+<p>return true;</p>
+<p>// &#8230;</p>
+<p>byte[] GetBroadcastBytes ()<br />
+{<br />
+	/*<br />
+		Return byte array containing IP and port of our host socket plus meta data<br />
+		such as current level and perhaps location (for portal placement)<br />
+	*/<br />
+}</code></pre></noscript></div></p>
+<p>Let&#8217;s go over the interface for this gist:</p>
+<p><strong>kBroadcastGroup</strong> and <strong>kBroadcastPort</strong> are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &#8211; all that matters is that both broadcaster and receiver use the same keys.</p>
+<p><strong>m_BroadcastTimer</strong> and <strong>kBroadcastDelay</strong> control how often <strong>m_BroadcastSocket</strong> will send out the broadcast message generated by <strong>GetBroadcastBytes</strong>.</p>
+<p>This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:</p>
+<script src='https://gist.github.com/5730611.js?file=Seeker.cs'></script><div><noscript><pre><code>if (m_SeekerSocket == null)
+{
+	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+	try
+	{
+		m_SeekerSocket.Bind (new IPEndPoint (IPAddress.Any, kBroadcastPort));
+
+		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);
+
+		m_SeekerSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup, IPAddress.Any)
+		);
+
+		ReadBroadcasts ();
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;quot;Exception when attempting to set up service listener ({0}:{1}): {2}&amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
+		));
+
+		m_SeekerSocket.Dispose ();
+	}
+}
+
+// ...
+
+void ReadBroadcasts ()
+{
+	/*
+		Now set up periodic or event-driven reading from m_SeekerSocket, parsing
+		broadcast packages containing IP, port and meta data of locally available games
+	*/
+}</code></pre></noscript></div>
+<p>Like with the broadcaster, <strong>kBroadcastGroup</strong> and <strong>kBroadcastPort</strong> are used with the same values to make sure we are listening on the same multi-cast setup as the broadcaster.</p>
+<p><strong>m_SeekerSocket</strong> is the socket on which broadcasts will be received &#8211; just like you would on any other reception socket.</p>
+<p>And that is all there is to it. I hope you found it useful.</p>
 	</p>
 	<p>&nbsp;</p>
 	<div id="feed">
+
+
+
+		<a href="/2013/05/21/Talks-and-progress/" class="dateSmall">21 May 2013</a>
+		<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a>
+		<p style="max-height: 1pt">&nbsp;</p>
 
 
 
