@@ -117,7 +117,7 @@ GetOptions (
 <script src='https://gist.github.com/3165387.js?file=build-3.pl'></script><div><noscript><pre><code>my $debugOptions = $optionRelease == 0 ? &amp;quot;-d:DEBUG&amp;quot; : &amp;quot;&amp;quot;;</code></pre></noscript></div>
 <p>The idea here is that gmcs takes a parameter -d:[name] which instructs it to, during pre-processing, run with the symbol [name] defined. Something we can work with in our code like this:</p>
 <script src='https://gist.github.com/3165387.js?file=AssemblyTest-1.cs'></script><div><noscript><pre><code>#if DEBUG
-	Debug.Log (&amp;quot;I'm only visible in debug builds!&amp;quot;);
+	Debug.Log (&amp;quot;I&amp;#39;m only visible in debug builds!&amp;quot;);
 #endif</code></pre></noscript></div>
 <h2>Building two assemblies</h2>
 <p>Next up, a bit of info. Since Unity 3, we&#8217;ve enforced that scripts and assembly depending on UnityEditor, even if not using that, cannot be included in builds. This means that if you have some editor scripts, you would also like built to assembly, you will need to split these out into a different assembly than the one containing your runtime scripts.</p>
