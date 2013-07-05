@@ -6,6 +6,14 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Unite 13 video "Unity Hacks" available</title>
+				<description>&lt;p&gt;The &amp;#8220;Unity Hacks&amp;#8221; presentation, containing a good cunk of practical tips &amp;amp; tricks and example code, I did for Unite 13 Korea, Japan, China and Nordic is now available as video and presentation/examples download. The specific video recording is the one from Unite Japan.&lt;/p&gt;
+&lt;p&gt;Find link to video, presentation and examples in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section.&lt;/p&gt;</description>
+				<published>2013-07-05 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/07/05/Unite-13-video-Unity-Hacks-available/</link>
+			</item>
+		
+			<item>
 				<title>The implicit local network interface</title>
 				<description>&lt;p&gt;I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.&lt;/p&gt;
 &lt;h1&gt;Story time&lt;/h1&gt;
@@ -232,36 +240,6 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/78037-AI-Pathfinding-in-Unity-Path&quot; title=&quot;Path thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>2012-05-17 00:00:00 +0200</published>
 				<link>http://angryant.com/2012/05/17/path-is-now-mit-licensed/</link>
-			</item>
-		
-			<item>
-				<title>Behave 1.4 released</title>
-				<description>&lt;p&gt;So obviously I ended up not spending more time on that &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing&amp;#8230; I did however work on some 3.5 stuff back at Unity, some upcoming demo stuff and baby Lili was born.&lt;/p&gt;
-&lt;p&gt;Meanwhile I spent spare time on Behave rather than the &lt;span class=&quot;caps&quot;&gt;RPG&lt;/span&gt; thing, so now 1.4 is ready for release. &lt;span class=&quot;caps&quot;&gt;TADAA&lt;/span&gt;!&lt;/p&gt;
-&lt;p&gt;This release primarily holds runtime optimizations, fixes and tweaks. Specifically I would like to highlight the ability to mark components as &amp;#8220;instant&amp;#8221;. The instant flag affects sequences and selectors when moving between child nodes. When an instant child component completes, rather than waiting for the next tick to tick the following child node, the sequence or selector does it immediately.&lt;/p&gt;
-&lt;p&gt;Anywho, get it on the asset store and remember to rebuild your libraries after installing.&lt;/p&gt;
-&lt;p&gt;The rest of the changes follow:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Fixed decorator incorrectly initializing on every returning tick when tick handler returned Running.&lt;/li&gt;
-	&lt;li&gt;Fixed debugger view dependency on active tree editor &amp;#8211; causing reported null reference exception.&lt;/li&gt;
-	&lt;li&gt;Fixed missing scrollbars on browser window.&lt;/li&gt;
-	&lt;li&gt;Reduced logging noise from debug builds.&lt;/li&gt;
-	&lt;li&gt;Agent blueprints can now be MonoBehaviour based.&lt;/li&gt;
-	&lt;li&gt;Clarified wording on &amp;#8220;library not loaded&amp;#8221;.&lt;/li&gt;
-	&lt;li&gt;Now handling reset a bit cleverer &amp;#8211; potential performance boost.&lt;/li&gt;
-	&lt;li&gt;Changed the default success criteria of Parallel components from SuccessOrFailure to Success.&lt;/li&gt;
-	&lt;li&gt;Added &amp;#8220;instant&amp;#8221; flag to components. Components marked instant will affect sequences and selectors when moving between child nodes. When a child node marked &amp;#8220;instant&amp;#8221; completes, rather than waiting for the next tree tick to tick the following child node, the sequence or selector does it immediately.&lt;/li&gt;
-	&lt;li&gt;The compiler progress bar returns.&lt;/li&gt;
-	&lt;li&gt;Editing a Behave asset now focuses the asset browser last instead of the tree editor.&lt;/li&gt;
-	&lt;li&gt;Behave can now be installed in any subfolder of Assets &amp;#8211; provided its internal folder structure remains intact.&lt;/li&gt;
-	&lt;li&gt;Compilation speed improvements.&lt;/li&gt;
-	&lt;li&gt;Enabled references across collection borders.&lt;/li&gt;
-	&lt;li&gt;Added Tree.DataSize &amp;#8211; returning the number of bytes used by a tree instance. This is also displayed in the debugger window.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You&amp;#8217;ll find a link to the package in the &lt;a href=&quot;/behave/download&quot; title=&quot;The Behave download section&quot;&gt;download&lt;/a&gt; section. Have fun!&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://forum.unity3d.com/threads/61849-AI-Behaviour-trees-in-Unity-Behave-1.1-released&quot; title=&quot;Behave thread on the Unity forum&quot;&gt;Unity forum thread&lt;/a&gt;.&lt;/p&gt;</description>
-				<published>2011-11-30 00:00:00 +0100</published>
-				<link>http://angryant.com/2011/11/30/behave-1-4-released/</link>
 			</item>
 		
 	</channel>
