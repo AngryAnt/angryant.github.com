@@ -7,6 +7,24 @@
 		
 			
 			<item>
+				<title>OnRenderTextureGUI</title>
+				<description>&lt;p&gt;Have you ever wanted to apply a full-screen effect to your &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; without having to completely restructuring the way you set up your OnGUI structure? Or how about rendering text and &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; controls onto in-scene virtual screens and objects? Yea me too.&lt;/p&gt;
+&lt;p&gt;So a couple of years ago I did a friday project investigating the possibility of a setup like this. What I wanted was a Doom 3 &amp;#8211; style in-game numpad, responding to mouse clicks. Unfortunately I couldn&amp;#8217;t get there 100% and in a nice and straight-forward way, so I abandoned it with no further time spent.&lt;/p&gt;
+&lt;p&gt;The specific problem was that while I could get my &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; to render to the object just fine, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; system had no way of injecting events or modifying existing ones. This meant that if I wanted &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; to respond to events, I would have to bypass the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; event system and effectively rewrite the basic &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; controls. That failed my &amp;#8220;nice and straight-forward&amp;#8221; requirement.&lt;/p&gt;
+&lt;p&gt;However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school &lt;span class=&quot;caps&quot;&gt;CRT&lt;/span&gt; display. It looked great, except the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was just rendered on top of everything &amp;#8211; as per usual &amp;#8211; with no warping. Since the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was non-interactive, there was no down-side to using the approach I had come up with before to include the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; in the full-screen effect rendering.&lt;/p&gt;
+&lt;p&gt;It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &amp;#8211; rendering the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; on a plane, rendered always on top, in front of the Oculus cameras.&lt;/p&gt;
+&lt;p&gt;So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &amp;#8211; at least twice &amp;#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.&lt;/p&gt;
+&lt;p&gt;The trick therefore becomes:&lt;br /&gt;
+&lt;script src=&#39;https://gist.github.com/5984299.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;Remember that this is not immediately useful if you need interactive &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; as this would require work to handle input gathered from the regular UnityEngine.Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.&lt;/p&gt;
+&lt;p&gt;I hope you find it useful!&lt;/p&gt;</description>
+				<published>2013-07-17 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/07/17/OnRenderTextureGUI/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Unite 13 video "Unity Hacks" available</title>
 				<description>&lt;p&gt;The &amp;#8220;Unity Hacks&amp;#8221; presentation, containing a good chunk of practical tips &amp;amp; tricks and example code, I did for Unite 13 Korea, Japan, China and Nordic is now available as video and presentation/examples download. The specific video recording is the one from Unite Japan.&lt;/p&gt;
 &lt;p&gt;Find link to video, presentation and examples in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section.&lt;/p&gt;</description>
