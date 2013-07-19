@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 1.2 released - </title>
+		<title>AngryAnt - Unity Hacks: Touch gestures - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Behave 1.2 released</div>
+<div id="subtitle">Unity Hacks: Touch gestures</div>
 
 	
 		<a href="/">Home</a>
@@ -75,45 +75,46 @@
 
 			</div>
 			<div id="container">
-				<span class="date">11 Oct 2010</span>
-				<h1 id="Top">Behave 1.2 released</h1>
+				<span class="date">19 Jul 2013</span>
+				<h1 id="Top">Unity Hacks: Touch gestures</h1>
 				
 				<div id="content">
-					<p class="post"><p>That&#8217;s right! I know it&#8217;s only been &#8230; uh &#8230; well less time than I usually take to get it together and push out a new version. But since I was a bit on a roll with the release of Behave 1.1 not too long ago, and given that a last minute bug has snuck into that release, I decided to push on.</p>
-<p>So here we are &#8211; new version out in a jiffy. What&#8217;s new you say? This is what&#8217;s new:</p>
+					<p class="post"><p>So earlier this month I could finally push the Unity Hacks example code and slide show project <a href="https://github.com/AngryAnt/UnityHacks/">live</a> &#8211; after one of the <a href="/videos">videos</a> of the presentation was pushed live.</p>
+<p>The project is a pretty big treasure trove of handy scripts though and I didn&#8217;t like just tossing it out there and let people pick it apart on their own(feel free to go excavating if you learn better that way though). Therefore I plan for the next couple of posts here to cover various bits and bops from that project.</p>
+<p>Note that a bunch of these scripts &#8211; for instance the one I cover today &#8211; was at the time I was still at Unity Technologies slated for the new Standard Assets shipped with Unity. Since I left, I obviously can&#8217;t say if or when these are shipped and in which form. What&#8217;s in the Unity Hacks project is pretty much the last iteration I did on them before leaving.</p>
+<h1>TouchGestures.cs</h1>
+<p>The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.</p>
+<p>An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:<br />
+<script src='https://gist.github.com/6039082.js?file='></script><div><noscript><pre><code></code></pre></noscript></div></p>
+<p>This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.</p>
+<p>Great, so what do the different configuration values mean? First, let&#8217;s take a look at the tracking clamps:</p>
 <ul>
-	<li>Fixed release building.</li>
-	<li>Added the priority selector, introducing the <span class="caps">API</span> points:
-	<ul>
-		<li>int IAgent.SelectTopPriority (Tree sender, params int[] IDs);</li>
-		<li>enum BL[LibraryName].PriorityType { PriorityName, &#8230;, Unknown };</li>
-	</ul></li>
-	<li>Added support for branch contexts, introducing the <span class="caps">API</span> points:
-	<ul>
-		<li>enum BL[LibraryName].ContextType { ContextName, &#8230;, Unknown };</li>
-		<li>int Tree.ActiveContext { get; }</li>
-	</ul></li>
-	<li>Changed IAgent interface:
-	<ul>
-		<li>Tick (bool init, Tree sender) &#8594; Tick (Tree sender, bool init)</li>
-	</ul></li>
-	<li>Added &#8220;Select asset&#8221; button to the standard inspector.</li>
-	<li>Interface polish.</li>
+	<li>maxDuration: If a tracked touch remains active for longer than this time, it is no longer considered as part of a gesture. This avoids misinterpreting drags or virtual joysticks.</li>
+	<li>min[Pinch/Swipe]ScreenTravel: How much of the normalized screen size should a pinch or a swipe travel before it is considered valid? This avoids misinterpreting taps as mini pinches or swipes.</li>
+	<li>maxTapScreenTravel: What is the maximum normalized screen movement a tap gesture can have before it is no longer considered a tap?</li>
+	<li>maxTapDuration: For how long can a tracked touch be live before it is no longer considered a tap?</li>
 </ul>
-<p>I&#8217;ll make sure to update the documentation to reflect the new <span class="caps">API</span> changes and yes, more is coming on that front.</p>
-<p>And yes I will be releasing a new demo project. I just wanted to make it something different, and nice for you guys, y&#8217;know? So hang in there.</p></p>
+<p>The last elements are somewhat less finicky and tweak happy, though the tracking clamps should have sensible default values:</p>
+<ul>
+	<li>receivers: The list of MonoBehaviours interested in receiving a callback when a gesture has been identified.</li>
+	<li>trackingMask: This is a bitmask identifying which gestures you are interested in tracking. If you only need to deal with swipes, there is no need to spend time tracking any other gestures. Note that in order for this field to be set correctly, it is important that the custom inspector for the TouchGestures component is used.</li>
+	<li>trackMultiple: Should the gesture tracker allow multiple gestures to occur at the same time? Like a pinch and a swipe in different ends of the screen.</li>
+</ul>
+<p>And that is about it! You should have what you need to start using the TouchGestures component. Hopefully you will find it useful.</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/TouchGestures.cs">TouchGestures.cs</a></li>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Editor/TouchGesturesInspector.cs">TouchGesturesInspector.cs</a></li>
+</ul></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/07/19/Unity-Hacks-Touch-gestures/" class="titleSmall">Unity Hacks: Touch gestures</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -315,10 +316,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								

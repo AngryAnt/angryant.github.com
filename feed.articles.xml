@@ -7,6 +7,40 @@
 		
 			
 			<item>
+				<title>Unity Hacks: Touch gestures</title>
+				<description>&lt;p&gt;So earlier this month I could finally push the Unity Hacks example code and slide show project &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/&quot;&gt;live&lt;/a&gt; &amp;#8211; after one of the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; of the presentation was pushed live.&lt;/p&gt;
+&lt;p&gt;The project is a pretty big treasure trove of handy scripts though and I didn&amp;#8217;t like just tossing it out there and let people pick it apart on their own(feel free to go excavating if you learn better that way though). Therefore I plan for the next couple of posts here to cover various bits and bops from that project.&lt;/p&gt;
+&lt;p&gt;Note that a bunch of these scripts &amp;#8211; for instance the one I cover today &amp;#8211; was at the time I was still at Unity Technologies slated for the new Standard Assets shipped with Unity. Since I left, I obviously can&amp;#8217;t say if or when these are shipped and in which form. What&amp;#8217;s in the Unity Hacks project is pretty much the last iteration I did on them before leaving.&lt;/p&gt;
+&lt;h1&gt;TouchGestures.cs&lt;/h1&gt;
+&lt;p&gt;The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.&lt;/p&gt;
+&lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:&lt;br /&gt;
+&lt;script src=&#39;https://gist.github.com/6039082.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.&lt;/p&gt;
+&lt;p&gt;Great, so what do the different configuration values mean? First, let&amp;#8217;s take a look at the tracking clamps:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;maxDuration: If a tracked touch remains active for longer than this time, it is no longer considered as part of a gesture. This avoids misinterpreting drags or virtual joysticks.&lt;/li&gt;
+	&lt;li&gt;min[Pinch/Swipe]ScreenTravel: How much of the normalized screen size should a pinch or a swipe travel before it is considered valid? This avoids misinterpreting taps as mini pinches or swipes.&lt;/li&gt;
+	&lt;li&gt;maxTapScreenTravel: What is the maximum normalized screen movement a tap gesture can have before it is no longer considered a tap?&lt;/li&gt;
+	&lt;li&gt;maxTapDuration: For how long can a tracked touch be live before it is no longer considered a tap?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The last elements are somewhat less finicky and tweak happy, though the tracking clamps should have sensible default values:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;receivers: The list of MonoBehaviours interested in receiving a callback when a gesture has been identified.&lt;/li&gt;
+	&lt;li&gt;trackingMask: This is a bitmask identifying which gestures you are interested in tracking. If you only need to deal with swipes, there is no need to spend time tracking any other gestures. Note that in order for this field to be set correctly, it is important that the custom inspector for the TouchGestures component is used.&lt;/li&gt;
+	&lt;li&gt;trackMultiple: Should the gesture tracker allow multiple gestures to occur at the same time? Like a pinch and a swipe in different ends of the screen.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And that is about it! You should have what you need to start using the TouchGestures component. Hopefully you will find it useful.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/TouchGestures.cs&quot;&gt;TouchGestures.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Editor/TouchGesturesInspector.cs&quot;&gt;TouchGesturesInspector.cs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>2013-07-19 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>OnRenderTextureGUI</title>
 				<description>&lt;p&gt;Have you ever wanted to apply a full-screen effect to your &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; without having to completely restructuring the way you set up your OnGUI structure? Or how about rendering text and &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; controls onto in-scene virtual screens and objects? Yea me too.&lt;/p&gt;
 &lt;p&gt;So a couple of years ago I did a friday project investigating the possibility of a setup like this. What I wanted was a Doom 3 &amp;#8211; style in-game numpad, responding to mouse clicks. Unfortunately I couldn&amp;#8217;t get there 100% and in a nice and straight-forward way, so I abandoned it with no further time spent.&lt;/p&gt;
