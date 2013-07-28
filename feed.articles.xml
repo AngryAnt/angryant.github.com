@@ -7,6 +7,39 @@
 		
 			
 			<item>
+				<title>Unity Hacks: Cameras</title>
+				<description>&lt;p&gt;In my &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;effort to pick apart&lt;/a&gt; the &amp;#8220;Unity Hacks&amp;#8221; project as made available, along with a recording of the presentation, in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section, I now focus on the camera system.&lt;/p&gt;
+&lt;h1&gt;Overview&lt;/h1&gt;
+&lt;p&gt;Like the other new components I was preparing for the new standard assets, a key part of this setup is modularity and versatility. This is why I from the start chose to have camera handling values maintained via the transform tree &amp;#8211; as opposed to maintaining internal values to overwrite the transform values when updated.&lt;/p&gt;
+&lt;p&gt;This way, not only can camera logic be broken down into several components which can be optional or replaced, but co-operation between the camera system, animations and any other systems which could apply relative transformation, is much easier.&lt;/p&gt;
+&lt;p&gt;As this approach would be placing a certain requirement on the transform tree structure surrounding the camera in any case, I opted to go for greatest amount of possible detail vs. smallest impact. The structure therefore requires a three layers deep transform tree.&lt;/p&gt;
+&lt;p&gt;The root of the tree is designated the horizontal hinge. It takes care of movement in all three dimensions as well as rotation on the horizontal plane. The immediate child of this transform is referred to as the vertical hinge. This transform is expected to not move and will have its position reset every frame to enforce this. In stead, the vertical hinge is only responsible for rotation on the vertical plane.&lt;/p&gt;
+&lt;p&gt;The final transform, the child of the vertical hinge, is expected to not rotate and only move on its relative z-axis. This effectively makes it the zoom component of the rig. The GameObject of this transform is the one holding the camera component.&lt;/p&gt;
+&lt;h1&gt;DualHingeCamera&lt;/h1&gt;
+&lt;p&gt;Maintaining and abstracting this setup is the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/DualHingeCamera.cs&quot;&gt;DualHingeCamera&lt;/a&gt; component. With reference to the different transforms of the rig, this component maintains the setup by apply three targets: targetOffset, targetHorizontalRotation and targetVerticalRotation. These are set by controller scripts and applied via constrained speed and offset variables.&lt;/p&gt;
+&lt;p&gt;Vertical rotation is clamped and damped by the verticalSpan animation curve variable. As explained in the presentation, the time value of the most extreme animation keys specify the vertical angles (relative to a vector pointing backwards from the rig root) at which vertical rotation is clamped.&lt;/p&gt;
+&lt;p&gt;The height of the curve at any point specifies the scale of the update speed &amp;#8211; as the camera moves through that angle and further towards the end of the half of the curve it is on. As in: If the angle is above the middle of the vertical span and the camera is moving further up, speed is scaled according to the curve, but if it is moving down then no scale is applied. The inverse if of-course true as well. The effect, assuming the curve is not flat, is a smooth limit rather than a hard clamp.&lt;/p&gt;
+&lt;h1&gt;Control&lt;/h1&gt;
+&lt;p&gt;The base for any of the example camera behaviours supplied with the project is the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/CameraBehaviour.cs&quot;&gt;CameraBehaviour&lt;/a&gt; component. This supplies wrapping of access to the DualHingeCamera, as well as a bit of default handling &amp;#8211; such as automatically updating the camera activity tracking when the camera moves. It also offers up the MoveCamera method as a common interface for input scripts to apply movement instructions.&lt;/p&gt;
+&lt;p&gt;One of the most simple examples of a camera behaviour is the &lt;a href=&quot;:https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/OrbitCamera.cs&quot;&gt;OrbitCamera&lt;/a&gt;. This camera simply takes the movement instructions (a Vector2) and apply them to the target horizontal and vertical rotation. The result is the familiar behaviour of being able to rotate around a subject, while rotating up and down within the clamped span.&lt;/p&gt;
+&lt;p&gt;There are several more camera behaviours in the project (which you should take a look at) and they are demonstrated in an example scene as well as within the presentation. However as a last example, I want to point out the &lt;a href=&quot;:https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/TravelCamera.cs&quot;&gt;TravelCamera&lt;/a&gt; component. Unlike the others, this does not inherit from CameraBehaviour &amp;#8211; nor does it directly affect its rotation or position. In stead, it holds a simple piece of logic which enables and disables other behaviours, based on input activity. The result should be a behaviour somewhere between that seen in Journey and that of the Assassins Creed games.&lt;/p&gt;
+&lt;p&gt;I tried to keep this post short, but I hope you still find this useful and decide to build on the system. In any case, here are direct links to the resources covered in the post:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/DualHingeCamera.cs&quot;&gt;DualHingeCamera.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/CameraBehaviour.cs&quot;&gt;CameraBehaviour.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;:https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/OrbitCamera.cs&quot;&gt;OrbitCamera.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;:https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/TravelCamera.cs&quot;&gt;TravelCamera.cs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</description>
+				<published>2013-07-28 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/07/28/Unity-Hacks-Cameras/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Unity Hacks: Touch gestures</title>
 				<description>&lt;p&gt;So earlier this month I could finally push the Unity Hacks example code and slide show project &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/&quot;&gt;live&lt;/a&gt; &amp;#8211; after one of the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; of the presentation was pushed live.&lt;/p&gt;
 &lt;p&gt;The project is a pretty big treasure trove of handy scripts though and I didn&amp;#8217;t like just tossing it out there and let people pick it apart on their own(feel free to go excavating if you learn better that way though). Therefore I plan for the next couple of posts here to cover various bits and bops from that project.&lt;/p&gt;

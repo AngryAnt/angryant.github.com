@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Talks and progress - </title>
+		<title>AngryAnt - Unity Hacks: Cameras - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Talks and progress</div>
+<div id="subtitle">Unity Hacks: Cameras</div>
 
 	
 		<a href="/">Home</a>
@@ -75,35 +75,45 @@
 
 			</div>
 			<div id="container">
-				<span class="date">21 May 2013</span>
-				<h1 id="Top">Talks and progress</h1>
+				<span class="date">28 Jul 2013</span>
+				<h1 id="Top">Unity Hacks: Cameras</h1>
 				
 				<div id="content">
-					<p class="post"><p>Recently I have been posting less hacks, tips and tricks than I wanted to and I fully intend to rectify this. However, first let me provide a brief overview of what I have in stead been squandering my time on.</p>
-<p>2013 started off with lots of still-internal Unity work which I hope will be publicly available very soon. Shortly after that I was off to a very busy <span class="caps">GDC</span> with a very fancy booth sandwiched between Sony and Nintendo (very fitting given our announcements of partnering with both to support their new platforms).</p>
-<p>Beforehand, I had been playing around with the Oculus Rift devkits we had received in the Unity Copenhagen office and at <span class="caps">GDC</span> a guy from Road To VR caught me for an interview about this. If you are interested in Unity and Oculus Rift, you can find the interview linked from the <a href="/videos/">video section</a> of this site.</p>
-<p>Following <span class="caps">GDC</span> I had a week at home to reset my time-zone orientation again, before heading to this years Unite Asia tour (re-branded from last years Unity Asia Bootcamp). So that week obviously went completely into talk prep.</p>
-<p>Unfortunately the talk recordings are not yet available, but as soon as they are, I will make sure to link them from the <a href="/videos/">video section</a>, where you can also find recordings and example source from last years Unity Asia Bootcamp.</p>
-<p>After the two weeks blast through Asia, I had taken three weeks of vacation to reset an at this point quite messed up time-zone orientation. While I did spend some time relaxing, however I of-course had a hard time not using such a great opportunity to make some headway on Behave 2.</p>
-<p><img src="/resources/share/behave2peek.png" title="Sneak peek at Behave 2" alt="Sneak peek at Behave 2" /></p>
-<p>Remaining tasks are mainly polish items and one fix for iOS <span class="caps">AOT</span> compilation &#8211; specifically I have moved serialization to use ProtoBuf-net for better performance and flexibility, however this library requires slightly different implementation for <span class="caps">AOT</span> compatibility than regular <span class="caps">JIT</span> platforms.</p>
-<p>I hope to get this wrapped up and shipped very soon, however right now I am sitting on the train to Malmö &#8211; headed to the Unite Nordic conference. Tomorrow at the conference (May 22nd) I am scheduled to give two talks &#8211; &#8220;Unity Hacks&#8221; at 10:00 and &#8220;Cross-platform Considerations&#8221; at 14:30.</p>
-<p>&#8220;Unity Hacks&#8221; is a repeat from Unite Asia, so if you don&#8217;t want to wait for the videos on that one, tomorrow is your chance for some great Unity hackery. For the complete conference schedule, see the <a href="http://unity3d.com/unite/nordic/">Unite Nordic website</a>.</p>
-<p>Finally, after much consideration I decided to end my time at Unity Technologies. It has been great fun, but now seems the right time to get out and stretch my legs a bit. I do so by starting contracting again and if you&#8217;re interested in working together, please use <a href="/contracting">the form</a> I have provided for that purpose.</p>
-<p>Or if you are at Unite Nordic or Nordic Game which follows right after, feel free to give me a poke there.</p>
-<p>Until next time!</p></p>
+					<p class="post"><p>In my <a href="http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/">effort to pick apart</a> the &#8220;Unity Hacks&#8221; project as made available, along with a recording of the presentation, in the <a href="/videos">videos</a> section, I now focus on the camera system.</p>
+<h1>Overview</h1>
+<p>Like the other new components I was preparing for the new standard assets, a key part of this setup is modularity and versatility. This is why I from the start chose to have camera handling values maintained via the transform tree &#8211; as opposed to maintaining internal values to overwrite the transform values when updated.</p>
+<p>This way, not only can camera logic be broken down into several components which can be optional or replaced, but co-operation between the camera system, animations and any other systems which could apply relative transformation, is much easier.</p>
+<p>As this approach would be placing a certain requirement on the transform tree structure surrounding the camera in any case, I opted to go for greatest amount of possible detail vs. smallest impact. The structure therefore requires a three layers deep transform tree.</p>
+<p>The root of the tree is designated the horizontal hinge. It takes care of movement in all three dimensions as well as rotation on the horizontal plane. The immediate child of this transform is referred to as the vertical hinge. This transform is expected to not move and will have its position reset every frame to enforce this. In stead, the vertical hinge is only responsible for rotation on the vertical plane.</p>
+<p>The final transform, the child of the vertical hinge, is expected to not rotate and only move on its relative z-axis. This effectively makes it the zoom component of the rig. The GameObject of this transform is the one holding the camera component.</p>
+<h1>DualHingeCamera</h1>
+<p>Maintaining and abstracting this setup is the <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/DualHingeCamera.cs">DualHingeCamera</a> component. With reference to the different transforms of the rig, this component maintains the setup by apply three targets: targetOffset, targetHorizontalRotation and targetVerticalRotation. These are set by controller scripts and applied via constrained speed and offset variables.</p>
+<p>Vertical rotation is clamped and damped by the verticalSpan animation curve variable. As explained in the presentation, the time value of the most extreme animation keys specify the vertical angles (relative to a vector pointing backwards from the rig root) at which vertical rotation is clamped.</p>
+<p>The height of the curve at any point specifies the scale of the update speed &#8211; as the camera moves through that angle and further towards the end of the half of the curve it is on. As in: If the angle is above the middle of the vertical span and the camera is moving further up, speed is scaled according to the curve, but if it is moving down then no scale is applied. The inverse if of-course true as well. The effect, assuming the curve is not flat, is a smooth limit rather than a hard clamp.</p>
+<h1>Control</h1>
+<p>The base for any of the example camera behaviours supplied with the project is the <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/CameraBehaviour.cs">CameraBehaviour</a> component. This supplies wrapping of access to the DualHingeCamera, as well as a bit of default handling &#8211; such as automatically updating the camera activity tracking when the camera moves. It also offers up the MoveCamera method as a common interface for input scripts to apply movement instructions.</p>
+<p>One of the most simple examples of a camera behaviour is the <a href=":https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/OrbitCamera.cs">OrbitCamera</a>. This camera simply takes the movement instructions (a Vector2) and apply them to the target horizontal and vertical rotation. The result is the familiar behaviour of being able to rotate around a subject, while rotating up and down within the clamped span.</p>
+<p>There are several more camera behaviours in the project (which you should take a look at) and they are demonstrated in an example scene as well as within the presentation. However as a last example, I want to point out the <a href=":https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/TravelCamera.cs">TravelCamera</a> component. Unlike the others, this does not inherit from CameraBehaviour &#8211; nor does it directly affect its rotation or position. In stead, it holds a simple piece of logic which enables and disables other behaviours, based on input activity. The result should be a behaviour somewhere between that seen in Journey and that of the Assassins Creed games.</p>
+<p>I tried to keep this post short, but I hope you still find this useful and decide to build on the system. In any case, here are direct links to the resources covered in the post:</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/DualHingeCamera.cs">DualHingeCamera.cs</a></li>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/CameraBehaviour.cs">CameraBehaviour.cs</a></li>
+	<li><a href=":https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/OrbitCamera.cs">OrbitCamera.cs</a></li>
+	<li><a href=":https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Camera/TravelCamera.cs">TravelCamera.cs</a></li>
+</ul>
+
+
+</p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -131,10 +141,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
