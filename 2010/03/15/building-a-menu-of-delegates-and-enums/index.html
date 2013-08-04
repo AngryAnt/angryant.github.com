@@ -81,117 +81,117 @@
 				<div id="content">
 					<p class="post"><p>I like delegates. I also like enums. Furthermore, I happen to be part of a small group of people who actually enjoy the immediate mode <span class="caps">GUI</span> system in Unity. And I want you to like it too :)</p>
 <p>So &#8211; menus. After having observed quite a few very funky approaches, in the <a href="http://www.unifycommunity.com/wiki/index.php?title=IRC"><span class="caps">IRC</span></a> channel, to building main menu functionality and giving advice in there, I decided to sow together those ideas into a short example.</p>
-<p>The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:<br />
+<p>The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:
 <script src='https://gist.github.com/3806175.js?file=NewSubmenu.cs'></script><div><noscript><pre><code>m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;</code></pre></noscript></div></p>
-<p>Notice that since we&#8217;re using delegates, the <span class="caps">GUI</span> method needn&#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central <span class="caps">GUI</span> method for the menu system:<br />
+<p>Notice that since we&#8217;re using delegates, the <span class="caps">GUI</span> method needn&#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central <span class="caps">GUI</span> method for the menu system:
 <script src='https://gist.github.com/3806175.js?file=OnGUI.cs'></script><div><noscript><pre><code>public void OnGUI ()
 {
 	m_Menus [m_CurrentState] ();
 }</code></pre></noscript></div></p>
-<p>And this is <span class="caps">GUI</span> code inside a menu <span class="caps">GUI</span> method for switching to a different submenu:<br />
+<p>And this is <span class="caps">GUI</span> code inside a menu <span class="caps">GUI</span> method for switching to a different submenu:
 <script src='https://gist.github.com/3806175.js?file=SwitchMenu.cs'></script><div><noscript><pre><code>m_CurrentState = GUILayout.Button (&amp;quot;Credits&amp;quot;) ? MenuState.Credits : m_CurrentState;</code></pre></noscript></div></p>
-<p>So there. Enough talk. Have some example code:<br />
+<p>So there. Enough talk. Have some example code:
 <script src='https://gist.github.com/3806175.js?file=Menu.cs'></script><div><noscript><pre><code>using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;</p>
-<p>public class Menu : MonoBehaviour<br />
-{<br />
-	delegate void OnGUIImplementation();<br />
-	public enum MenuState {Main,Settings,Credits};<br />
-	public struct Settings<br />
-	{<br />
-		public bool m_ThisSetting, m_ThatSetting, m_TheOtherSetting;<br />
-	};<br />
-	static Vector2 m_StandardMenuSize = new Vector2 (200.0f, 300.0f);<br />
-	static string m_LogoURL = &quot;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&quot;;<br />
+<p>public class Menu : MonoBehaviour
+{
+	delegate void OnGUIImplementation();
+	public enum MenuState {Main,Settings,Credits};
+	public struct Settings
+	{
+		public bool m_ThisSetting, m_ThatSetting, m_TheOtherSetting;
+	};
+	static Vector2 m_StandardMenuSize = new Vector2 (200.0f, 300.0f);
+	static string m_LogoURL = &quot;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&quot;;
 	static Texture2D m_Logo = null;</p>
-<p>private MenuState m_CurrentState = MenuState.Main;<br />
-	private Dictionary m_Menus;<br />
+<p>private MenuState m_CurrentState = MenuState.Main;
+	private Dictionary m_Menus;
 	private Settings m_Settings;</p>
-<p>void Awake ()<br />
-	{<br />
-		m_Menus = new Dictionary ();<br />
-		m_Menus [MenuState.Main] = OnMainMenuGUI;<br />
-		m_Menus [MenuState.Settings] = OnSettingsGUI;<br />
-		m_Menus [MenuState.Credits] = OnCreditsGUI;<br />
-		StartCoroutine (GetLogo ());<br />
+<p>void Awake ()
+	{
+		m_Menus = new Dictionary ();
+		m_Menus [MenuState.Main] = OnMainMenuGUI;
+		m_Menus [MenuState.Settings] = OnSettingsGUI;
+		m_Menus [MenuState.Credits] = OnCreditsGUI;
+		StartCoroutine (GetLogo ());
 	}</p>
-<p>IEnumerator GetLogo ()<br />
-	{<br />
+<p>IEnumerator GetLogo ()
+	{
 		<span class="caps">WWW</span> www = new <span class="caps">WWW</span> (m_LogoURL);</p>
 <p>yield return www;</p>
-<p>if (www.error == null)<br />
-		{<br />
-			m_Logo = www.texture;<br />
-		}<br />
+<p>if (www.error == null)
+		{
+			m_Logo = www.texture;
+		}
 	}</p>
-<p>public void OnGUI ()<br />
-	{<br />
-		m_Menus [m_CurrentState] ();<br />
+<p>public void OnGUI ()
+	{
+		m_Menus [m_CurrentState] ();
 	}</p>
-<p>static void BeginStandardMenu (string title)<br />
-	{<br />
-		GUILayout.BeginArea (new Rect ((Screen.width &#8211; m_StandardMenuSize.x) * 0.5f, (Screen.height &#8211; m_StandardMenuSize.y) * 0.5f, m_StandardMenuSize.x, m_StandardMenuSize.y));<br />
-			GUILayout.BeginVertical (<span class="caps">GUI</span>.skin.GetStyle (&quot;Box&quot;));<br />
-				GUILayout.Label (title, <span class="caps">GUI</span>.skin.GetStyle (&quot;Box&quot;));<br />
+<p>static void BeginStandardMenu (string title)
+	{
+		GUILayout.BeginArea (new Rect ((Screen.width &#8211; m_StandardMenuSize.x) * 0.5f, (Screen.height &#8211; m_StandardMenuSize.y) * 0.5f, m_StandardMenuSize.x, m_StandardMenuSize.y));
+			GUILayout.BeginVertical (<span class="caps">GUI</span>.skin.GetStyle (&quot;Box&quot;));
+				GUILayout.Label (title, <span class="caps">GUI</span>.skin.GetStyle (&quot;Box&quot;));
 	}</p>
-<p>static void EndStandardMenu ()<br />
-	{<br />
+<p>static void EndStandardMenu ()
+	{
 		Color color;</p>
-<p>GUILayout.BeginHorizontal ();<br />
-					GUILayout.FlexibleSpace ();<br />
-						color = <span class="caps">GUI</span>.color;<br />
-						<span class="caps">GUI</span>.color = Color.grey;<br />
-						GUILayout.Label (&quot;My game version 2.4X&quot;);<br />
-						<span class="caps">GUI</span>.color = color;<br />
-					GUILayout.FlexibleSpace ();<br />
-				GUILayout.EndHorizontal ();<br />
-			GUILayout.EndVertical ();<br />
-		GUILayout.EndArea ();<br />
+<p>GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						color = <span class="caps">GUI</span>.color;
+						<span class="caps">GUI</span>.color = Color.grey;
+						GUILayout.Label (&quot;My game version 2.4X&quot;);
+						<span class="caps">GUI</span>.color = color;
+					GUILayout.FlexibleSpace ();
+				GUILayout.EndHorizontal ();
+			GUILayout.EndVertical ();
+		GUILayout.EndArea ();
 	}</p>
-<p>void OnMainMenuGUI ()<br />
-	{<br />
-		BeginStandardMenu (&quot;Main menu&quot;);<br />
-			if (m_Logo != null)<br />
-			{<br />
-				GUILayout.BeginHorizontal ();<br />
-					GUILayout.FlexibleSpace ();<br />
-						GUILayout.Label (m_Logo);<br />
-					GUILayout.FlexibleSpace ();<br />
-				GUILayout.EndHorizontal ();<br />
-			}<br />
-			if (GUILayout.Button (&quot;New game&quot;))<br />
-			{<br />
-				Application.LoadLevel (&quot;Level one&quot;);<br />
-			}<br />
-			m_CurrentState = GUILayout.Button (&quot;Settings&quot;) ? MenuState.Settings : m_CurrentState;<br />
-			m_CurrentState = GUILayout.Button (&quot;Credits&quot;) ? MenuState.Credits : m_CurrentState;<br />
-			GUILayout.FlexibleSpace ();<br />
-		EndStandardMenu ();<br />
+<p>void OnMainMenuGUI ()
+	{
+		BeginStandardMenu (&quot;Main menu&quot;);
+			if (m_Logo != null)
+			{
+				GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						GUILayout.Label (m_Logo);
+					GUILayout.FlexibleSpace ();
+				GUILayout.EndHorizontal ();
+			}
+			if (GUILayout.Button (&quot;New game&quot;))
+			{
+				Application.LoadLevel (&quot;Level one&quot;);
+			}
+			m_CurrentState = GUILayout.Button (&quot;Settings&quot;) ? MenuState.Settings : m_CurrentState;
+			m_CurrentState = GUILayout.Button (&quot;Credits&quot;) ? MenuState.Credits : m_CurrentState;
+			GUILayout.FlexibleSpace ();
+		EndStandardMenu ();
 	}</p>
-<p>void OnSettingsGUI ()<br />
-	{<br />
-		BeginStandardMenu (&quot;Settings&quot;);<br />
-			m_Settings.m_ThisSetting = GUILayout.Toggle (m_Settings.m_ThisSetting, &quot;This setting&quot;);<br />
-			m_Settings.m_ThatSetting = GUILayout.Toggle (m_Settings.m_ThatSetting, &quot;That setting&quot;);<br />
-			m_Settings.m_TheOtherSetting = GUILayout.Toggle (m_Settings.m_TheOtherSetting, &quot;The other setting&quot;, <span class="caps">GUI</span>.skin.GetStyle (&quot;Button&quot;));<br />
-			GUILayout.FlexibleSpace ();<br />
-			m_CurrentState = GUILayout.Button (&quot;Main menu&quot;) ? MenuState.Main : m_CurrentState;<br />
-		EndStandardMenu ();<br />
+<p>void OnSettingsGUI ()
+	{
+		BeginStandardMenu (&quot;Settings&quot;);
+			m_Settings.m_ThisSetting = GUILayout.Toggle (m_Settings.m_ThisSetting, &quot;This setting&quot;);
+			m_Settings.m_ThatSetting = GUILayout.Toggle (m_Settings.m_ThatSetting, &quot;That setting&quot;);
+			m_Settings.m_TheOtherSetting = GUILayout.Toggle (m_Settings.m_TheOtherSetting, &quot;The other setting&quot;, <span class="caps">GUI</span>.skin.GetStyle (&quot;Button&quot;));
+			GUILayout.FlexibleSpace ();
+			m_CurrentState = GUILayout.Button (&quot;Main menu&quot;) ? MenuState.Main : m_CurrentState;
+		EndStandardMenu ();
 	}</p>
-<p>void OnCreditsGUI ()<br />
-	{<br />
-		BeginStandardMenu (&quot;Credits&quot;);<br />
-			GUILayout.Label (&quot;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &#8211; as you can see &#8211; resulted in much joy and success!&quot;);<br />
-				GUILayout.Space (20.0f);<br />
-				GUILayout.BeginHorizontal ();<br />
-					GUILayout.FlexibleSpace ();<br />
-						GUILayout.Label (&quot;The awesomestest people inc.&quot;);<br />
+<p>void OnCreditsGUI ()
+	{
+		BeginStandardMenu (&quot;Credits&quot;);
+			GUILayout.Label (&quot;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &#8211; as you can see &#8211; resulted in much joy and success!&quot;);
+				GUILayout.Space (20.0f);
+				GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						GUILayout.Label (&quot;The awesomestest people inc.&quot;);
 				GUILayout.EndHorizontal ();</p>
-<p>GUILayout.FlexibleSpace ();<br />
-			m_CurrentState = GUILayout.Button (&quot;Main menu&quot;) ? MenuState.Main : m_CurrentState;<br />
-		EndStandardMenu ();<br />
-	}<br />
+<p>GUILayout.FlexibleSpace ();
+			m_CurrentState = GUILayout.Button (&quot;Main menu&quot;) ? MenuState.Main : m_CurrentState;
+		EndStandardMenu ();
+	}
 }</code></pre></noscript></div></p>
 <p>Example project: <a href="http://eej.dk/angryant/wp-content/uploads/2010/03/Menu.zip">Menu.zip</a> &#8211; built with Unity 2.6.1</p></p>
 					<p>&nbsp;</p>
@@ -203,6 +203,12 @@ using System.Collections.Generic;</p>
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

@@ -98,50 +98,50 @@
 <p>You&#8217;ll notice that CopyTransformInspector has some additional code to it. This is due to the fact that this inspector is rendered non-standard and the code provided just replicates that.</p>
 <p>Not really sure why syntax highlighting is not kicking in&#8230; Will have a look at that later.</p>
 <p>Codes!</p>
-<p>CopyInspector.cs<br />
+<p>CopyInspector.cs
 <script src='https://gist.github.com/3806123.js?file=CopyInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;</p>
-<p>public class CopyInspector : Editor<br />
-{<br />
-	static System.Type m_OriginalType;<br />
+<p>public class CopyInspector : Editor
+{
+	static System.Type m_OriginalType;
 	static Dictionary object&gt; m_Values;</p>
-<p>private List  GetProperties (Component component)<br />
-	{<br />
-		List &lt;string&gt; ignoredProperties;<br />
+<p>private List  GetProperties (Component component)
+	{
+		List &lt;string&gt; ignoredProperties;
 		List  properties;</p>
-<p>properties = new List  ();<br />
-		ignoredProperties = new List &lt;string&gt; ();<br />
-		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())<br />
-		{<br />
-			ignoredProperties.Add (propertyInfo.Name);<br />
+<p>properties = new List  ();
+		ignoredProperties = new List &lt;string&gt; ();
+		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())
+		{
+			ignoredProperties.Add (propertyInfo.Name);
 		}</p>
-<p>foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())<br />
-		{<br />
-			if (ignoredProperties.Contains (propertyInfo.Name))<br />
-			{<br />
-				continue;<br />
-			}<br />
-			properties.Add (propertyInfo);<br />
+<p>foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())
+		{
+			if (ignoredProperties.Contains (propertyInfo.Name))
+			{
+				continue;
+			}
+			properties.Add (propertyInfo);
 		}</p>
-<p>return properties;<br />
+<p>return properties;
 	}</p>
-<p>public override void OnInspectorGUI ()<br />
-	{<br />
-		DrawDefaultInspector ();<br />
-		OnCopyInspectorGUI ();<br />
+<p>public override void OnInspectorGUI ()
+	{
+		DrawDefaultInspector ();
+		OnCopyInspectorGUI ();
 	}</p>
-<p>public void OnCopyInspectorGUI ()<br />
-	{<br />
-		bool enabled;<br />
-		List  properties;<br />
+<p>public void OnCopyInspectorGUI ()
+	{
+		bool enabled;
+		List  properties;
 		Component component;</p>
 <p>component = target as Component;</p>
-<p>if (component == null)<br />
-		{<br />
-			return;<br />
+<p>if (component == null)
+		{
+			return;
 		}</p>
 <p>GUILayout.Space (10.0f);</p>
 <p>Color backgroundColor = <span class="caps">GUI</span>.backgroundColor;</p>
@@ -152,68 +152,68 @@ using System.Reflection;</p>
 <p>GUILayout.Space (10.0f);</p>
 <p>GUILayout.Label (&quot;Copied: &quot; + (m_OriginalType != null ? m_OriginalType.Name : &quot;Nothing&quot;), &quot;MiniLabel&quot;);</p>
 <p>GUILayout.FlexibleSpace ();</p>
-<p>if (GUILayout.Button (new GUIContent (&quot;Copy&quot;, &quot;Copy component values&quot;), &quot;MiniLabel&quot;))<br />
-				{<br />
+<p>if (GUILayout.Button (new GUIContent (&quot;Copy&quot;, &quot;Copy component values&quot;), &quot;MiniLabel&quot;))
+				{
 					m_OriginalType = target.GetType ();</p>
 <p>properties = GetProperties (component);</p>
-<p>m_Values = new Dictionary object&gt; ();<br />
-					foreach (PropertyInfo property in properties)<br />
-					{<br />
-						m_Values [property] = property.GetValue (component, null);<br />
-					}<br />
+<p>m_Values = new Dictionary object&gt; ();
+					foreach (PropertyInfo property in properties)
+					{
+						m_Values [property] = property.GetValue (component, null);
+					}
 				}</p>
-<p>enabled = <span class="caps">GUI</span>.enabled;<br />
+<p>enabled = <span class="caps">GUI</span>.enabled;
 				<span class="caps">GUI</span>.enabled = target.GetType () == m_OriginalType;</p>
 <p>GUILayout.Space (10.0f);</p>
-<p>if (GUILayout.Button (new GUIContent (&quot;Paste&quot;, &quot;Paste component values&quot;), &quot;MiniLabel&quot;))<br />
-				{<br />
-					properties = GetProperties (component);<br />
-					foreach (PropertyInfo property in properties)<br />
-					{<br />
-						if (!property.CanWrite)<br />
-						{<br />
-							continue;<br />
+<p>if (GUILayout.Button (new GUIContent (&quot;Paste&quot;, &quot;Paste component values&quot;), &quot;MiniLabel&quot;))
+				{
+					properties = GetProperties (component);
+					foreach (PropertyInfo property in properties)
+					{
+						if (!property.CanWrite)
+						{
+							continue;
 						}</p>
-<p>property.SetValue (component, m_Values [property], null);<br />
-					}<br />
+<p>property.SetValue (component, m_Values [property], null);
+					}
 				}</p>
 <p>GUILayout.Space (10.0f);</p>
 <p><span class="caps">GUI</span>.enabled = enabled;</p>
 <p>GUILayout.EndHorizontal ();</p>
 <p>GUILayout.EndVertical ();</p>
-<p>GUILayout.Space (-2.0f);<br />
-	}<br />
+<p>GUILayout.Space (-2.0f);
+	}
 }</code></pre></noscript></div></p>
-<p>CopyTransformInspector.cs<br />
+<p>CopyTransformInspector.cs
 <script src='https://gist.github.com/3806123.js?file=CopyTransformInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
 using UnityEditor;
 using System.Collections;</p>
-<p>[CustomEditor (typeof (Transform))]<br />
-public class CopyTransformInspector : CopyInspector<br />
-{<br />
-	public override void OnInspectorGUI ()<br />
-	{<br />
-		Transform transform;<br />
-		Vector3 localPosition, localScale;<br />
+<p>[CustomEditor (typeof (Transform))]
+public class CopyTransformInspector : CopyInspector
+{
+	public override void OnInspectorGUI ()
+	{
+		Transform transform;
+		Vector3 localPosition, localScale;
 		Quaternion localRotation;</p>
 <p>transform = target as Transform;</p>
-<p>localPosition = EditorGUILayout.Vector3Field (&quot;Position&quot;, transform.localPosition);<br />
-		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&quot;Rotation&quot;, transform.localRotation.eulerAngles));<br />
+<p>localPosition = EditorGUILayout.Vector3Field (&quot;Position&quot;, transform.localPosition);
+		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&quot;Rotation&quot;, transform.localRotation.eulerAngles));
 		localScale = EditorGUILayout.Vector3Field (&quot;Scale&quot;, transform.localScale);</p>
-<p>if (<span class="caps">GUI</span>.changed)<br />
-		{<br />
-			transform.localPosition = localPosition;<br />
-			transform.localRotation = localRotation;<br />
-			transform.localScale = localScale;<br />
+<p>if (<span class="caps">GUI</span>.changed)
+		{
+			transform.localPosition = localPosition;
+			transform.localRotation = localRotation;
+			transform.localScale = localScale;
 		}</p>
-<p>OnCopyInspectorGUI ();<br />
-	}<br />
+<p>OnCopyInspectorGUI ();
+	}
 }</code></pre></noscript></div></p>
-<p>CopyYourComponentTypeInspector.cs<br />
+<p>CopyYourComponentTypeInspector.cs
 <script src='https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs'></script><div><noscript><pre><code>using UnityEngine;
 using UnityEditor;
 using System.Collections;</p>
-<p>[CustomEditor (typeof (YourComponentType))]<br />
+<p>[CustomEditor (typeof (YourComponentType))]
 public class CopyYourComponentTypeInspector : CopyInspector{}</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
@@ -224,6 +224,12 @@ public class CopyYourComponentTypeInspector : CopyInspector{}</code></pre></nosc
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

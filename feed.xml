@@ -6,6 +6,46 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Unity Hacks: Dual sticks</title>
+				<description>&lt;p&gt;This is my third post in what looks like is going to turn into &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;a series&lt;/a&gt;, examining parts of the example project I provided for the Unity Hacks presentation &amp;#8211; delivered at a couple of the Unite conferences this year.&lt;/p&gt;
+&lt;p&gt;You can find the project and a recording of the presentation in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section of this site.&lt;/p&gt;
+&lt;h1&gt;DualControls&lt;/h1&gt;
+&lt;p&gt;The &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; interface has a very straight forward purpose: Provide a 2 &amp;#215; 2 axis input interface across platforms and compatible units. This is exposed via the DualControls.Left and DualControls.Right accessors &amp;#8211; each returning a Vector2.&lt;/p&gt;
+&lt;p&gt;Supported out of the box is:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;span class=&quot;caps&quot;&gt;WASD&lt;/span&gt; + mouse.&lt;/li&gt;
+	&lt;li&gt;Xbox360 controller (windows-only)&lt;/li&gt;
+	&lt;li&gt;ps3 controller (OS X-only)&lt;/li&gt;
+	&lt;li&gt;Shadowgun-style touch controls (left/right screen split)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;However abstraction is relaxed enough that virtual sticks or alternative input like the leap motion could be added fairly easily (assuming you have a means of capturing that input data in the first place).&lt;/p&gt;
+&lt;h1&gt;Controllers&lt;/h1&gt;
+&lt;p&gt;So controllers are not exactly nicely wrapped up in the current version of Unity. Which ungodly hack did I have to apply to get them to play along with just working out of the box in an easily installable package? It is actually not so bad. However I had to concede to some compromises up front. Basically when it comes to joysticks and controllers, you generally have two complications: the hardware itself and the driver.&lt;/p&gt;
+&lt;p&gt;So? What is so bad about that? Well, in a perfect world you had one driver for each controller type or at least all the drivers for the same hardware would map the buttons and axes in the same way, right?&lt;/p&gt;
+&lt;p&gt;Enter: This world. For every controller you always have at least two drivers set up differently: One for OS X and one for Windows (the Linux one often being based on the Windows one as I understand it). Why would anyone be content with just two drivers though? There exists a good number of different packages and open source solutions, vendor and OS provided drivers for the different controllers.&lt;/p&gt;
+&lt;p&gt;The way these are differentiated in the Unity runtime is via the joystick name string &amp;#8211; as accessible via Input.GetJoystickNames.&lt;/p&gt;
+&lt;p&gt;This is what &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; checks for in its Update handler. If a new joystick is found connected, it runs the name by the controller wiring and activates the appropriate controller (optionally if accepted by a callback).&lt;/p&gt;
+&lt;p&gt;Per default I have compromised and only provided wiring for the Xbox360 controller on Windows and the ps3 controller on OS X. This particular configuration stems from the fact that those OS&amp;#8217;es ship with a pre-installed default driver for those controllers.&lt;/p&gt;
+&lt;p&gt;Microsoft clearly should support their own hardware and I&amp;#8217;m assuming that Apple just supports the ps3 controller because it&amp;#8217;s hardware from a direct Microsoft competitor.&lt;/p&gt;
+&lt;p&gt;However, again, the abstraction is loose enough that if you want to, you should be able to add support for more controllers fairly easily. See the end of the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt; script for that.&lt;/p&gt;
+&lt;p&gt;Oh, but I almost forgot the hack: As I am using the standard Unity Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for this, the input manager needs configuring, right? So with no &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for it, how do you go about doing that for a package?&lt;/p&gt;
+&lt;p&gt;You use the AssetDatabase &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to load ProjectSettings/InputManager.asset and then the ScriptableObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to modify it.
+&lt;script src=&#39;https://gist.github.com/6151366.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;I hope you find this useful. For more details, these are the Unity Hacks scripts related to this post:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.Stick.cs&quot;&gt;DualControls.Stick.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/ControllerInput.cs&quot;&gt;ControllerInput.cs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</description>
+				<published>2013-08-04 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/08/04/Unity-Hacks-Dual-sticks/</link>
+			</item>
+		
+			<item>
 				<title>Unity Hacks: Cameras</title>
 				<description>&lt;p&gt;In my &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;effort to pick apart&lt;/a&gt; the &amp;#8220;Unity Hacks&amp;#8221; project as made available, along with a recording of the presentation, in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section, I now focus on the camera system.&lt;/p&gt;
 &lt;h1&gt;Overview&lt;/h1&gt;
@@ -43,7 +83,7 @@
 &lt;p&gt;Note that a bunch of these scripts &amp;#8211; for instance the one I cover today &amp;#8211; was at the time I was still at Unity Technologies slated for the new Standard Assets shipped with Unity. Since I left, I obviously can&amp;#8217;t say if or when these are shipped and in which form. What&amp;#8217;s in the Unity Hacks project is pretty much the last iteration I did on them before leaving.&lt;/p&gt;
 &lt;h1&gt;TouchGestures.cs&lt;/h1&gt;
 &lt;p&gt;The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.&lt;/p&gt;
-&lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:&lt;br /&gt;
+&lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:
 &lt;script src=&#39;https://gist.github.com/6039082.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.&lt;/p&gt;
 &lt;p&gt;Great, so what do the different configuration values mean? First, let&amp;#8217;s take a look at the tracking clamps:&lt;/p&gt;
@@ -76,7 +116,7 @@
 &lt;p&gt;However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school &lt;span class=&quot;caps&quot;&gt;CRT&lt;/span&gt; display. It looked great, except the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was just rendered on top of everything &amp;#8211; as per usual &amp;#8211; with no warping. Since the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was non-interactive, there was no down-side to using the approach I had come up with before to include the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; in the full-screen effect rendering.&lt;/p&gt;
 &lt;p&gt;It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &amp;#8211; rendering the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; on a plane, rendered always on top, in front of the Oculus cameras.&lt;/p&gt;
 &lt;p&gt;So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &amp;#8211; at least twice &amp;#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.&lt;/p&gt;
-&lt;p&gt;The trick therefore becomes:&lt;br /&gt;
+&lt;p&gt;The trick therefore becomes:
 &lt;script src=&#39;https://gist.github.com/5984299.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Remember that this is not immediately useful if you need interactive &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; as this would require work to handle input gathered from the regular UnityEngine.Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.&lt;/p&gt;
 &lt;p&gt;I hope you find it useful!&lt;/p&gt;</description>
@@ -106,53 +146,53 @@
 &lt;p&gt;First up, AirPlay support was recently added to Unity and I posted &lt;a href=&quot;https://gist.github.com/AngryAnt/5160204&quot;&gt;a gist&lt;/a&gt; to help people get started with it.&lt;/p&gt;
 &lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
 &lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
-&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:&lt;br /&gt;
+&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:
 &lt;script src=&#39;https://gist.github.com/5730611.js?file=Broadcaster.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
 // Setup broadcast of hosting service
 {
 	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
-&lt;p&gt;try&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;try
+	{
 		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
-			SocketOptionLevel.IP,&lt;br /&gt;
-			SocketOptionName.AddMembership,&lt;br /&gt;
-			new MulticastOption (broadcastGroup)&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup)
 		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
-			SocketOptionLevel.IP,&lt;br /&gt;
-			SocketOptionName.MulticastTimeToLive,&lt;br /&gt;
-			1&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.MulticastTimeToLive,
+			1
 		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));&lt;br /&gt;
-	}&lt;br /&gt;
-	catch (Exception e)&lt;br /&gt;
-	{&lt;br /&gt;
-		Debug.LogError (string.Format (&lt;br /&gt;
-			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,&lt;br /&gt;
-			kBroadcastGroup,&lt;br /&gt;
-			kBroadcastPort,&lt;br /&gt;
-			e&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
 		));&lt;/p&gt;
-&lt;p&gt;return false;&lt;br /&gt;
+&lt;p&gt;return false;
 	}&lt;/p&gt;
 &lt;p&gt;m_BroadcastTimer = new Timer (kBroadcastDelay);&lt;/p&gt;
-&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (&lt;br /&gt;
-		(object s, ElapsedEventArgs e) =&amp;gt;&lt;br /&gt;
-		{&lt;br /&gt;
-			m_BroadcastSocket.Send (GetBroadcastBytes ());&lt;br /&gt;
-		}&lt;br /&gt;
-	);&lt;br /&gt;
-	m_BroadcastTimer.Enabled = true;&lt;br /&gt;
+&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (
+		(object s, ElapsedEventArgs e) =&amp;gt;
+		{
+			m_BroadcastSocket.Send (GetBroadcastBytes ());
+		}
+	);
+	m_BroadcastTimer.Enabled = true;
 }&lt;/p&gt;
 &lt;p&gt;return true;&lt;/p&gt;
 &lt;p&gt;// &amp;#8230;&lt;/p&gt;
-&lt;p&gt;byte[] GetBroadcastBytes ()&lt;br /&gt;
-{&lt;br /&gt;
-	/*&lt;br /&gt;
-		Return byte array containing IP and port of our host socket plus meta data&lt;br /&gt;
-		such as current level and perhaps location (for portal placement)&lt;br /&gt;
-	*/&lt;br /&gt;
+&lt;p&gt;byte[] GetBroadcastBytes ()
+{
+	/*
+		Return byte array containing IP and port of our host socket plus meta data
+		such as current level and perhaps location (for portal placement)
+	*/
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Let&amp;#8217;s go over the interface for this gist:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
@@ -270,19 +310,6 @@ void ReadBroadcasts ()
 &lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;http://plexapp.com&quot;&gt;Plex&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2012-10-03 00:00:00 +0200</published>
 				<link>http://angryant.com/2012/10/03/Invading-Planet-from-your-couch/</link>
-			</item>
-		
-			<item>
-				<title>Mountain Lion and laggy bluetooth and duct-tape</title>
-				<description>&lt;p&gt;If you, like me, run a bluetooth keyboard and mouse on your Mountain Lion machine, you might have noticed recent occasional slow-downs in the response time from those devices.&lt;/p&gt;
-&lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
-&lt;p&gt;So until apple addresses this, I&amp;#8217;ve written myself a little utility apple script for turning the radio off and back on again. It&amp;#8217;s based on &lt;a href=&quot;http://www.frederikseiffert.de/blueutil/&quot;&gt;blueutil&lt;/a&gt; which is available with source if you worry about malware and simply turns off the radio for five seconds before turning it back on.&lt;/p&gt;
-&lt;p&gt;I hope you find it useful.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3798723.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil off&amp;amp;quot; with administrator privileges
-delay 5
-do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with administrator privileges&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description>
-				<published>2012-09-28 00:00:00 +0200</published>
-				<link>http://angryant.com/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/</link>
 			</item>
 		
 	</channel>

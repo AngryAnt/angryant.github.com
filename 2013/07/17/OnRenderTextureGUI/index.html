@@ -85,7 +85,7 @@
 <p>However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school <span class="caps">CRT</span> display. It looked great, except the <span class="caps">GUI</span> was just rendered on top of everything &#8211; as per usual &#8211; with no warping. Since the <span class="caps">GUI</span> was non-interactive, there was no down-side to using the approach I had come up with before to include the <span class="caps">GUI</span> in the full-screen effect rendering.</p>
 <p>It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &#8211; rendering the <span class="caps">GUI</span> on a plane, rendered always on top, in front of the Oculus cameras.</p>
 <p>So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &#8211; at least twice &#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.</p>
-<p>The trick therefore becomes:<br />
+<p>The trick therefore becomes:
 <script src='https://gist.github.com/5984299.js?file='></script><div><noscript><pre><code></code></pre></noscript></div></p>
 <p>Remember that this is not immediately useful if you need interactive <span class="caps">GUI</span> as this would require work to handle input gathered from the regular UnityEngine.Input <span class="caps">API</span>. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.</p>
 <p>I hope you find it useful!</p></p>
@@ -98,6 +98,12 @@
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

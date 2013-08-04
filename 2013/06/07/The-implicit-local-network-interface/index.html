@@ -91,53 +91,53 @@
 <p>First up, AirPlay support was recently added to Unity and I posted <a href="https://gist.github.com/AngryAnt/5160204">a gist</a> to help people get started with it.</p>
 <p>Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &#8211; not internet play like Journey did it.</p>
 <p>For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &#8220;Unity, Network Code, and You&#8221; &#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the <a href="/videos/">video</a> section of this site.</p>
-<p>So with those parts in place, we just need a bit of glue &#8211; namely the broadcasting of games on your local network. This gist deals with just that:<br />
+<p>So with those parts in place, we just need a bit of glue &#8211; namely the broadcasting of games on your local network. This gist deals with just that:
 <script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'></script><div><noscript><pre><code>if (m_BroadcastTimer == null)
 // Setup broadcast of hosting service
 {
 	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);</p>
-<p>try<br />
-	{<br />
+<p>try
+	{
 		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);</p>
-<p>m_BroadcastSocket.SetSocketOption (<br />
-			SocketOptionLevel.IP,<br />
-			SocketOptionName.AddMembership,<br />
-			new MulticastOption (broadcastGroup)<br />
+<p>m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup)
 		);</p>
-<p>m_BroadcastSocket.SetSocketOption (<br />
-			SocketOptionLevel.IP,<br />
-			SocketOptionName.MulticastTimeToLive,<br />
-			1<br />
+<p>m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.MulticastTimeToLive,
+			1
 		);</p>
-<p>m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));<br />
-	}<br />
-	catch (Exception e)<br />
-	{<br />
-		Debug.LogError (string.Format (<br />
-			&quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&quot;,<br />
-			kBroadcastGroup,<br />
-			kBroadcastPort,<br />
-			e<br />
+<p>m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
 		));</p>
-<p>return false;<br />
+<p>return false;
 	}</p>
 <p>m_BroadcastTimer = new Timer (kBroadcastDelay);</p>
-<p>m_BroadcastTimer.Elapsed += new ElapsedEventHandler (<br />
-		(object s, ElapsedEventArgs e) =&gt;<br />
-		{<br />
-			m_BroadcastSocket.Send (GetBroadcastBytes ());<br />
-		}<br />
-	);<br />
-	m_BroadcastTimer.Enabled = true;<br />
+<p>m_BroadcastTimer.Elapsed += new ElapsedEventHandler (
+		(object s, ElapsedEventArgs e) =&gt;
+		{
+			m_BroadcastSocket.Send (GetBroadcastBytes ());
+		}
+	);
+	m_BroadcastTimer.Enabled = true;
 }</p>
 <p>return true;</p>
 <p>// &#8230;</p>
-<p>byte[] GetBroadcastBytes ()<br />
-{<br />
-	/*<br />
-		Return byte array containing IP and port of our host socket plus meta data<br />
-		such as current level and perhaps location (for portal placement)<br />
-	*/<br />
+<p>byte[] GetBroadcastBytes ()
+{
+	/*
+		Return byte array containing IP and port of our host socket plus meta data
+		such as current level and perhaps location (for portal placement)
+	*/
 }</code></pre></noscript></div></p>
 <p>Let&#8217;s go over the interface for this gist:</p>
 <p><strong>kBroadcastGroup</strong> and <strong>kBroadcastPort</strong> are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &#8211; all that matters is that both broadcaster and receiver use the same keys.</p>
@@ -195,6 +195,12 @@ void ReadBroadcasts ()
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

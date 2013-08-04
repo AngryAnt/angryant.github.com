@@ -7,6 +7,48 @@
 		
 			
 			<item>
+				<title>Unity Hacks: Dual sticks</title>
+				<description>&lt;p&gt;This is my third post in what looks like is going to turn into &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;a series&lt;/a&gt;, examining parts of the example project I provided for the Unity Hacks presentation &amp;#8211; delivered at a couple of the Unite conferences this year.&lt;/p&gt;
+&lt;p&gt;You can find the project and a recording of the presentation in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section of this site.&lt;/p&gt;
+&lt;h1&gt;DualControls&lt;/h1&gt;
+&lt;p&gt;The &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; interface has a very straight forward purpose: Provide a 2 &amp;#215; 2 axis input interface across platforms and compatible units. This is exposed via the DualControls.Left and DualControls.Right accessors &amp;#8211; each returning a Vector2.&lt;/p&gt;
+&lt;p&gt;Supported out of the box is:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;span class=&quot;caps&quot;&gt;WASD&lt;/span&gt; + mouse.&lt;/li&gt;
+	&lt;li&gt;Xbox360 controller (windows-only)&lt;/li&gt;
+	&lt;li&gt;ps3 controller (OS X-only)&lt;/li&gt;
+	&lt;li&gt;Shadowgun-style touch controls (left/right screen split)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;However abstraction is relaxed enough that virtual sticks or alternative input like the leap motion could be added fairly easily (assuming you have a means of capturing that input data in the first place).&lt;/p&gt;
+&lt;h1&gt;Controllers&lt;/h1&gt;
+&lt;p&gt;So controllers are not exactly nicely wrapped up in the current version of Unity. Which ungodly hack did I have to apply to get them to play along with just working out of the box in an easily installable package? It is actually not so bad. However I had to concede to some compromises up front. Basically when it comes to joysticks and controllers, you generally have two complications: the hardware itself and the driver.&lt;/p&gt;
+&lt;p&gt;So? What is so bad about that? Well, in a perfect world you had one driver for each controller type or at least all the drivers for the same hardware would map the buttons and axes in the same way, right?&lt;/p&gt;
+&lt;p&gt;Enter: This world. For every controller you always have at least two drivers set up differently: One for OS X and one for Windows (the Linux one often being based on the Windows one as I understand it). Why would anyone be content with just two drivers though? There exists a good number of different packages and open source solutions, vendor and OS provided drivers for the different controllers.&lt;/p&gt;
+&lt;p&gt;The way these are differentiated in the Unity runtime is via the joystick name string &amp;#8211; as accessible via Input.GetJoystickNames.&lt;/p&gt;
+&lt;p&gt;This is what &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; checks for in its Update handler. If a new joystick is found connected, it runs the name by the controller wiring and activates the appropriate controller (optionally if accepted by a callback).&lt;/p&gt;
+&lt;p&gt;Per default I have compromised and only provided wiring for the Xbox360 controller on Windows and the ps3 controller on OS X. This particular configuration stems from the fact that those OS&amp;#8217;es ship with a pre-installed default driver for those controllers.&lt;/p&gt;
+&lt;p&gt;Microsoft clearly should support their own hardware and I&amp;#8217;m assuming that Apple just supports the ps3 controller because it&amp;#8217;s hardware from a direct Microsoft competitor.&lt;/p&gt;
+&lt;p&gt;However, again, the abstraction is loose enough that if you want to, you should be able to add support for more controllers fairly easily. See the end of the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt; script for that.&lt;/p&gt;
+&lt;p&gt;Oh, but I almost forgot the hack: As I am using the standard Unity Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for this, the input manager needs configuring, right? So with no &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for it, how do you go about doing that for a package?&lt;/p&gt;
+&lt;p&gt;You use the AssetDatabase &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to load ProjectSettings/InputManager.asset and then the ScriptableObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to modify it.
+&lt;script src=&#39;https://gist.github.com/6151366.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;I hope you find this useful. For more details, these are the Unity Hacks scripts related to this post:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.Stick.cs&quot;&gt;DualControls.Stick.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/ControllerInput.cs&quot;&gt;ControllerInput.cs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</description>
+				<published>2013-08-04 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/08/04/Unity-Hacks-Dual-sticks/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Unity Hacks: Cameras</title>
 				<description>&lt;p&gt;In my &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;effort to pick apart&lt;/a&gt; the &amp;#8220;Unity Hacks&amp;#8221; project as made available, along with a recording of the presentation, in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section, I now focus on the camera system.&lt;/p&gt;
 &lt;h1&gt;Overview&lt;/h1&gt;
@@ -46,7 +88,7 @@
 &lt;p&gt;Note that a bunch of these scripts &amp;#8211; for instance the one I cover today &amp;#8211; was at the time I was still at Unity Technologies slated for the new Standard Assets shipped with Unity. Since I left, I obviously can&amp;#8217;t say if or when these are shipped and in which form. What&amp;#8217;s in the Unity Hacks project is pretty much the last iteration I did on them before leaving.&lt;/p&gt;
 &lt;h1&gt;TouchGestures.cs&lt;/h1&gt;
 &lt;p&gt;The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.&lt;/p&gt;
-&lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:&lt;br /&gt;
+&lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:
 &lt;script src=&#39;https://gist.github.com/6039082.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.&lt;/p&gt;
 &lt;p&gt;Great, so what do the different configuration values mean? First, let&amp;#8217;s take a look at the tracking clamps:&lt;/p&gt;
@@ -81,7 +123,7 @@
 &lt;p&gt;However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school &lt;span class=&quot;caps&quot;&gt;CRT&lt;/span&gt; display. It looked great, except the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was just rendered on top of everything &amp;#8211; as per usual &amp;#8211; with no warping. Since the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was non-interactive, there was no down-side to using the approach I had come up with before to include the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; in the full-screen effect rendering.&lt;/p&gt;
 &lt;p&gt;It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &amp;#8211; rendering the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; on a plane, rendered always on top, in front of the Oculus cameras.&lt;/p&gt;
 &lt;p&gt;So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &amp;#8211; at least twice &amp;#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.&lt;/p&gt;
-&lt;p&gt;The trick therefore becomes:&lt;br /&gt;
+&lt;p&gt;The trick therefore becomes:
 &lt;script src=&#39;https://gist.github.com/5984299.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Remember that this is not immediately useful if you need interactive &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; as this would require work to handle input gathered from the regular UnityEngine.Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.&lt;/p&gt;
 &lt;p&gt;I hope you find it useful!&lt;/p&gt;</description>
@@ -115,53 +157,53 @@
 &lt;p&gt;First up, AirPlay support was recently added to Unity and I posted &lt;a href=&quot;https://gist.github.com/AngryAnt/5160204&quot;&gt;a gist&lt;/a&gt; to help people get started with it.&lt;/p&gt;
 &lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
 &lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
-&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:&lt;br /&gt;
+&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:
 &lt;script src=&#39;https://gist.github.com/5730611.js?file=Broadcaster.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
 // Setup broadcast of hosting service
 {
 	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
-&lt;p&gt;try&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;try
+	{
 		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
-			SocketOptionLevel.IP,&lt;br /&gt;
-			SocketOptionName.AddMembership,&lt;br /&gt;
-			new MulticastOption (broadcastGroup)&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.AddMembership,
+			new MulticastOption (broadcastGroup)
 		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (&lt;br /&gt;
-			SocketOptionLevel.IP,&lt;br /&gt;
-			SocketOptionName.MulticastTimeToLive,&lt;br /&gt;
-			1&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.SetSocketOption (
+			SocketOptionLevel.IP,
+			SocketOptionName.MulticastTimeToLive,
+			1
 		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));&lt;br /&gt;
-	}&lt;br /&gt;
-	catch (Exception e)&lt;br /&gt;
-	{&lt;br /&gt;
-		Debug.LogError (string.Format (&lt;br /&gt;
-			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,&lt;br /&gt;
-			kBroadcastGroup,&lt;br /&gt;
-			kBroadcastPort,&lt;br /&gt;
-			e&lt;br /&gt;
+&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));
+	}
+	catch (Exception e)
+	{
+		Debug.LogError (string.Format (
+			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,
+			kBroadcastGroup,
+			kBroadcastPort,
+			e
 		));&lt;/p&gt;
-&lt;p&gt;return false;&lt;br /&gt;
+&lt;p&gt;return false;
 	}&lt;/p&gt;
 &lt;p&gt;m_BroadcastTimer = new Timer (kBroadcastDelay);&lt;/p&gt;
-&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (&lt;br /&gt;
-		(object s, ElapsedEventArgs e) =&amp;gt;&lt;br /&gt;
-		{&lt;br /&gt;
-			m_BroadcastSocket.Send (GetBroadcastBytes ());&lt;br /&gt;
-		}&lt;br /&gt;
-	);&lt;br /&gt;
-	m_BroadcastTimer.Enabled = true;&lt;br /&gt;
+&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (
+		(object s, ElapsedEventArgs e) =&amp;gt;
+		{
+			m_BroadcastSocket.Send (GetBroadcastBytes ());
+		}
+	);
+	m_BroadcastTimer.Enabled = true;
 }&lt;/p&gt;
 &lt;p&gt;return true;&lt;/p&gt;
 &lt;p&gt;// &amp;#8230;&lt;/p&gt;
-&lt;p&gt;byte[] GetBroadcastBytes ()&lt;br /&gt;
-{&lt;br /&gt;
-	/*&lt;br /&gt;
-		Return byte array containing IP and port of our host socket plus meta data&lt;br /&gt;
-		such as current level and perhaps location (for portal placement)&lt;br /&gt;
-	*/&lt;br /&gt;
+&lt;p&gt;byte[] GetBroadcastBytes ()
+{
+	/*
+		Return byte array containing IP and port of our host socket plus meta data
+		such as current level and perhaps location (for portal placement)
+	*/
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Let&amp;#8217;s go over the interface for this gist:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
@@ -457,9 +499,9 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;p&gt;We will meet in the reception and from there move to the auditorium. The originally planned physics bit of todays &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; has been rescheduled to next thursday, where Jonas Echterhoff will be in town and give the talk. Jonas is the man with the plan of the PhysX integration in Unity, so added awesomenessness!&lt;/p&gt;
 &lt;p&gt;This means that today Joe Robins will be talking about scene construction and I will be covering AI in Unity.&lt;/p&gt;
 &lt;p&gt;For this thursday we should be lucky and get even more Unity Tech people to participate in the discussion bit of the &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt;. And remember afterwards we&amp;#8217;re doing the bar meet and given it&amp;#8217;s Saint Patricks, we&amp;#8217;re likely to be a good group of people moving from bar to bar.&lt;/p&gt;
-&lt;p&gt;The original &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post w. schedule:&lt;br /&gt;
+&lt;p&gt;The original &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post w. schedule:
 &lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post on the rescheduling of the physics talk:&lt;br /&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; post on the rescheduling of the physics talk:
 &lt;a href=&quot;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&quot;&gt;http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2011-03-17 00:00:00 +0100</published>
 				<link>http://angryant.com/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/</link>
@@ -471,7 +513,7 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 				<title>First IGDA Unity SIG this evening</title>
 				<description>&lt;p&gt;Quick announcement for anyone in or around the &lt;span class=&quot;caps&quot;&gt;CPH&lt;/span&gt; area: I&amp;#8217;m doing the first of six &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity SIGs (Special Interest Groups) this evening, with Joe Robins.&lt;/p&gt;
 &lt;p&gt;The event is held at the IT University of Copenhagen and starts at 1800. Anyone can attend (for free) and this first &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; will be a general introduction to Unity &amp;#8211; basic principles of the engine, workflow and such. The following five SIGs will dive into various specific areas of Unity.&lt;/p&gt;
-&lt;p&gt;For more information and the full program, see the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; DK blog:&lt;br /&gt;
+&lt;p&gt;For more information and the full program, see the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; DK blog:
 &lt;a href=&quot;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&quot;&gt;http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2011-03-10 00:00:00 +0100</published>
 				<link>http://angryant.com/2011/03/10/first-igda-unity-sig-this-evening/</link>
@@ -702,7 +744,7 @@ public static Texture2D GetTextureResource (string resourceName)
 			<item>
 				<title>Behave AIgameDev master class public stream</title>
 				<description>&lt;p&gt;Hey guys &amp;#8211; as promised, the live stream is now just about ready to go. The clock reads about ten minutes to impact, so join up!&lt;/p&gt;
-&lt;p&gt;The direct link is available in the following forum post:&lt;br /&gt;
+&lt;p&gt;The direct link is available in the following forum post:
 &lt;a href=&quot;http://forum.unity3d.com/threads/68843-Behave-master-class-on-AIgameDev/&quot;&gt;http://forum.unity3d.com/threads/68843-Behave-master-class-on-AIgameDev&lt;/a&gt;.&lt;/p&gt;</description>
 				<published>2010-11-28 00:00:00 +0100</published>
 				<link>http://angryant.com/2010/11/28/behave-aigamedev-master-class-public-stream/</link>
@@ -789,7 +831,7 @@ public static Texture2D GetTextureResource (string resourceName)
 				<description>&lt;p&gt;Hey guys.&lt;/p&gt;
 &lt;p&gt;For those of you not attending; Joe Robins and I are running a Unity course at the IT University of Copenhagen this week. Given the highly mixed crowd, the our lectures range from absolutely no Unity knowledge required to at least some understanding needed for full potential unlock.&lt;/p&gt;
 &lt;p&gt;During these lectures, we create projects for demoing the focus of the lecture. These are either pre-prepared or built on stage and often get modified based on requests from the audience.&lt;/p&gt;
-&lt;p&gt;So now that we are all on the same track:&lt;br /&gt;
+&lt;p&gt;So now that we are all on the same track:
 Attached to this post you should find three zip files of the content we have gone through in the classes so far. This is their state post responding to questions, so some of the stuff demoed earlier on might differ slightly.&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;http://eej.dk/angryant/wp-content/themes/angryant/downloads/ITUCourse2010/Monday.zip&quot;&gt;Monday&lt;/a&gt;&lt;/li&gt;
@@ -838,7 +880,7 @@ Attached to this post you should find three zip files of the content we have gon
 				<description>&lt;p&gt;I just finished uploading a new video for the Behave documentation section. It is a brief general introduction to the Behave authoring environment and shows you how to get up and running with Behave from a blank project.&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;/behave/documentation/&quot;&gt;The documentation page&lt;/a&gt;.&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;/resources/behave/StartingFromScratch.mov&quot;&gt;Direct link to the video&lt;/a&gt;.&lt;br /&gt;
+	&lt;li&gt;&lt;a href=&quot;/resources/behave/StartingFromScratch.mov&quot;&gt;Direct link to the video&lt;/a&gt;.
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
 				<published>2010-09-29 00:00:00 +0200</published>
@@ -941,117 +983,117 @@ Attached to this post you should find three zip files of the content we have gon
 				<title>Building a menu of delegates and enums</title>
 				<description>&lt;p&gt;I like delegates. I also like enums. Furthermore, I happen to be part of a small group of people who actually enjoy the immediate mode &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; system in Unity. And I want you to like it too :)&lt;/p&gt;
 &lt;p&gt;So &amp;#8211; menus. After having observed quite a few very funky approaches, in the &lt;a href=&quot;http://www.unifycommunity.com/wiki/index.php?title=IRC&quot;&gt;&lt;span class=&quot;caps&quot;&gt;IRC&lt;/span&gt;&lt;/a&gt; channel, to building main menu functionality and giving advice in there, I decided to sow together those ideas into a short example.&lt;/p&gt;
-&lt;p&gt;The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &amp;#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:&lt;br /&gt;
+&lt;p&gt;The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &amp;#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:
 &lt;script src=&#39;https://gist.github.com/3806175.js?file=NewSubmenu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;Notice that since we&amp;#8217;re using delegates, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method needn&amp;#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for the menu system:&lt;br /&gt;
+&lt;p&gt;Notice that since we&amp;#8217;re using delegates, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method needn&amp;#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for the menu system:
 &lt;script src=&#39;https://gist.github.com/3806175.js?file=OnGUI.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public void OnGUI ()
 {
 	m_Menus [m_CurrentState] ();
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;And this is &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; code inside a menu &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for switching to a different submenu:&lt;br /&gt;
+&lt;p&gt;And this is &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; code inside a menu &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for switching to a different submenu:
 &lt;script src=&#39;https://gist.github.com/3806175.js?file=SwitchMenu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_CurrentState = GUILayout.Button (&amp;amp;quot;Credits&amp;amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;So there. Enough talk. Have some example code:&lt;br /&gt;
+&lt;p&gt;So there. Enough talk. Have some example code:
 &lt;script src=&#39;https://gist.github.com/3806175.js?file=Menu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;&lt;/p&gt;
-&lt;p&gt;public class Menu : MonoBehaviour&lt;br /&gt;
-{&lt;br /&gt;
-	delegate void OnGUIImplementation();&lt;br /&gt;
-	public enum MenuState {Main,Settings,Credits};&lt;br /&gt;
-	public struct Settings&lt;br /&gt;
-	{&lt;br /&gt;
-		public bool m_ThisSetting, m_ThatSetting, m_TheOtherSetting;&lt;br /&gt;
-	};&lt;br /&gt;
-	static Vector2 m_StandardMenuSize = new Vector2 (200.0f, 300.0f);&lt;br /&gt;
-	static string m_LogoURL = &amp;quot;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&amp;quot;;&lt;br /&gt;
+&lt;p&gt;public class Menu : MonoBehaviour
+{
+	delegate void OnGUIImplementation();
+	public enum MenuState {Main,Settings,Credits};
+	public struct Settings
+	{
+		public bool m_ThisSetting, m_ThatSetting, m_TheOtherSetting;
+	};
+	static Vector2 m_StandardMenuSize = new Vector2 (200.0f, 300.0f);
+	static string m_LogoURL = &amp;quot;http://download.unity3d.com/images/top-menu/mm_unity_icon.png&amp;quot;;
 	static Texture2D m_Logo = null;&lt;/p&gt;
-&lt;p&gt;private MenuState m_CurrentState = MenuState.Main;&lt;br /&gt;
-	private Dictionary m_Menus;&lt;br /&gt;
+&lt;p&gt;private MenuState m_CurrentState = MenuState.Main;
+	private Dictionary m_Menus;
 	private Settings m_Settings;&lt;/p&gt;
-&lt;p&gt;void Awake ()&lt;br /&gt;
-	{&lt;br /&gt;
-		m_Menus = new Dictionary ();&lt;br /&gt;
-		m_Menus [MenuState.Main] = OnMainMenuGUI;&lt;br /&gt;
-		m_Menus [MenuState.Settings] = OnSettingsGUI;&lt;br /&gt;
-		m_Menus [MenuState.Credits] = OnCreditsGUI;&lt;br /&gt;
-		StartCoroutine (GetLogo ());&lt;br /&gt;
+&lt;p&gt;void Awake ()
+	{
+		m_Menus = new Dictionary ();
+		m_Menus [MenuState.Main] = OnMainMenuGUI;
+		m_Menus [MenuState.Settings] = OnSettingsGUI;
+		m_Menus [MenuState.Credits] = OnCreditsGUI;
+		StartCoroutine (GetLogo ());
 	}&lt;/p&gt;
-&lt;p&gt;IEnumerator GetLogo ()&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;IEnumerator GetLogo ()
+	{
 		&lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; www = new &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; (m_LogoURL);&lt;/p&gt;
 &lt;p&gt;yield return www;&lt;/p&gt;
-&lt;p&gt;if (www.error == null)&lt;br /&gt;
-		{&lt;br /&gt;
-			m_Logo = www.texture;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;if (www.error == null)
+		{
+			m_Logo = www.texture;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public void OnGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		m_Menus [m_CurrentState] ();&lt;br /&gt;
+&lt;p&gt;public void OnGUI ()
+	{
+		m_Menus [m_CurrentState] ();
 	}&lt;/p&gt;
-&lt;p&gt;static void BeginStandardMenu (string title)&lt;br /&gt;
-	{&lt;br /&gt;
-		GUILayout.BeginArea (new Rect ((Screen.width &amp;#8211; m_StandardMenuSize.x) * 0.5f, (Screen.height &amp;#8211; m_StandardMenuSize.y) * 0.5f, m_StandardMenuSize.x, m_StandardMenuSize.y));&lt;br /&gt;
-			GUILayout.BeginVertical (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));&lt;br /&gt;
-				GUILayout.Label (title, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));&lt;br /&gt;
+&lt;p&gt;static void BeginStandardMenu (string title)
+	{
+		GUILayout.BeginArea (new Rect ((Screen.width &amp;#8211; m_StandardMenuSize.x) * 0.5f, (Screen.height &amp;#8211; m_StandardMenuSize.y) * 0.5f, m_StandardMenuSize.x, m_StandardMenuSize.y));
+			GUILayout.BeginVertical (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));
+				GUILayout.Label (title, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Box&amp;quot;));
 	}&lt;/p&gt;
-&lt;p&gt;static void EndStandardMenu ()&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;static void EndStandardMenu ()
+	{
 		Color color;&lt;/p&gt;
-&lt;p&gt;GUILayout.BeginHorizontal ();&lt;br /&gt;
-					GUILayout.FlexibleSpace ();&lt;br /&gt;
-						color = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color;&lt;br /&gt;
-						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = Color.grey;&lt;br /&gt;
-						GUILayout.Label (&amp;quot;My game version 2.4X&amp;quot;);&lt;br /&gt;
-						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = color;&lt;br /&gt;
-					GUILayout.FlexibleSpace ();&lt;br /&gt;
-				GUILayout.EndHorizontal ();&lt;br /&gt;
-			GUILayout.EndVertical ();&lt;br /&gt;
-		GUILayout.EndArea ();&lt;br /&gt;
+&lt;p&gt;GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						color = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color;
+						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = Color.grey;
+						GUILayout.Label (&amp;quot;My game version 2.4X&amp;quot;);
+						&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.color = color;
+					GUILayout.FlexibleSpace ();
+				GUILayout.EndHorizontal ();
+			GUILayout.EndVertical ();
+		GUILayout.EndArea ();
 	}&lt;/p&gt;
-&lt;p&gt;void OnMainMenuGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		BeginStandardMenu (&amp;quot;Main menu&amp;quot;);&lt;br /&gt;
-			if (m_Logo != null)&lt;br /&gt;
-			{&lt;br /&gt;
-				GUILayout.BeginHorizontal ();&lt;br /&gt;
-					GUILayout.FlexibleSpace ();&lt;br /&gt;
-						GUILayout.Label (m_Logo);&lt;br /&gt;
-					GUILayout.FlexibleSpace ();&lt;br /&gt;
-				GUILayout.EndHorizontal ();&lt;br /&gt;
-			}&lt;br /&gt;
-			if (GUILayout.Button (&amp;quot;New game&amp;quot;))&lt;br /&gt;
-			{&lt;br /&gt;
-				Application.LoadLevel (&amp;quot;Level one&amp;quot;);&lt;br /&gt;
-			}&lt;br /&gt;
-			m_CurrentState = GUILayout.Button (&amp;quot;Settings&amp;quot;) ? MenuState.Settings : m_CurrentState;&lt;br /&gt;
-			m_CurrentState = GUILayout.Button (&amp;quot;Credits&amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;br /&gt;
-			GUILayout.FlexibleSpace ();&lt;br /&gt;
-		EndStandardMenu ();&lt;br /&gt;
+&lt;p&gt;void OnMainMenuGUI ()
+	{
+		BeginStandardMenu (&amp;quot;Main menu&amp;quot;);
+			if (m_Logo != null)
+			{
+				GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						GUILayout.Label (m_Logo);
+					GUILayout.FlexibleSpace ();
+				GUILayout.EndHorizontal ();
+			}
+			if (GUILayout.Button (&amp;quot;New game&amp;quot;))
+			{
+				Application.LoadLevel (&amp;quot;Level one&amp;quot;);
+			}
+			m_CurrentState = GUILayout.Button (&amp;quot;Settings&amp;quot;) ? MenuState.Settings : m_CurrentState;
+			m_CurrentState = GUILayout.Button (&amp;quot;Credits&amp;quot;) ? MenuState.Credits : m_CurrentState;
+			GUILayout.FlexibleSpace ();
+		EndStandardMenu ();
 	}&lt;/p&gt;
-&lt;p&gt;void OnSettingsGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		BeginStandardMenu (&amp;quot;Settings&amp;quot;);&lt;br /&gt;
-			m_Settings.m_ThisSetting = GUILayout.Toggle (m_Settings.m_ThisSetting, &amp;quot;This setting&amp;quot;);&lt;br /&gt;
-			m_Settings.m_ThatSetting = GUILayout.Toggle (m_Settings.m_ThatSetting, &amp;quot;That setting&amp;quot;);&lt;br /&gt;
-			m_Settings.m_TheOtherSetting = GUILayout.Toggle (m_Settings.m_TheOtherSetting, &amp;quot;The other setting&amp;quot;, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Button&amp;quot;));&lt;br /&gt;
-			GUILayout.FlexibleSpace ();&lt;br /&gt;
-			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;&lt;br /&gt;
-		EndStandardMenu ();&lt;br /&gt;
+&lt;p&gt;void OnSettingsGUI ()
+	{
+		BeginStandardMenu (&amp;quot;Settings&amp;quot;);
+			m_Settings.m_ThisSetting = GUILayout.Toggle (m_Settings.m_ThisSetting, &amp;quot;This setting&amp;quot;);
+			m_Settings.m_ThatSetting = GUILayout.Toggle (m_Settings.m_ThatSetting, &amp;quot;That setting&amp;quot;);
+			m_Settings.m_TheOtherSetting = GUILayout.Toggle (m_Settings.m_TheOtherSetting, &amp;quot;The other setting&amp;quot;, &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle (&amp;quot;Button&amp;quot;));
+			GUILayout.FlexibleSpace ();
+			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;
+		EndStandardMenu ();
 	}&lt;/p&gt;
-&lt;p&gt;void OnCreditsGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		BeginStandardMenu (&amp;quot;Credits&amp;quot;);&lt;br /&gt;
-			GUILayout.Label (&amp;quot;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &amp;#8211; as you can see &amp;#8211; resulted in much joy and success!&amp;quot;);&lt;br /&gt;
-				GUILayout.Space (20.0f);&lt;br /&gt;
-				GUILayout.BeginHorizontal ();&lt;br /&gt;
-					GUILayout.FlexibleSpace ();&lt;br /&gt;
-						GUILayout.Label (&amp;quot;The awesomestest people inc.&amp;quot;);&lt;br /&gt;
+&lt;p&gt;void OnCreditsGUI ()
+	{
+		BeginStandardMenu (&amp;quot;Credits&amp;quot;);
+			GUILayout.Label (&amp;quot;This game was created by some of the most awesomestest people on the planet. Having failed in their mission to Pluto, they started making games, which &amp;#8211; as you can see &amp;#8211; resulted in much joy and success!&amp;quot;);
+				GUILayout.Space (20.0f);
+				GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+						GUILayout.Label (&amp;quot;The awesomestest people inc.&amp;quot;);
 				GUILayout.EndHorizontal ();&lt;/p&gt;
-&lt;p&gt;GUILayout.FlexibleSpace ();&lt;br /&gt;
-			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;&lt;br /&gt;
-		EndStandardMenu ();&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;GUILayout.FlexibleSpace ();
+			m_CurrentState = GUILayout.Button (&amp;quot;Main menu&amp;quot;) ? MenuState.Main : m_CurrentState;
+		EndStandardMenu ();
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Example project: &lt;a href=&quot;http://eej.dk/angryant/wp-content/uploads/2010/03/Menu.zip&quot;&gt;Menu.zip&lt;/a&gt; &amp;#8211; built with Unity 2.6.1&lt;/p&gt;</description>
 				<published>2010-03-15 00:00:00 +0100</published>
@@ -1065,82 +1107,82 @@ using System.Collections.Generic;&lt;/p&gt;
 				<description>&lt;p&gt;Say you&amp;#8217;re developing an &lt;span class=&quot;caps&quot;&gt;RTS&lt;/span&gt; or maybe a connect-the-dots sort of game. What would be the easiest way to go about handling object selection? This is my suggested solution.&lt;/p&gt;
 &lt;p&gt;In the given example, I&amp;#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.&lt;/p&gt;
 &lt;p&gt;First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&amp;#8217;ve simply put it right after the MonoBehaviour used for testing it.&lt;/p&gt;
-&lt;p&gt;SelectionManager&lt;br /&gt;
+&lt;p&gt;SelectionManager
 &lt;script src=&#39;https://gist.github.com/3804386.js?file=SelectionManager.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
-&lt;p&gt;public class SelectionManager&lt;br /&gt;
-{&lt;br /&gt;
+&lt;p&gt;public class SelectionManager
+{
 	private static GameObject s_ActiveSelection;&lt;/p&gt;
-&lt;p&gt;public static GameObject ActiveSelection&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return s_ActiveSelection;&lt;br /&gt;
-		}&lt;br /&gt;
-		set&lt;br /&gt;
-		{&lt;br /&gt;
-			s_ActiveSelection = value;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public static GameObject ActiveSelection
+	{
+		get
+		{
+			return s_ActiveSelection;
+		}
+		set
+		{
+			s_ActiveSelection = value;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public static void Select (GameObject gameObject, bool selectionValue)&lt;br /&gt;
-	{&lt;br /&gt;
-		if (selectionValue)&lt;br /&gt;
-		{&lt;br /&gt;
-			Select (gameObject);&lt;br /&gt;
-		}&lt;br /&gt;
-		else&lt;br /&gt;
-		{&lt;br /&gt;
-			Deselect (gameObject);&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public static void Select (GameObject gameObject, bool selectionValue)
+	{
+		if (selectionValue)
+		{
+			Select (gameObject);
+		}
+		else
+		{
+			Deselect (gameObject);
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public static void Select (GameObject gameObject)&lt;br /&gt;
-	{&lt;br /&gt;
-		ActiveSelection = gameObject;&lt;br /&gt;
+&lt;p&gt;public static void Select (GameObject gameObject)
+	{
+		ActiveSelection = gameObject;
 	}&lt;/p&gt;
-&lt;p&gt;public static void Deselect (GameObject gameObject)&lt;br /&gt;
-	{&lt;br /&gt;
-		if (ActiveSelection == gameObject)&lt;br /&gt;
-		{&lt;br /&gt;
-			ActiveSelection = null;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public static void Deselect (GameObject gameObject)
+	{
+		if (ActiveSelection == gameObject)
+		{
+			ActiveSelection = null;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public static bool IsSelected (GameObject gameObject)&lt;br /&gt;
-	{&lt;br /&gt;
-		return ActiveSelection == gameObject;&lt;br /&gt;
-	}&lt;br /&gt;
-}&lt;br /&gt;
+&lt;p&gt;public static bool IsSelected (GameObject gameObject)
+	{
+		return ActiveSelection == gameObject;
+	}
+}
 &lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;And the promised MonoBehaviour using the SelectionManager class:&lt;br /&gt;
+&lt;p&gt;And the promised MonoBehaviour using the SelectionManager class:
 &lt;script src=&#39;https://gist.github.com/3804386.js?file=SelectableObject.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
-&lt;p&gt;public class SelectableObject : MonoBehaviour&lt;br /&gt;
-{&lt;br /&gt;
+&lt;p&gt;public class SelectableObject : MonoBehaviour
+{
 	public Rect m_SelectionWindowRect = new Rect (10.0f, 10.0f, 300.0f, 100.0f);&lt;/p&gt;
-&lt;p&gt;public void OnMouseDown ()&lt;br /&gt;
-	{&lt;br /&gt;
-		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));&lt;br /&gt;
+&lt;p&gt;public void OnMouseDown ()
+	{
+		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));
 	}&lt;/p&gt;
-&lt;p&gt;public void OnDisable ()&lt;br /&gt;
-	{&lt;br /&gt;
-		SelectionManager.Deselect (gameObject);&lt;br /&gt;
+&lt;p&gt;public void OnDisable ()
+	{
+		SelectionManager.Deselect (gameObject);
 	}&lt;/p&gt;
-&lt;p&gt;public void Update ()&lt;br /&gt;
-	{&lt;br /&gt;
-		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;&lt;br /&gt;
+&lt;p&gt;public void Update ()
+	{
+		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;
 	}&lt;/p&gt;
-&lt;p&gt;public void OnGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		if (SelectionManager.IsSelected (gameObject))&lt;br /&gt;
-		{&lt;br /&gt;
-			m_SelectionWindowRect = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public void OnGUI ()
+	{
+		if (SelectionManager.IsSelected (gameObject))
+		{
+			m_SelectionWindowRect = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);
+		}
 	}&lt;/p&gt;
-&lt;p&gt;void SelectionWindow (int id)&lt;br /&gt;
-	{&lt;br /&gt;
-		GUILayout.Box (&amp;quot;I am the selection and my name is &amp;quot; + gameObject.name);&lt;br /&gt;
-		&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.DragWindow ();&lt;br /&gt;
-	}&lt;br /&gt;
-}&lt;br /&gt;
+&lt;p&gt;void SelectionWindow (int id)
+	{
+		GUILayout.Box (&amp;quot;I am the selection and my name is &amp;quot; + gameObject.name);
+		&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.DragWindow ();
+	}
+}
 &lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:&lt;br /&gt;
+&lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:
 &lt;a href=&#39;http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip&#39;&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2010-03-10 00:00:00 +0100</published>
 				<link>http://angryant.com/2010/03/10/pick-me-pick-me/</link>
@@ -1208,168 +1250,168 @@ using System.Collections.Generic;&lt;/p&gt;
 	&lt;li&gt;Profit!&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;And now the codes!&lt;/p&gt;
-&lt;p&gt;&lt;b&gt;/Assets/WWWAssemblyLoader.cs&lt;/b&gt;&lt;br /&gt;
+&lt;p&gt;&lt;b&gt;/Assets/WWWAssemblyLoader.cs&lt;/b&gt;
 &lt;script src=&#39;https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Reflection;&lt;/p&gt;
-&lt;p&gt;public class WWWAssemblyLoader : MonoBehaviour&lt;br /&gt;
-{&lt;br /&gt;
-	public string m_AssemblyURL;&lt;br /&gt;
-	private string m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
-	private &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; m_WWW;&lt;br /&gt;
+&lt;p&gt;public class WWWAssemblyLoader : MonoBehaviour
+{
+	public string m_AssemblyURL;
+	private string m_ErrorString = &amp;quot;&amp;quot;;
+	private &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; m_WWW;
 	private bool m_Complete = true;&lt;/p&gt;
-&lt;p&gt;public void Start ()&lt;br /&gt;
-	{&lt;br /&gt;
-		if (m_AssemblyURL != &amp;quot;&amp;quot;)&lt;br /&gt;
-		{&lt;br /&gt;
-			ReloadAssembly (m_AssemblyURL);&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public void Start ()
+	{
+		if (m_AssemblyURL != &amp;quot;&amp;quot;)
+		{
+			ReloadAssembly (m_AssemblyURL);
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public string AssemblyURL&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return m_AssemblyURL;&lt;br /&gt;
-		}&lt;br /&gt;
-		set&lt;br /&gt;
-		{&lt;br /&gt;
-			if (m_AssemblyURL != value)&lt;br /&gt;
-			{&lt;br /&gt;
-				ReloadAssembly (value);&lt;br /&gt;
-			}&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public string AssemblyURL
+	{
+		get
+		{
+			return m_AssemblyURL;
+		}
+		set
+		{
+			if (m_AssemblyURL != value)
+			{
+				ReloadAssembly (value);
+			}
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public float Progress&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return m_Complete ? 1.0f : m_WWW.progress;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public float Progress
+	{
+		get
+		{
+			return m_Complete ? 1.0f : m_WWW.progress;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public string Error&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return m_ErrorString;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public string Error
+	{
+		get
+		{
+			return m_ErrorString;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public void ReloadAssembly (string url)&lt;br /&gt;
-	{&lt;br /&gt;
-		m_Complete = false;&lt;br /&gt;
-		m_ErrorString = &amp;quot;&amp;quot;;&lt;br /&gt;
-		m_AssemblyURL = url;&lt;br /&gt;
-		m_WWW = new &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; (m_AssemblyURL);&lt;br /&gt;
+&lt;p&gt;public void ReloadAssembly (string url)
+	{
+		m_Complete = false;
+		m_ErrorString = &amp;quot;&amp;quot;;
+		m_AssemblyURL = url;
+		m_WWW = new &lt;span class=&quot;caps&quot;&gt;WWW&lt;/span&gt; (m_AssemblyURL);
 	}&lt;/p&gt;
-&lt;p&gt;public void Update ()&lt;br /&gt;
-	{&lt;br /&gt;
-		if (!m_Complete)&lt;br /&gt;
-		{&lt;br /&gt;
-			if (m_WWW.error != null)&lt;br /&gt;
-			{&lt;br /&gt;
-				m_ErrorString = m_WWW.error;&lt;br /&gt;
-				m_Complete = true;&lt;br /&gt;
-				SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);&lt;br /&gt;
-			}&lt;br /&gt;
-			else if (m_WWW.isDone)&lt;br /&gt;
-			{&lt;br /&gt;
-				Assembly assembly = LoadAssembly ();&lt;br /&gt;
-				m_Complete = true;&lt;br /&gt;
-				if (assembly != null)&lt;br /&gt;
-				{&lt;br /&gt;
-					Debug.Log (&amp;quot;Done&amp;quot;);&lt;br /&gt;
-					SendMessage (&amp;quot;OnAssemblyLoaded&amp;quot;, new WWWAssembly (m_AssemblyURL, assembly));&lt;br /&gt;
-				}&lt;br /&gt;
-				else&lt;br /&gt;
-				{&lt;br /&gt;
-					Debug.Log (&amp;quot;Failed&amp;quot;);&lt;br /&gt;
-					SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);&lt;br /&gt;
-				}&lt;br /&gt;
-			}&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public void Update ()
+	{
+		if (!m_Complete)
+		{
+			if (m_WWW.error != null)
+			{
+				m_ErrorString = m_WWW.error;
+				m_Complete = true;
+				SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);
+			}
+			else if (m_WWW.isDone)
+			{
+				Assembly assembly = LoadAssembly ();
+				m_Complete = true;
+				if (assembly != null)
+				{
+					Debug.Log (&amp;quot;Done&amp;quot;);
+					SendMessage (&amp;quot;OnAssemblyLoaded&amp;quot;, new WWWAssembly (m_AssemblyURL, assembly));
+				}
+				else
+				{
+					Debug.Log (&amp;quot;Failed&amp;quot;);
+					SendMessage (&amp;quot;OnAssemblyLoadFailed&amp;quot;, m_AssemblyURL);
+				}
+			}
+		}
 	}&lt;/p&gt;
-&lt;p&gt;private Assembly LoadAssembly ()&lt;br /&gt;
-	{&lt;br /&gt;
-		try&lt;br /&gt;
-		{&lt;br /&gt;
-			return Assembly.Load (m_WWW.bytes);&lt;br /&gt;
-		}&lt;br /&gt;
-		catch (System.Exception e)&lt;br /&gt;
-		{&lt;br /&gt;
-			m_ErrorString = e.ToString ();&lt;br /&gt;
-			return null;&lt;br /&gt;
-		}&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;private Assembly LoadAssembly ()
+	{
+		try
+		{
+			return Assembly.Load (m_WWW.bytes);
+		}
+		catch (System.Exception e)
+		{
+			m_ErrorString = e.ToString ();
+			return null;
+		}
+	}
 }&lt;/p&gt;
-&lt;p&gt;public class WWWAssembly&lt;br /&gt;
-{&lt;br /&gt;
-	private string m_URL;&lt;br /&gt;
+&lt;p&gt;public class WWWAssembly
+{
+	private string m_URL;
 	private Assembly m_Assembly;&lt;/p&gt;
-&lt;p&gt;public string &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt;&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return m_URL;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public string &lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt;
+	{
+		get
+		{
+			return m_URL;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public Assembly Assembly&lt;br /&gt;
-	{&lt;br /&gt;
-		get&lt;br /&gt;
-		{&lt;br /&gt;
-			return m_Assembly;&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;public Assembly Assembly
+	{
+		get
+		{
+			return m_Assembly;
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public WWWAssembly (string url, Assembly assembly)&lt;br /&gt;
-	{&lt;br /&gt;
-		m_URL = url;&lt;br /&gt;
-		m_Assembly = assembly;&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;public WWWAssembly (string url, Assembly assembly)
+	{
+		m_URL = url;
+		m_Assembly = assembly;
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;b&gt;/Assets/NewBehaviourScript.cs&lt;/b&gt;&lt;br /&gt;
+&lt;p&gt;&lt;b&gt;/Assets/NewBehaviourScript.cs&lt;/b&gt;
 &lt;script src=&#39;https://gist.github.com/3806151.js?file=NewBehaviourScript.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Reflection;&lt;/p&gt;
-&lt;p&gt;public class NewBehaviourScript : MonoBehaviour&lt;br /&gt;
-{&lt;br /&gt;
+&lt;p&gt;public class NewBehaviourScript : MonoBehaviour
+{
 	private string m_MessageString = &amp;quot;Waiting for assembly&amp;quot;;&lt;/p&gt;
-&lt;p&gt;void OnAssemblyLoaded (WWWAssembly loadedAssembly)&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;void OnAssemblyLoaded (WWWAssembly loadedAssembly)
+	{
 		m_MessageString = &amp;quot;Assembly &amp;quot; + loadedAssembly.&lt;span class=&quot;caps&quot;&gt;URL&lt;/span&gt; + &amp;quot;\n&amp;quot;;&lt;/p&gt;
 &lt;p&gt;System.Type type = loadedAssembly.Assembly.GetType (&amp;quot;MyClass&amp;quot;);&lt;/p&gt;
-&lt;p&gt;FieldInfo field = type.GetField (&amp;quot;myString&amp;quot;);&lt;br /&gt;
+&lt;p&gt;FieldInfo field = type.GetField (&amp;quot;myString&amp;quot;);
 		m_MessageString += (field.GetValue (null) as string) + &amp;quot;\n&amp;quot;;&lt;/p&gt;
-&lt;p&gt;object instance = loadedAssembly.Assembly.CreateInstance (&amp;quot;MyClass&amp;quot;);&lt;br /&gt;
-		MethodInfo method = type.GetMethod (&amp;quot;LogMyString&amp;quot;);&lt;br /&gt;
-		m_MessageString += &amp;quot;Return value: &amp;quot; + method.Invoke (instance, null).ToString ();&lt;br /&gt;
+&lt;p&gt;object instance = loadedAssembly.Assembly.CreateInstance (&amp;quot;MyClass&amp;quot;);
+		MethodInfo method = type.GetMethod (&amp;quot;LogMyString&amp;quot;);
+		m_MessageString += &amp;quot;Return value: &amp;quot; + method.Invoke (instance, null).ToString ();
 	}&lt;/p&gt;
-&lt;p&gt;void OnAssemblyLoadFailed (string url)&lt;br /&gt;
-	{&lt;br /&gt;
-		m_MessageString = &amp;quot;Failed to load assembly at &amp;quot; + url;&lt;br /&gt;
+&lt;p&gt;void OnAssemblyLoadFailed (string url)
+	{
+		m_MessageString = &amp;quot;Failed to load assembly at &amp;quot; + url;
 	}&lt;/p&gt;
-&lt;p&gt;void OnGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));&lt;br /&gt;
-			GUILayout.FlexibleSpace ();&lt;br /&gt;
-			GUILayout.BeginHorizontal ();&lt;br /&gt;
-				GUILayout.FlexibleSpace ();&lt;br /&gt;
-				GUILayout.Box (m_MessageString);&lt;br /&gt;
-				GUILayout.FlexibleSpace ();&lt;br /&gt;
-			GUILayout.EndHorizontal ();&lt;br /&gt;
-			GUILayout.FlexibleSpace ();&lt;br /&gt;
-		GUILayout.EndArea ();&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;void OnGUI ()
+	{
+		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));
+			GUILayout.FlexibleSpace ();
+			GUILayout.BeginHorizontal ();
+				GUILayout.FlexibleSpace ();
+				GUILayout.Box (m_MessageString);
+				GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+			GUILayout.FlexibleSpace ();
+		GUILayout.EndArea ();
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;b&gt;/MyAssembly.cs&lt;/b&gt;&lt;br /&gt;
+&lt;p&gt;&lt;b&gt;/MyAssembly.cs&lt;/b&gt;
 &lt;script src=&#39;https://gist.github.com/3806151.js?file=MyAssembly.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
-&lt;p&gt;public class MyClass&lt;br /&gt;
-{&lt;br /&gt;
+&lt;p&gt;public class MyClass
+{
 	public static string myString = &amp;quot;This is my string from my class in my assembly&amp;quot;;&lt;/p&gt;
-&lt;p&gt;public int LogMyString ()&lt;br /&gt;
-	{&lt;br /&gt;
-		Debug.Log (myString);&lt;br /&gt;
-		return 2 + 2;&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;public int LogMyString ()
+	{
+		Debug.Log (myString);
+		return 2 + 2;
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;b&gt;The assembly compile terminal command&lt;/b&gt;&lt;br /&gt;
+&lt;p&gt;&lt;b&gt;The assembly compile terminal command&lt;/b&gt;
 &lt;script src=&#39;https://gist.github.com/3806151.js?file=Build.sh&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>2010-01-05 00:00:00 +0100</published>
 				<link>http://angryant.com/2010/01/05/downloading-the-hydra/</link>
@@ -1410,50 +1452,50 @@ using System.Reflection;&lt;/p&gt;
 &lt;p&gt;You&amp;#8217;ll notice that CopyTransformInspector has some additional code to it. This is due to the fact that this inspector is rendered non-standard and the code provided just replicates that.&lt;/p&gt;
 &lt;p&gt;Not really sure why syntax highlighting is not kicking in&amp;#8230; Will have a look at that later.&lt;/p&gt;
 &lt;p&gt;Codes!&lt;/p&gt;
-&lt;p&gt;CopyInspector.cs&lt;br /&gt;
+&lt;p&gt;CopyInspector.cs
 &lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;&lt;/p&gt;
-&lt;p&gt;public class CopyInspector : Editor&lt;br /&gt;
-{&lt;br /&gt;
-	static System.Type m_OriginalType;&lt;br /&gt;
+&lt;p&gt;public class CopyInspector : Editor
+{
+	static System.Type m_OriginalType;
 	static Dictionary object&amp;gt; m_Values;&lt;/p&gt;
-&lt;p&gt;private List  GetProperties (Component component)&lt;br /&gt;
-	{&lt;br /&gt;
-		List &amp;lt;string&amp;gt; ignoredProperties;&lt;br /&gt;
+&lt;p&gt;private List  GetProperties (Component component)
+	{
+		List &amp;lt;string&amp;gt; ignoredProperties;
 		List  properties;&lt;/p&gt;
-&lt;p&gt;properties = new List  ();&lt;br /&gt;
-		ignoredProperties = new List &amp;lt;string&amp;gt; ();&lt;br /&gt;
-		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())&lt;br /&gt;
-		{&lt;br /&gt;
-			ignoredProperties.Add (propertyInfo.Name);&lt;br /&gt;
+&lt;p&gt;properties = new List  ();
+		ignoredProperties = new List &amp;lt;string&amp;gt; ();
+		foreach (PropertyInfo propertyInfo in typeof (Component).GetProperties ())
+		{
+			ignoredProperties.Add (propertyInfo.Name);
 		}&lt;/p&gt;
-&lt;p&gt;foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())&lt;br /&gt;
-		{&lt;br /&gt;
-			if (ignoredProperties.Contains (propertyInfo.Name))&lt;br /&gt;
-			{&lt;br /&gt;
-				continue;&lt;br /&gt;
-			}&lt;br /&gt;
-			properties.Add (propertyInfo);&lt;br /&gt;
+&lt;p&gt;foreach (PropertyInfo propertyInfo in component.GetType ().GetProperties ())
+		{
+			if (ignoredProperties.Contains (propertyInfo.Name))
+			{
+				continue;
+			}
+			properties.Add (propertyInfo);
 		}&lt;/p&gt;
-&lt;p&gt;return properties;&lt;br /&gt;
+&lt;p&gt;return properties;
 	}&lt;/p&gt;
-&lt;p&gt;public override void OnInspectorGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		DrawDefaultInspector ();&lt;br /&gt;
-		OnCopyInspectorGUI ();&lt;br /&gt;
+&lt;p&gt;public override void OnInspectorGUI ()
+	{
+		DrawDefaultInspector ();
+		OnCopyInspectorGUI ();
 	}&lt;/p&gt;
-&lt;p&gt;public void OnCopyInspectorGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		bool enabled;&lt;br /&gt;
-		List  properties;&lt;br /&gt;
+&lt;p&gt;public void OnCopyInspectorGUI ()
+	{
+		bool enabled;
+		List  properties;
 		Component component;&lt;/p&gt;
 &lt;p&gt;component = target as Component;&lt;/p&gt;
-&lt;p&gt;if (component == null)&lt;br /&gt;
-		{&lt;br /&gt;
-			return;&lt;br /&gt;
+&lt;p&gt;if (component == null)
+		{
+			return;
 		}&lt;/p&gt;
 &lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
 &lt;p&gt;Color backgroundColor = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.backgroundColor;&lt;/p&gt;
@@ -1464,68 +1506,68 @@ using System.Reflection;&lt;/p&gt;
 &lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
 &lt;p&gt;GUILayout.Label (&amp;quot;Copied: &amp;quot; + (m_OriginalType != null ? m_OriginalType.Name : &amp;quot;Nothing&amp;quot;), &amp;quot;MiniLabel&amp;quot;);&lt;/p&gt;
 &lt;p&gt;GUILayout.FlexibleSpace ();&lt;/p&gt;
-&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Copy&amp;quot;, &amp;quot;Copy component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))&lt;br /&gt;
-				{&lt;br /&gt;
+&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Copy&amp;quot;, &amp;quot;Copy component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))
+				{
 					m_OriginalType = target.GetType ();&lt;/p&gt;
 &lt;p&gt;properties = GetProperties (component);&lt;/p&gt;
-&lt;p&gt;m_Values = new Dictionary object&amp;gt; ();&lt;br /&gt;
-					foreach (PropertyInfo property in properties)&lt;br /&gt;
-					{&lt;br /&gt;
-						m_Values [property] = property.GetValue (component, null);&lt;br /&gt;
-					}&lt;br /&gt;
+&lt;p&gt;m_Values = new Dictionary object&amp;gt; ();
+					foreach (PropertyInfo property in properties)
+					{
+						m_Values [property] = property.GetValue (component, null);
+					}
 				}&lt;/p&gt;
-&lt;p&gt;enabled = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled;&lt;br /&gt;
+&lt;p&gt;enabled = &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled;
 				&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled = target.GetType () == m_OriginalType;&lt;/p&gt;
 &lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
-&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Paste&amp;quot;, &amp;quot;Paste component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))&lt;br /&gt;
-				{&lt;br /&gt;
-					properties = GetProperties (component);&lt;br /&gt;
-					foreach (PropertyInfo property in properties)&lt;br /&gt;
-					{&lt;br /&gt;
-						if (!property.CanWrite)&lt;br /&gt;
-						{&lt;br /&gt;
-							continue;&lt;br /&gt;
+&lt;p&gt;if (GUILayout.Button (new GUIContent (&amp;quot;Paste&amp;quot;, &amp;quot;Paste component values&amp;quot;), &amp;quot;MiniLabel&amp;quot;))
+				{
+					properties = GetProperties (component);
+					foreach (PropertyInfo property in properties)
+					{
+						if (!property.CanWrite)
+						{
+							continue;
 						}&lt;/p&gt;
-&lt;p&gt;property.SetValue (component, m_Values [property], null);&lt;br /&gt;
-					}&lt;br /&gt;
+&lt;p&gt;property.SetValue (component, m_Values [property], null);
+					}
 				}&lt;/p&gt;
 &lt;p&gt;GUILayout.Space (10.0f);&lt;/p&gt;
 &lt;p&gt;&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.enabled = enabled;&lt;/p&gt;
 &lt;p&gt;GUILayout.EndHorizontal ();&lt;/p&gt;
 &lt;p&gt;GUILayout.EndVertical ();&lt;/p&gt;
-&lt;p&gt;GUILayout.Space (-2.0f);&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;GUILayout.Space (-2.0f);
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;CopyTransformInspector.cs&lt;br /&gt;
+&lt;p&gt;CopyTransformInspector.cs
 &lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyTransformInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
-&lt;p&gt;[CustomEditor (typeof (Transform))]&lt;br /&gt;
-public class CopyTransformInspector : CopyInspector&lt;br /&gt;
-{&lt;br /&gt;
-	public override void OnInspectorGUI ()&lt;br /&gt;
-	{&lt;br /&gt;
-		Transform transform;&lt;br /&gt;
-		Vector3 localPosition, localScale;&lt;br /&gt;
+&lt;p&gt;[CustomEditor (typeof (Transform))]
+public class CopyTransformInspector : CopyInspector
+{
+	public override void OnInspectorGUI ()
+	{
+		Transform transform;
+		Vector3 localPosition, localScale;
 		Quaternion localRotation;&lt;/p&gt;
 &lt;p&gt;transform = target as Transform;&lt;/p&gt;
-&lt;p&gt;localPosition = EditorGUILayout.Vector3Field (&amp;quot;Position&amp;quot;, transform.localPosition);&lt;br /&gt;
-		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&amp;quot;Rotation&amp;quot;, transform.localRotation.eulerAngles));&lt;br /&gt;
+&lt;p&gt;localPosition = EditorGUILayout.Vector3Field (&amp;quot;Position&amp;quot;, transform.localPosition);
+		localRotation = Quaternion.Euler (EditorGUILayout.Vector3Field (&amp;quot;Rotation&amp;quot;, transform.localRotation.eulerAngles));
 		localScale = EditorGUILayout.Vector3Field (&amp;quot;Scale&amp;quot;, transform.localScale);&lt;/p&gt;
-&lt;p&gt;if (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.changed)&lt;br /&gt;
-		{&lt;br /&gt;
-			transform.localPosition = localPosition;&lt;br /&gt;
-			transform.localRotation = localRotation;&lt;br /&gt;
-			transform.localScale = localScale;&lt;br /&gt;
+&lt;p&gt;if (&lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.changed)
+		{
+			transform.localPosition = localPosition;
+			transform.localRotation = localRotation;
+			transform.localScale = localScale;
 		}&lt;/p&gt;
-&lt;p&gt;OnCopyInspectorGUI ();&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;OnCopyInspectorGUI ();
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;CopyYourComponentTypeInspector.cs&lt;br /&gt;
+&lt;p&gt;CopyYourComponentTypeInspector.cs
 &lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
-&lt;p&gt;[CustomEditor (typeof (YourComponentType))]&lt;br /&gt;
+&lt;p&gt;[CustomEditor (typeof (YourComponentType))]
 public class CopyYourComponentTypeInspector : CopyInspector{}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>2009-11-04 00:00:00 +0100</published>
 				<link>http://angryant.com/2009/11/04/copyinspector/</link>
@@ -1848,46 +1890,46 @@ public class MyEditorWindow : EditorWindow
 				<title>Logging an entire GameObject</title>
 				<description>&lt;p&gt;More stuff from the shadowy corners of my hard-drive. Don&amp;#8217;t remember the context, but someone needed to log every single piece of information available on a particular GameObject. I suppose this could be useful for end-user &amp;#8220;This GameObject Just Went Completely &lt;span class=&quot;caps&quot;&gt;FUBAR&lt;/span&gt;&amp;#8221;&amp;#8482; scenarios.&lt;/p&gt;
 &lt;p&gt;Anyway &amp;#8211; it has reflection in it which by definition makes it cool.&lt;/p&gt;
-&lt;p&gt;Le codez:&lt;br /&gt;
+&lt;p&gt;Le codez:
 &lt;script src=&#39;https://gist.github.com/3804730.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Reflection;&lt;/p&gt;
-&lt;p&gt;public class Utilities&lt;br /&gt;
-{&lt;br /&gt;
+&lt;p&gt;public class Utilities
+{
 	/* &amp;#8230; */&lt;/p&gt;
-&lt;p&gt;static void LogGameObject( GameObject gameObject, bool children )&lt;br /&gt;
-	{&lt;br /&gt;
-		Component[] components = gameObject.GetComponents( typeof( Component ) );&lt;br /&gt;
-		FieldInfo[] fields;&lt;br /&gt;
+&lt;p&gt;static void LogGameObject( GameObject gameObject, bool children )
+	{
+		Component[] components = gameObject.GetComponents( typeof( Component ) );
+		FieldInfo[] fields;
 		PropertyInfo[] properties;&lt;/p&gt;
 &lt;p&gt;Debug.Log( gameObject.name + &amp;quot;:&amp;quot; );&lt;/p&gt;
-&lt;p&gt;foreach( Component component in components )&lt;br /&gt;
-		{&lt;br /&gt;
-			Debug.Log( &amp;quot; &amp;#8211; &amp;quot; + component.GetType().Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
-			fields = component.GetType().GetFields();&lt;br /&gt;
-			foreach( FieldInfo field in fields )&lt;br /&gt;
-			{&lt;br /&gt;
-				Debug.Log( &amp;quot; .&amp;quot; + field.Name + &amp;quot; = &amp;quot; + field.GetValue( component ) );&lt;br /&gt;
+&lt;p&gt;foreach( Component component in components )
+		{
+			Debug.Log( &amp;quot; &amp;#8211; &amp;quot; + component.GetType().Name + &amp;quot;:&amp;quot; );
+			fields = component.GetType().GetFields();
+			foreach( FieldInfo field in fields )
+			{
+				Debug.Log( &amp;quot; .&amp;quot; + field.Name + &amp;quot; = &amp;quot; + field.GetValue( component ) );
 			}&lt;/p&gt;
-&lt;p&gt;properties = component.GetType().GetProperties();&lt;br /&gt;
-			foreach( PropertyInfo property in properties )&lt;br /&gt;
-			{&lt;br /&gt;
-				Debug.Log( &amp;quot; .&amp;quot; + property.Name + &amp;quot; = &amp;quot; + property.GetGetMethod().Invoke( component, null ) );&lt;br /&gt;
-			}&lt;br /&gt;
+&lt;p&gt;properties = component.GetType().GetProperties();
+			foreach( PropertyInfo property in properties )
+			{
+				Debug.Log( &amp;quot; .&amp;quot; + property.Name + &amp;quot; = &amp;quot; + property.GetGetMethod().Invoke( component, null ) );
+			}
 		}&lt;/p&gt;
-&lt;p&gt;if( children )&lt;br /&gt;
-		{&lt;br /&gt;
-			foreach( Transform transform in gameObject.transform )&lt;br /&gt;
-			{&lt;br /&gt;
-				Debug.Log( &amp;quot;-&amp;gt;&amp;quot; );&lt;br /&gt;
-				LogGameObject( transform.gameObject, children );&lt;br /&gt;
-			}&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;if( children )
+		{
+			foreach( Transform transform in gameObject.transform )
+			{
+				Debug.Log( &amp;quot;-&amp;gt;&amp;quot; );
+				LogGameObject( transform.gameObject, children );
+			}
+		}
 	}&lt;/p&gt;
-&lt;p&gt;static void LogGameObject( GameObject gameObject )&lt;br /&gt;
-	{&lt;br /&gt;
-		LogGameObject( gameObject, false );&lt;br /&gt;
+&lt;p&gt;static void LogGameObject( GameObject gameObject )
+	{
+		LogGameObject( gameObject, false );
 	}&lt;/p&gt;
-&lt;p&gt;/* &amp;#8230; */&lt;br /&gt;
+&lt;p&gt;/* &amp;#8230; */
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>2009-09-17 00:00:00 +0200</published>
 				<link>http://angryant.com/2009/09/17/logging-an-entire-gameobject/</link>
@@ -1950,58 +1992,58 @@ void OnGUI()
 	&lt;li&gt;Click &amp;#8220;Refresh&amp;#8221; to list all components in your scene and the GameObjects to which they are attached.&lt;/li&gt;
 	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Codes:&lt;br /&gt;
+&lt;p&gt;Codes:
 &lt;script src=&#39;https://gist.github.com/3804708.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
-&lt;p&gt;public class ComponentLister : EditorWindow&lt;br /&gt;
-{&lt;br /&gt;
-	private Hashtable sets = new Hashtable();&lt;br /&gt;
+&lt;p&gt;public class ComponentLister : EditorWindow
+{
+	private Hashtable sets = new Hashtable();
 	private Vector2 scrollPosition;&lt;/p&gt;
-&lt;p&gt;[ MenuItem( &amp;quot;Component/Component lister&amp;quot; ) ]&lt;br /&gt;
-	public static void Launch()&lt;br /&gt;
-	{&lt;br /&gt;
-		EditorWindow window = GetWindow( typeof( ComponentLister ) );&lt;br /&gt;
-		window.Show();&lt;br /&gt;
+&lt;p&gt;[ MenuItem( &amp;quot;Component/Component lister&amp;quot; ) ]
+	public static void Launch()
+	{
+		EditorWindow window = GetWindow( typeof( ComponentLister ) );
+		window.Show();
 	}&lt;/p&gt;
-&lt;p&gt;public void UpdateList()&lt;br /&gt;
-	{&lt;br /&gt;
+&lt;p&gt;public void UpdateList()
+	{
 		Object[] objects;&lt;/p&gt;
 &lt;p&gt;sets.Clear();&lt;/p&gt;
-&lt;p&gt;objects = FindObjectsOfType( typeof( Component ) );&lt;br /&gt;
-		foreach( Component component in objects )&lt;br /&gt;
-		{&lt;br /&gt;
-			if( !sets.ContainsKey( component.GetType() ) )&lt;br /&gt;
-			{&lt;br /&gt;
-				sets[ component.GetType() ] = new ArrayList();&lt;br /&gt;
+&lt;p&gt;objects = FindObjectsOfType( typeof( Component ) );
+		foreach( Component component in objects )
+		{
+			if( !sets.ContainsKey( component.GetType() ) )
+			{
+				sets[ component.GetType() ] = new ArrayList();
 			}&lt;/p&gt;
-&lt;p&gt;( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );&lt;br /&gt;
-		}&lt;br /&gt;
+&lt;p&gt;( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );
+		}
 	}&lt;/p&gt;
-&lt;p&gt;public void OnGUI()&lt;br /&gt;
-	{&lt;br /&gt;
-		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );&lt;br /&gt;
-			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );&lt;br /&gt;
+&lt;p&gt;public void OnGUI()
+	{
+		GUILayout.BeginHorizontal( &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.skin.GetStyle( &amp;quot;Box&amp;quot; ) );
+			GUILayout.Label( &amp;quot;Components in scene:&amp;quot; );
 			GUILayout.FlexibleSpace();&lt;/p&gt;
-&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )&lt;br /&gt;
-			{&lt;br /&gt;
-				UpdateList();&lt;br /&gt;
-			}&lt;br /&gt;
+&lt;p&gt;if( GUILayout.Button( &amp;quot;Refresh&amp;quot; ) )
+			{
+				UpdateList();
+			}
 		GUILayout.EndHorizontal();&lt;/p&gt;
 &lt;p&gt;scrollPosition = GUILayout.BeginScrollView(scrollPosition);&lt;/p&gt;
-&lt;p&gt;foreach( System.Type type in sets.Keys )&lt;br /&gt;
-			{&lt;br /&gt;
-				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );&lt;br /&gt;
-				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )&lt;br /&gt;
-				{&lt;br /&gt;
-					if( GUILayout.Button( gameObject.name ) )&lt;br /&gt;
-					{&lt;br /&gt;
-						Selection.activeObject = gameObject;&lt;br /&gt;
-					}&lt;br /&gt;
-				}&lt;br /&gt;
+&lt;p&gt;foreach( System.Type type in sets.Keys )
+			{
+				GUILayout.Label( type.Name + &amp;quot;:&amp;quot; );
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )
+				{
+					if( GUILayout.Button( gameObject.name ) )
+					{
+						Selection.activeObject = gameObject;
+					}
+				}
 			}&lt;/p&gt;
-&lt;p&gt;GUILayout.EndScrollView();&lt;br /&gt;
-	}&lt;br /&gt;
+&lt;p&gt;GUILayout.EndScrollView();
+	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>2009-08-31 00:00:00 +0200</published>
 				<link>http://angryant.com/2009/08/31/where-did-that-component-go/</link>

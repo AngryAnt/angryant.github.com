@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 1.1 released - </title>
+		<title>AngryAnt - Unity Hacks: Dual sticks - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +28,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header">AngryAnt</h1>
-<div id="subtitle">Behave 1.1 released</div>
+<div id="subtitle">Unity Hacks: Dual sticks</div>
 
 	
 		<a href="/">Home</a>
@@ -75,66 +75,54 @@
 
 			</div>
 			<div id="container">
-				<span class="date">29 Sep 2010</span>
-				<h1 id="Top">Behave 1.1 released</h1>
+				<span class="date">04 Aug 2013</span>
+				<h1 id="Top">Unity Hacks: Dual sticks</h1>
 				
 				<div id="content">
-					<p class="post"><p>Hello reader. It&#8217;s been quite a while since my last conf&#8230; post.</p>
-<p>Yea sorry about that. Busy, busy, but then again I suppose most had probably <a href="http://unity3d.com/unity/">figured that one out</a>. However, I have had a bit of time here and there over the last few months to polish away on Behave and keep it compatible with Unity 3 as it developed.</p>
-<p>A lot of this keeping up to date work at times resulted in some good old fashion rewrites &#8211; like the entire asset handling and parts of the compiler. This is probably not very interesting to you, but it is quite so to me as it has allowed me to restructure internally in ways that make the system as a whole more flexible and ready for change and additions.</p>
-<p>One of those additions which I did sneak in next to the polish and updating is a new debugger. The in-game debugger has been thrown out in favour of one living in your editor environment. <span class="caps">YAY</span>! No really, yay. You will like this and not just because I say so. Ah and as much requested this one actually dives into sub-trees, making it actually quite useful compared to its predecessor.</p>
-<p>Oh and the compiler runs on Windows too now. And I also shaved off some cruft in the action/decorator handler syntax, making <a href="http://arges-systems.com">Ricardo</a> extra happy.</p>
-<p>I will be putting up some short documentation for Behave 1.1 shortly, but if you still haven&#8217;t decided to download yet, here is a short teaser on the new debugger: <a href="http://angryant.com/Debugger.mov">This text is a link to a movie file. Click it. It will be fun!</a></p>
-<p>Enough blabbering though. The package is available in the download section and the changelog is right here:</p>
+					<p class="post"><p>This is my third post in what looks like is going to turn into <a href="http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/">a series</a>, examining parts of the example project I provided for the Unity Hacks presentation &#8211; delivered at a couple of the Unite conferences this year.</p>
+<p>You can find the project and a recording of the presentation in the <a href="/videos">videos</a> section of this site.</p>
+<h1>DualControls</h1>
+<p>The <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs">DualControls</a> interface has a very straight forward purpose: Provide a 2 &#215; 2 axis input interface across platforms and compatible units. This is exposed via the DualControls.Left and DualControls.Right accessors &#8211; each returning a Vector2.</p>
+<p>Supported out of the box is:</p>
 <ul>
-	<li>Made compatible with Unity 3.0 &#8211; including ensuring that the 2.5-2.6.1 bug preventing compilation on Windows is fixed on the Unity side.</li>
-	<li>UI tweaks and polish.</li>
-	<li>Added the option to have return values of nodes be inverted.</li>
-	<li>Fixed compiler bug when facing sequence or selector with only one child node.</li>
-	<li>Renamed Library.Tree &#8594; Library.InstantiateTree.</li>
-	<li>Added Tree.Tick () and Tree.Reset () methods using the IAgent instance given at instantiation of the tree.</li>
-	<li>Removed the abstract Library class.</li>
-	<li>Changed generated library class:
-	<ul>
-		<li>Trees &#8594; TreeType.</li>
-		<li>Actions &#8594; ActionType.</li>
-		<li>Decorators &#8594; DecoratorType.</li>
-		<li>Tree InstantiateTree (int, IAgent) &#8594; static Tree InstantiateTree (TreeType, IAgent)</li>
-		<li>int TreeID (Tree) &#8594; static TreeType Type (Tree)</li>
-		<li>bool IsAction (int) &#8594; static bool IsAction (int)</li>
-		<li>bool IsDecorator (int) &#8594; static bool IsDecorator (int)</li>
-	</ul></li>
-	<li>Upped editor performance.</li>
-	<li>New asset structure change with automatic import of Behave 1.0 assets.</li>
-	<li>Changed action and decorator handlers. These are now the handlers mapped:
-	<ul>
-		<li>public BehaveResult Init[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);</li>
-		<li>public BehaveResult Tick[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);</li>
-		<li>public void Reset[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);</li>
-		<li>public BehaveResult Init[Name][Action/Decorator] (Tree sender);</li>
-		<li>public BehaveResult Tick[Name][Action/Decorator] (Tree sender);</li>
-		<li>public void Reset[Name][Action/Decorator] (Tree sender);</li>
-		<li>public BehaveResult [Name][Action/Decorator] {get; set;}</li>
-	</ul></li>
-	<li>Added support for collection duplication.</li>
-	<li>Moved debug rendering into the editor with its own dedicated debugger window, including actor listing.</li>
-	<li>Debugger now renders active sub-trees as well.</li>
+	<li><span class="caps">WASD</span> + mouse.</li>
+	<li>Xbox360 controller (windows-only)</li>
+	<li>ps3 controller (OS X-only)</li>
+	<li>Shadowgun-style touch controls (left/right screen split)</li>
 </ul>
-<p>Oh and if you are upgrading a previous Behave install in a project, please see Readme.txt for details on snags you might hit and how to solve the whole thing in 4-5 steps.</p>
-<p>Ah and one more thing: Behave 1.1 removes the &#8220;only for non-commercial work&#8221; clause from the license.</p>
-<p>Have fun! And remember to tell me about all your awesome projects!</p></p>
+<p>However abstraction is relaxed enough that virtual sticks or alternative input like the leap motion could be added fairly easily (assuming you have a means of capturing that input data in the first place).</p>
+<h1>Controllers</h1>
+<p>So controllers are not exactly nicely wrapped up in the current version of Unity. Which ungodly hack did I have to apply to get them to play along with just working out of the box in an easily installable package? It is actually not so bad. However I had to concede to some compromises up front. Basically when it comes to joysticks and controllers, you generally have two complications: the hardware itself and the driver.</p>
+<p>So? What is so bad about that? Well, in a perfect world you had one driver for each controller type or at least all the drivers for the same hardware would map the buttons and axes in the same way, right?</p>
+<p>Enter: This world. For every controller you always have at least two drivers set up differently: One for OS X and one for Windows (the Linux one often being based on the Windows one as I understand it). Why would anyone be content with just two drivers though? There exists a good number of different packages and open source solutions, vendor and OS provided drivers for the different controllers.</p>
+<p>The way these are differentiated in the Unity runtime is via the joystick name string &#8211; as accessible via Input.GetJoystickNames.</p>
+<p>This is what <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs">DualControls</a> checks for in its Update handler. If a new joystick is found connected, it runs the name by the controller wiring and activates the appropriate controller (optionally if accepted by a callback).</p>
+<p>Per default I have compromised and only provided wiring for the Xbox360 controller on Windows and the ps3 controller on OS X. This particular configuration stems from the fact that those OS&#8217;es ship with a pre-installed default driver for those controllers.</p>
+<p>Microsoft clearly should support their own hardware and I&#8217;m assuming that Apple just supports the ps3 controller because it&#8217;s hardware from a direct Microsoft competitor.</p>
+<p>However, again, the abstraction is loose enough that if you want to, you should be able to add support for more controllers fairly easily. See the end of the <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs">Controllers.cs</a> script for that.</p>
+<p>Oh, but I almost forgot the hack: As I am using the standard Unity Input <span class="caps">API</span> for this, the input manager needs configuring, right? So with no <span class="caps">API</span> for it, how do you go about doing that for a package?</p>
+<p>You use the AssetDatabase <span class="caps">API</span> to load ProjectSettings/InputManager.asset and then the ScriptableObject <span class="caps">API</span> to modify it.
+<script src='https://gist.github.com/6151366.js?file='></script><div><noscript><pre><code></code></pre></noscript></div></p>
+<p>I hope you find this useful. For more details, these are the Unity Hacks scripts related to this post:</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs">DualControls.cs</a></li>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.Stick.cs">DualControls.Stick.cs</a></li>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs">Controllers.cs</a></li>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/ControllerInput.cs">ControllerInput.cs</a></li>
+</ul>
+
+
+</p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -366,10 +354,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								

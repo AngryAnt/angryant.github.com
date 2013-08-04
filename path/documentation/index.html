@@ -400,9 +400,9 @@
 </ul>
 <p>Ok, here we go. Hang tight.</p>
 <ol>
-	<li>In your MonoBehaviour script, where you want to initiate pathfinding to some point (in my case I’ve stored the point in a Vector3 variable named myDestinationPoint), add the following line:<br />
+	<li>In your MonoBehaviour script, where you want to initiate pathfinding to some point (in my case I’ve stored the point in a Vector3 variable named myDestinationPoint), add the following line:
 <code>GetComponent&lt;Navigator&gt; ().targetPosition = myDestinationPoint;</code></li>
-	<li>Somewhere in the same script or another script attached to the same GameObject, add the following line:<br />
+	<li>Somewhere in the same script or another script attached to the same GameObject, add the following line:
 <code>public void OnNewPath (Path path) { Debug.Log ("Path: " + path); }</code></li>
 	<li>Put on <a href="http://www.youtube.com/results?search_query=%22eagles+of+death+metal%22+%22don%27t+speak%22&amp;aq=f">a nice tune</a> and make a kick-ass game!</li>
 </ol>

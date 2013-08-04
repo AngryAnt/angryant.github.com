@@ -106,168 +106,168 @@
 	<li>Profit!</li>
 </ol>
 <p>And now the codes!</p>
-<p><b>/Assets/WWWAssemblyLoader.cs</b><br />
+<p><b>/Assets/WWWAssemblyLoader.cs</b>
 <script src='https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs'></script><div><noscript><pre><code>using UnityEngine;
 using System.Collections;
 using System.Reflection;</p>
-<p>public class WWWAssemblyLoader : MonoBehaviour<br />
-{<br />
-	public string m_AssemblyURL;<br />
-	private string m_ErrorString = &quot;&quot;;<br />
-	private <span class="caps">WWW</span> m_WWW;<br />
+<p>public class WWWAssemblyLoader : MonoBehaviour
+{
+	public string m_AssemblyURL;
+	private string m_ErrorString = &quot;&quot;;
+	private <span class="caps">WWW</span> m_WWW;
 	private bool m_Complete = true;</p>
-<p>public void Start ()<br />
-	{<br />
-		if (m_AssemblyURL != &quot;&quot;)<br />
-		{<br />
-			ReloadAssembly (m_AssemblyURL);<br />
-		}<br />
+<p>public void Start ()
+	{
+		if (m_AssemblyURL != &quot;&quot;)
+		{
+			ReloadAssembly (m_AssemblyURL);
+		}
 	}</p>
-<p>public string AssemblyURL<br />
-	{<br />
-		get<br />
-		{<br />
-			return m_AssemblyURL;<br />
-		}<br />
-		set<br />
-		{<br />
-			if (m_AssemblyURL != value)<br />
-			{<br />
-				ReloadAssembly (value);<br />
-			}<br />
-		}<br />
+<p>public string AssemblyURL
+	{
+		get
+		{
+			return m_AssemblyURL;
+		}
+		set
+		{
+			if (m_AssemblyURL != value)
+			{
+				ReloadAssembly (value);
+			}
+		}
 	}</p>
-<p>public float Progress<br />
-	{<br />
-		get<br />
-		{<br />
-			return m_Complete ? 1.0f : m_WWW.progress;<br />
-		}<br />
+<p>public float Progress
+	{
+		get
+		{
+			return m_Complete ? 1.0f : m_WWW.progress;
+		}
 	}</p>
-<p>public string Error<br />
-	{<br />
-		get<br />
-		{<br />
-			return m_ErrorString;<br />
-		}<br />
+<p>public string Error
+	{
+		get
+		{
+			return m_ErrorString;
+		}
 	}</p>
-<p>public void ReloadAssembly (string url)<br />
-	{<br />
-		m_Complete = false;<br />
-		m_ErrorString = &quot;&quot;;<br />
-		m_AssemblyURL = url;<br />
-		m_WWW = new <span class="caps">WWW</span> (m_AssemblyURL);<br />
+<p>public void ReloadAssembly (string url)
+	{
+		m_Complete = false;
+		m_ErrorString = &quot;&quot;;
+		m_AssemblyURL = url;
+		m_WWW = new <span class="caps">WWW</span> (m_AssemblyURL);
 	}</p>
-<p>public void Update ()<br />
-	{<br />
-		if (!m_Complete)<br />
-		{<br />
-			if (m_WWW.error != null)<br />
-			{<br />
-				m_ErrorString = m_WWW.error;<br />
-				m_Complete = true;<br />
-				SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);<br />
-			}<br />
-			else if (m_WWW.isDone)<br />
-			{<br />
-				Assembly assembly = LoadAssembly ();<br />
-				m_Complete = true;<br />
-				if (assembly != null)<br />
-				{<br />
-					Debug.Log (&quot;Done&quot;);<br />
-					SendMessage (&quot;OnAssemblyLoaded&quot;, new WWWAssembly (m_AssemblyURL, assembly));<br />
-				}<br />
-				else<br />
-				{<br />
-					Debug.Log (&quot;Failed&quot;);<br />
-					SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);<br />
-				}<br />
-			}<br />
-		}<br />
+<p>public void Update ()
+	{
+		if (!m_Complete)
+		{
+			if (m_WWW.error != null)
+			{
+				m_ErrorString = m_WWW.error;
+				m_Complete = true;
+				SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);
+			}
+			else if (m_WWW.isDone)
+			{
+				Assembly assembly = LoadAssembly ();
+				m_Complete = true;
+				if (assembly != null)
+				{
+					Debug.Log (&quot;Done&quot;);
+					SendMessage (&quot;OnAssemblyLoaded&quot;, new WWWAssembly (m_AssemblyURL, assembly));
+				}
+				else
+				{
+					Debug.Log (&quot;Failed&quot;);
+					SendMessage (&quot;OnAssemblyLoadFailed&quot;, m_AssemblyURL);
+				}
+			}
+		}
 	}</p>
-<p>private Assembly LoadAssembly ()<br />
-	{<br />
-		try<br />
-		{<br />
-			return Assembly.Load (m_WWW.bytes);<br />
-		}<br />
-		catch (System.Exception e)<br />
-		{<br />
-			m_ErrorString = e.ToString ();<br />
-			return null;<br />
-		}<br />
-	}<br />
+<p>private Assembly LoadAssembly ()
+	{
+		try
+		{
+			return Assembly.Load (m_WWW.bytes);
+		}
+		catch (System.Exception e)
+		{
+			m_ErrorString = e.ToString ();
+			return null;
+		}
+	}
 }</p>
-<p>public class WWWAssembly<br />
-{<br />
-	private string m_URL;<br />
+<p>public class WWWAssembly
+{
+	private string m_URL;
 	private Assembly m_Assembly;</p>
-<p>public string <span class="caps">URL</span><br />
-	{<br />
-		get<br />
-		{<br />
-			return m_URL;<br />
-		}<br />
+<p>public string <span class="caps">URL</span>
+	{
+		get
+		{
+			return m_URL;
+		}
 	}</p>
-<p>public Assembly Assembly<br />
-	{<br />
-		get<br />
-		{<br />
-			return m_Assembly;<br />
-		}<br />
+<p>public Assembly Assembly
+	{
+		get
+		{
+			return m_Assembly;
+		}
 	}</p>
-<p>public WWWAssembly (string url, Assembly assembly)<br />
-	{<br />
-		m_URL = url;<br />
-		m_Assembly = assembly;<br />
-	}<br />
+<p>public WWWAssembly (string url, Assembly assembly)
+	{
+		m_URL = url;
+		m_Assembly = assembly;
+	}
 }</code></pre></noscript></div></p>
-<p><b>/Assets/NewBehaviourScript.cs</b><br />
+<p><b>/Assets/NewBehaviourScript.cs</b>
 <script src='https://gist.github.com/3806151.js?file=NewBehaviourScript.cs'></script><div><noscript><pre><code>using UnityEngine;
 using System.Collections;
 using System.Reflection;</p>
-<p>public class NewBehaviourScript : MonoBehaviour<br />
-{<br />
+<p>public class NewBehaviourScript : MonoBehaviour
+{
 	private string m_MessageString = &quot;Waiting for assembly&quot;;</p>
-<p>void OnAssemblyLoaded (WWWAssembly loadedAssembly)<br />
-	{<br />
+<p>void OnAssemblyLoaded (WWWAssembly loadedAssembly)
+	{
 		m_MessageString = &quot;Assembly &quot; + loadedAssembly.<span class="caps">URL</span> + &quot;\n&quot;;</p>
 <p>System.Type type = loadedAssembly.Assembly.GetType (&quot;MyClass&quot;);</p>
-<p>FieldInfo field = type.GetField (&quot;myString&quot;);<br />
+<p>FieldInfo field = type.GetField (&quot;myString&quot;);
 		m_MessageString += (field.GetValue (null) as string) + &quot;\n&quot;;</p>
-<p>object instance = loadedAssembly.Assembly.CreateInstance (&quot;MyClass&quot;);<br />
-		MethodInfo method = type.GetMethod (&quot;LogMyString&quot;);<br />
-		m_MessageString += &quot;Return value: &quot; + method.Invoke (instance, null).ToString ();<br />
+<p>object instance = loadedAssembly.Assembly.CreateInstance (&quot;MyClass&quot;);
+		MethodInfo method = type.GetMethod (&quot;LogMyString&quot;);
+		m_MessageString += &quot;Return value: &quot; + method.Invoke (instance, null).ToString ();
 	}</p>
-<p>void OnAssemblyLoadFailed (string url)<br />
-	{<br />
-		m_MessageString = &quot;Failed to load assembly at &quot; + url;<br />
+<p>void OnAssemblyLoadFailed (string url)
+	{
+		m_MessageString = &quot;Failed to load assembly at &quot; + url;
 	}</p>
-<p>void OnGUI ()<br />
-	{<br />
-		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));<br />
-			GUILayout.FlexibleSpace ();<br />
-			GUILayout.BeginHorizontal ();<br />
-				GUILayout.FlexibleSpace ();<br />
-				GUILayout.Box (m_MessageString);<br />
-				GUILayout.FlexibleSpace ();<br />
-			GUILayout.EndHorizontal ();<br />
-			GUILayout.FlexibleSpace ();<br />
-		GUILayout.EndArea ();<br />
-	}<br />
+<p>void OnGUI ()
+	{
+		GUILayout.BeginArea (new Rect (0.0f, 0.0f, Screen.width, Screen.height));
+			GUILayout.FlexibleSpace ();
+			GUILayout.BeginHorizontal ();
+				GUILayout.FlexibleSpace ();
+				GUILayout.Box (m_MessageString);
+				GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+			GUILayout.FlexibleSpace ();
+		GUILayout.EndArea ();
+	}
 }</code></pre></noscript></div></p>
-<p><b>/MyAssembly.cs</b><br />
+<p><b>/MyAssembly.cs</b>
 <script src='https://gist.github.com/3806151.js?file=MyAssembly.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
-<p>public class MyClass<br />
-{<br />
+<p>public class MyClass
+{
 	public static string myString = &quot;This is my string from my class in my assembly&quot;;</p>
-<p>public int LogMyString ()<br />
-	{<br />
-		Debug.Log (myString);<br />
-		return 2 + 2;<br />
-	}<br />
+<p>public int LogMyString ()
+	{
+		Debug.Log (myString);
+		return 2 + 2;
+	}
 }</code></pre></noscript></div></p>
-<p><b>The assembly compile terminal command</b><br />
+<p><b>The assembly compile terminal command</b>
 <script src='https://gist.github.com/3806151.js?file=Build.sh'></script><div><noscript><pre><code>mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
@@ -278,6 +278,12 @@ using System.Reflection;</p>
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

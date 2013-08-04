@@ -82,82 +82,82 @@
 					<p class="post"><p>Say you&#8217;re developing an <span class="caps">RTS</span> or maybe a connect-the-dots sort of game. What would be the easiest way to go about handling object selection? This is my suggested solution.</p>
 <p>In the given example, I&#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.</p>
 <p>First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&#8217;ve simply put it right after the MonoBehaviour used for testing it.</p>
-<p>SelectionManager<br />
+<p>SelectionManager
 <script src='https://gist.github.com/3804386.js?file=SelectionManager.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
-<p>public class SelectionManager<br />
-{<br />
+<p>public class SelectionManager
+{
 	private static GameObject s_ActiveSelection;</p>
-<p>public static GameObject ActiveSelection<br />
-	{<br />
-		get<br />
-		{<br />
-			return s_ActiveSelection;<br />
-		}<br />
-		set<br />
-		{<br />
-			s_ActiveSelection = value;<br />
-		}<br />
+<p>public static GameObject ActiveSelection
+	{
+		get
+		{
+			return s_ActiveSelection;
+		}
+		set
+		{
+			s_ActiveSelection = value;
+		}
 	}</p>
-<p>public static void Select (GameObject gameObject, bool selectionValue)<br />
-	{<br />
-		if (selectionValue)<br />
-		{<br />
-			Select (gameObject);<br />
-		}<br />
-		else<br />
-		{<br />
-			Deselect (gameObject);<br />
-		}<br />
+<p>public static void Select (GameObject gameObject, bool selectionValue)
+	{
+		if (selectionValue)
+		{
+			Select (gameObject);
+		}
+		else
+		{
+			Deselect (gameObject);
+		}
 	}</p>
-<p>public static void Select (GameObject gameObject)<br />
-	{<br />
-		ActiveSelection = gameObject;<br />
+<p>public static void Select (GameObject gameObject)
+	{
+		ActiveSelection = gameObject;
 	}</p>
-<p>public static void Deselect (GameObject gameObject)<br />
-	{<br />
-		if (ActiveSelection == gameObject)<br />
-		{<br />
-			ActiveSelection = null;<br />
-		}<br />
+<p>public static void Deselect (GameObject gameObject)
+	{
+		if (ActiveSelection == gameObject)
+		{
+			ActiveSelection = null;
+		}
 	}</p>
-<p>public static bool IsSelected (GameObject gameObject)<br />
-	{<br />
-		return ActiveSelection == gameObject;<br />
-	}<br />
-}<br />
+<p>public static bool IsSelected (GameObject gameObject)
+	{
+		return ActiveSelection == gameObject;
+	}
+}
 </code></pre></noscript></div></p>
-<p>And the promised MonoBehaviour using the SelectionManager class:<br />
+<p>And the promised MonoBehaviour using the SelectionManager class:
 <script src='https://gist.github.com/3804386.js?file=SelectableObject.cs'></script><div><noscript><pre><code>using UnityEngine;</p>
-<p>public class SelectableObject : MonoBehaviour<br />
-{<br />
+<p>public class SelectableObject : MonoBehaviour
+{
 	public Rect m_SelectionWindowRect = new Rect (10.0f, 10.0f, 300.0f, 100.0f);</p>
-<p>public void OnMouseDown ()<br />
-	{<br />
-		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));<br />
+<p>public void OnMouseDown ()
+	{
+		SelectionManager.Select (gameObject, !SelectionManager.IsSelected (gameObject));
 	}</p>
-<p>public void OnDisable ()<br />
-	{<br />
-		SelectionManager.Deselect (gameObject);<br />
+<p>public void OnDisable ()
+	{
+		SelectionManager.Deselect (gameObject);
 	}</p>
-<p>public void Update ()<br />
-	{<br />
-		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;<br />
+<p>public void Update ()
+	{
+		renderer.material.color = SelectionManager.IsSelected (gameObject) ? Color.green : Color.white;
 	}</p>
-<p>public void OnGUI ()<br />
-	{<br />
-		if (SelectionManager.IsSelected (gameObject))<br />
-		{<br />
-			m_SelectionWindowRect = <span class="caps">GUI</span>.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);<br />
-		}<br />
+<p>public void OnGUI ()
+	{
+		if (SelectionManager.IsSelected (gameObject))
+		{
+			m_SelectionWindowRect = <span class="caps">GUI</span>.Window (GetInstanceID (), m_SelectionWindowRect, SelectionWindow, gameObject.name);
+		}
 	}</p>
-<p>void SelectionWindow (int id)<br />
-	{<br />
-		GUILayout.Box (&quot;I am the selection and my name is &quot; + gameObject.name);<br />
-		<span class="caps">GUI</span>.DragWindow ();<br />
-	}<br />
-}<br />
+<p>void SelectionWindow (int id)
+	{
+		GUILayout.Box (&quot;I am the selection and my name is &quot; + gameObject.name);
+		<span class="caps">GUI</span>.DragWindow ();
+	}
+}
 </code></pre></noscript></div></p>
-<p>And that is all there is to it. By popular demand, I&#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:<br />
+<p>And that is all there is to it. By popular demand, I&#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:
 <a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'>SelectableObject</a></p></p>
 					<p>&nbsp;</p>
 
@@ -168,6 +168,12 @@
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>

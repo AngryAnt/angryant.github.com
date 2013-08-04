@@ -89,58 +89,58 @@
 	<li>Click &#8220;Refresh&#8221; to list all components in your scene and the GameObjects to which they are attached.</li>
 	<li>To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.</li>
 </ul>
-<p>Codes:<br />
+<p>Codes:
 <script src='https://gist.github.com/3804708.js?file='></script><div><noscript><pre><code>using UnityEngine;
 using UnityEditor;
 using System.Collections;</p>
-<p>public class ComponentLister : EditorWindow<br />
-{<br />
-	private Hashtable sets = new Hashtable();<br />
+<p>public class ComponentLister : EditorWindow
+{
+	private Hashtable sets = new Hashtable();
 	private Vector2 scrollPosition;</p>
-<p>[ MenuItem( &quot;Component/Component lister&quot; ) ]<br />
-	public static void Launch()<br />
-	{<br />
-		EditorWindow window = GetWindow( typeof( ComponentLister ) );<br />
-		window.Show();<br />
+<p>[ MenuItem( &quot;Component/Component lister&quot; ) ]
+	public static void Launch()
+	{
+		EditorWindow window = GetWindow( typeof( ComponentLister ) );
+		window.Show();
 	}</p>
-<p>public void UpdateList()<br />
-	{<br />
+<p>public void UpdateList()
+	{
 		Object[] objects;</p>
 <p>sets.Clear();</p>
-<p>objects = FindObjectsOfType( typeof( Component ) );<br />
-		foreach( Component component in objects )<br />
-		{<br />
-			if( !sets.ContainsKey( component.GetType() ) )<br />
-			{<br />
-				sets[ component.GetType() ] = new ArrayList();<br />
+<p>objects = FindObjectsOfType( typeof( Component ) );
+		foreach( Component component in objects )
+		{
+			if( !sets.ContainsKey( component.GetType() ) )
+			{
+				sets[ component.GetType() ] = new ArrayList();
 			}</p>
-<p>( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );<br />
-		}<br />
+<p>( ( ArrayList )sets[ component.GetType() ] ).Add( component.gameObject );
+		}
 	}</p>
-<p>public void OnGUI()<br />
-	{<br />
-		GUILayout.BeginHorizontal( <span class="caps">GUI</span>.skin.GetStyle( &quot;Box&quot; ) );<br />
-			GUILayout.Label( &quot;Components in scene:&quot; );<br />
+<p>public void OnGUI()
+	{
+		GUILayout.BeginHorizontal( <span class="caps">GUI</span>.skin.GetStyle( &quot;Box&quot; ) );
+			GUILayout.Label( &quot;Components in scene:&quot; );
 			GUILayout.FlexibleSpace();</p>
-<p>if( GUILayout.Button( &quot;Refresh&quot; ) )<br />
-			{<br />
-				UpdateList();<br />
-			}<br />
+<p>if( GUILayout.Button( &quot;Refresh&quot; ) )
+			{
+				UpdateList();
+			}
 		GUILayout.EndHorizontal();</p>
 <p>scrollPosition = GUILayout.BeginScrollView(scrollPosition);</p>
-<p>foreach( System.Type type in sets.Keys )<br />
-			{<br />
-				GUILayout.Label( type.Name + &quot;:&quot; );<br />
-				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )<br />
-				{<br />
-					if( GUILayout.Button( gameObject.name ) )<br />
-					{<br />
-						Selection.activeObject = gameObject;<br />
-					}<br />
-				}<br />
+<p>foreach( System.Type type in sets.Keys )
+			{
+				GUILayout.Label( type.Name + &quot;:&quot; );
+				foreach( GameObject gameObject in ( ArrayList )sets[ type ] )
+				{
+					if( GUILayout.Button( gameObject.name ) )
+					{
+						Selection.activeObject = gameObject;
+					}
+				}
 			}</p>
-<p>GUILayout.EndScrollView();<br />
-	}<br />
+<p>GUILayout.EndScrollView();
+	}
 }</code></pre></noscript></div></p></p>
 					<p>&nbsp;</p>
 
@@ -151,6 +151,12 @@ using System.Collections;</p>
 									
 										<h1>Newer posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a>
+									<p style="max-height: 1pt">&nbsp;</p>
+								
+							
+								
 									
 									<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a>
 									<p style="max-height: 1pt">&nbsp;</p>
