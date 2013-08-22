@@ -6,6 +6,196 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Behave 2.0</title>
+				<description>&lt;p&gt;In 2010 the Unity Asset Store launched with an editor extension already live. That extension was Behave 1. Three years later, after way too long a pause, I have finally gotten around to releasing version 2.0 of Behave.&lt;/p&gt;
+&lt;p&gt;As you might have noticed, especially lately, I have had much chaos going on &amp;#8211; not the least of which is my recent exit from Unity Technologies and entry into freelancing.&lt;/p&gt;
+&lt;p&gt;So anyway, this is what I was doing when I was not writing that Unity Hacks blog post you were waiting for.&lt;/p&gt;
+&lt;h2&gt;Behave&lt;/h2&gt;
+&lt;p&gt;If you have no idea what Behave is and don&amp;#8217;t feel like dropping by the subsection on this site (which I am updating momentarily by the way) dedicated to it, here is how it is defined on the Asset Store:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Behave is a system for designing, integrating and running behaviour logic using Behaviour Trees. At its core Behave has a drag-drop designer and a highly effective and flexible compiled runtime.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;No funky runtime data formats or interpretation. Designer &amp;#8594; Compiler &amp;#8594; Your code.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;What is the use of a workflow extension without proper rapid iteration tools? Connect the visual debugger with break, step, reset, breakpoints and overrides directly to your project in the editor or on your target device.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2013-08-23-Behave-2-0/Behave2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Future&lt;/h2&gt;
+&lt;p&gt;Part of the challenge with any project is always to fight feature creep. This was very much also the case with Behave 2, so don&amp;#8217;t worry &amp;#8211; I have plenty of improvements to come. Not saying that this build is broken though &amp;#8211; go get it!&lt;/p&gt;
+&lt;h2&gt;License&lt;/h2&gt;
+&lt;p&gt;Unlike Behave 1, version 2 is a paid package. Aside from having gone freelance and needing a financial basis to keep up support for the software, this also had to be done as the Asset Store long ago banned the use of custom licenses.&lt;/p&gt;
+&lt;p&gt;This, of-course posed a bit of a problem for Behave 1&amp;#8217;s default &amp;#8220;free if you show the splash&amp;#8221; license. Fortunately the Asset Store team members are merciful gods and I got a veeery long grace period to beat Behave into compliance.&lt;/p&gt;
+&lt;p&gt;Included in the license is also access to a private community and internal support resources &amp;#8211; including the beta list.&lt;/p&gt;
+&lt;h2&gt;Launch&lt;/h2&gt;
+&lt;p&gt;For a limited time after launch, Behave 2 will be available at a flat discount of 50%. Additionally, if you happen to bump into me at Unite 2013 in Vancouver next week, you can slip me your business card and partake in the raffle for one of &lt;strong&gt;three free Behave 2 licenses&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;If you already purchased a copy of Behave 2 and win a free copy, I&amp;#8217;ll refund you the purchase amount.&lt;/p&gt;
+&lt;h2&gt;Changes&lt;/h2&gt;
+&lt;p&gt;So if you are a Behave 1 user and you are wondering what exactly is under the hood, I included the full Behave changelog below.&lt;/p&gt;
+&lt;p&gt;Now you might go &amp;#8220;1.5? What the hell? Did I miss something?&amp;#8221;. No you did not. That version unfortunately did not ship, but was in stead rolled straight into 2.0. But hey, water and bridges, right? 2.0 is here baby!&lt;/p&gt;
+&lt;pre&gt;Changelist:
+
+2.0:
+ - New editor.
+    - Unified all controls into one window.
+    - Completely customised look - compatible with both Unity light and dark skin.
+    - Keyboard authoring interface in addition to drag &amp;amp; drop.
+ - Debugger upgrade.
+    - Remote debugging.
+    - Tick and reset.
+    - &quot;Unplug&quot; for debugger-only control.
+    - Breakpoints.
+    - Action overrides - override the return values of specified actions.
+ - Decorator rewrite.
+    - Deprecated old decorator.
+       - Still compiles, but cannot be added.
+    - Decorators are now control-type components.
+       - No specific decorator handlers on agents.
+       - Control is achieved via third connection socket.
+    - Two initial decorator types: Repeater and Interrupter.
+ - Asset restructuring.
+    - No more collections - for nesting, use paths in tree names.
+    - New serialization format - see Readme.txt for upgrade instructions.
+    - Collections are gone. Use Unix-style path names for tree organisation.
+ - IAgent.Tick (Tree, bool) changed to IAgent.Tick (Tree)
+    - Init calls can now only be handled explicitly
+ - Full coverage online documentation and other community resources.
+ - Countless fixes and polish items.
+
+1.5:
+ - Added Tree.TickActive - indicating if a tree is currently executing a tick or if it has completed evaluation.
+ - In-tick tree reset requests now result in a reset at the end of tree evaluation rather than an immediate one.
+ - Removed the legacy compatibility assembly (for compatibility with pre-1.2 assets) from the default distribution.
+ - Fixed &quot;X must be instantiated using the ScriptableObject.CreateInstance method instead of new X&quot; warnings.
+
+1.4:
+ - Fixed decorator incorrectly initializing on every returning tick when tick handler returned Running.
+ - Fixed debugger view dependency on active tree editor - causing reported null reference exception.
+ - Fixed missing scrollbars on browser window.
+ - Reduced logging noise from debug builds.
+ - Agent blueprints can now be MonoBehaviour based.
+ - Clarified wording on &quot;library not loaded&quot;.
+ - Now handling reset a bit cleverer - potential performance boost.
+ - Changed the default success criteria of Parallel components from SuccessOrFailure to Success.
+ - Added &quot;instant&quot; flag to components. Components marked instant will affect sequences and selectors when moving between child nodes. When a child node marked &quot;instant&quot; completes, rather than waiting for the next tree tick to tick the following child node, the sequence or selector does it immediately.
+ - The compiler progress bar returns.
+ - Editing a Behave asset now focuses the asset browser last instead of the tree editor.
+ - Behave can now be installed in any subfolder of Assets - provided its internal folder structure remains intact.
+ - Compilation speed improvements.
+ - Enabled references across collection borders.
+ - Added Tree.DataSize - returning the number of bytes used by a tree instance. This is also displayed in the debugger window.
+
+1.3:
+ - Fixed priority selector init flag resetting.
+ - Fixed reference handling on tree renaming and deletion.
+ - Fixed references still pointing at old collection post collection duplication.
+ - Fixed compilation of actions and decorators with non-integral float parameters.
+ - Fixed GUI list behaviours.
+ - Fixed passing context back and forth between referenced trees and referrer.
+ - Fixed reordering connections not causing save state to be set.
+ - Various GUI tweaks.
+ - Runtime optimisations.
+ - Enabled scrolling of the tree list in the debugger window.
+ - Exposed Tree.ReflectForwards.
+ - Added Tree.ResetForwards.
+ - Added agent blueprints - connecting to agent handlers through virtual methods rather than reflected handlers.
+ - Made connections selectable in the tree editor via the connection nub.
+ - Moved connection managing from the inspector to the tree editor, where it is more visible and handy.
+ - Added support for disabling connections - for faster, less destructive debugging.
+ - Double-click reference component to jump to referenced tree.
+ - Changed &quot;Cannot update unregistered tree&quot; handling from an exception to an error message. Still need more info.
+ - Now showing string and float parameters in the tree editor if either is set.
+
+1.2:
+ - Fixed release building.
+ - Added the priority selector, introducing the API points:
+    - int IAgent.SelectTopPriority (Tree sender, params int[] IDs);
+    - enum BL[LibraryName].PriorityType { PriorityName, ..., Unknown };
+ - Added support for branch contexts, introducing the API points:
+    - enum BL[LibraryName].ContextType { ContextName, ..., Unknown };
+    - int Tree.ActiveContext { get; }
+ - Changed IAgent interface:
+    - Tick (bool init, Tree sender) -&amp;gt; Tick (Tree sender, bool init)
+ - Added &quot;Select asset&quot; button to the standard inspector.
+ - Interface polish.
+
+1.1:
+ - Made compatible with Unity 3.0 - including ensuring that the 2.5-2.6.1 bug preventing compilation on Windows is fixed on the Unity side.
+ - UI tweaks and polish.
+ - Added the option to have return values of nodes be inverted.
+ - Fixed compiler bug when facing sequence or selector with only one child node.
+ - Renamed Library.Tree -&amp;gt; Library.InstantiateTree.
+ - Added Tree.Tick () and Tree.Reset () methods using the IAgent instance given at instantiation of the tree.
+ - Removed the abstract Library class.
+ - Changed generated library class:
+    - Trees -&amp;gt; TreeType.
+    - Actions -&amp;gt; ActionType.
+    - Decorators -&amp;gt; DecoratorType.
+    - Tree InstantiateTree (int, IAgent) -&amp;gt; static Tree InstantiateTree (TreeType, IAgent)
+    - int TreeID (Tree) -&amp;gt; static TreeType Type (Tree)
+    - bool IsAction (int) -&amp;gt; static bool IsAction (int)
+    - bool IsDecorator (int) -&amp;gt; static bool IsDecorator (int)
+ - Upped editor performance.
+ - New asset structure change with automatic import of Behave 1.0 assets.
+ - Changed action and decorator handlers. These are now the handlers mapped:
+    - public BehaveResult Init[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+    - public BehaveResult Tick[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+    - public void Reset[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+    - public BehaveResult Init[Name][Action/Decorator] (Tree sender);
+    - public BehaveResult Tick[Name][Action/Decorator] (Tree sender);
+    - public void Reset[Name][Action/Decorator] (Tree sender);
+    - public BehaveResult [Name][Action/Decorator] {get; set;}
+ - Added support for collection duplication.
+ - Moved debug rendering into the editor with its own dedicated debugger window, including actor listing.
+ - Debugger now renders active sub-trees as well.
+
+1.0:
+ - Lots o fixes for Unity 2.5 compatibility.
+ - Closer editor integration with new UI.
+    - Component bar.
+    - Node inspection.
+ - Runtime tree debugging.
+ - Direct mapping of action and delegate handlers via reflection.
+ - Kitty demo.
+
+0.3b:
+ - Various tweaks to the editor UI.
+ - Optimised the compiler.
+ - Fixed the following editor bugs from the bug list:
+    - When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour.
+    - When a compile fails, the Behave compiler is locked and unusable – requiring a unity relaunch.
+ - Implemented the following wishlist items:
+    - Behaviour tree decorators.
+    - Stand-alone edition of the Behave editor.
+    - Behaviour tree debugging features.
+
+0.2b:
+ - Made the demo project a whole lot more interesting.
+ - Implemented the editor wish list item: Ability to move trees between collections.
+ - Various tweaks to the editor UI.
+ - Fixed a ton of bugs in the compiler.
+ - Fixed the following editor bugs from the bug list:
+    - Not able to delete collections from library.
+    - Not able to delete trees from library.
+    - Not able to rename collections from library.
+    - Not able to rename trees from library.
+    - Missing &quot;tree has been changed, save changes?&quot; dialog.
+
+0.1b:
+ - Some documentation is available.
+ - Compiler is now creating sensible output.
+ - A simple test tree and script using it is provided with the demo.
+ - Documentation is linked directly from the unity help menu.
+ - Less spamming of the log with debug information.
+
+Pre-release:
+ - Magic happened. Behave was born.&lt;/pre&gt;</description>
+				<published>2013-08-23 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/08/23/Behave-2-0/</link>
+			</item>
+		
+			<item>
 				<title>Unity Hacks: Dual sticks</title>
 				<description>&lt;p&gt;This is my third post in what looks like is going to turn into &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;a series&lt;/a&gt;, examining parts of the example project I provided for the Unity Hacks presentation &amp;#8211; delivered at a couple of the Unite conferences this year.&lt;/p&gt;
 &lt;p&gt;You can find the project and a recording of the presentation in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section of this site.&lt;/p&gt;
@@ -293,23 +483,6 @@ void ReadBroadcasts ()
 &lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;https://www.sparkfun.com/products/10748&quot;&gt;The &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2012-12-22 00:00:00 +0100</published>
 				<link>http://angryant.com/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/</link>
-			</item>
-		
-			<item>
-				<title>Invading Planet from your couch</title>
-				<description>&lt;p&gt;So yesterday was Tuesday which would normally mean I head to the local hackerspace and play around with my RC car and &lt;span class=&quot;caps&quot;&gt;IOIO&lt;/span&gt; board. However that plan was completely shot down by girlfriend homework leading to required baby juggling. Which is always fun.&lt;/p&gt;
-&lt;p&gt;Obviously I did not let that deter me from getting some hacking done anyway, so I picked up another project I&amp;#8217;d had on my &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; for a while.&lt;/p&gt;
-&lt;p&gt;You see I quite like my home entertainment setup. So much that aside from music, reading and the occasional iOS game, I only consume entertainment from my couch.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/resources/posts/2012-10-03-Invading-Planet-from-your-couch/CouchEntertainment.jpg&quot; title=&quot;The view from my couch&quot; alt=&quot;The view from my couch&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;comment&quot;&gt;Photo shows Star Craft II running in order to appease the SC2 gang at work which is not at all impressed with the amount of hours I manage to spend training with them. I tend to play more Alpha Centauri and Galactic Civilizations II ;)&lt;/p&gt;
-&lt;p&gt;That includes the occasional gaming on my mini which I mostly use for TV and videos through Plex&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, so launching a game means hiding or quitting Plex, finding the game in whatever launcher, running it and then reversing when done.&lt;/p&gt;
-&lt;p&gt;Now, I&amp;#8217;m lazy and I miss a feature of Plex 8 which allowed you to launch apps from within Plex &amp;#8211; right from your apple remote. So my hacking session last evening was creating a small Plex plugin which brings that feature back &amp;#8211; as I have been unable to find a pre-existing solution from someone else.&lt;/p&gt;
-&lt;p&gt;And it works just lovely. I now only need to select AppTV from my Plex main menu, select Alpha Centauri, get out my bluetooth mouse and keyboard and get gaming.&lt;/p&gt;
-&lt;p&gt;And you can too! Go find the &lt;a href=&quot;https://github.com/AngryAnt/AppTV&quot;&gt;AppTV project on github&lt;/a&gt; and have some fun :)&lt;/p&gt;
-&lt;p&gt;Oh and if you add something cool, pull requests would be awesome.&lt;/p&gt;
-&lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&quot;http://plexapp.com&quot;&gt;Plex&lt;/a&gt;&lt;/p&gt;</description>
-				<published>2012-10-03 00:00:00 +0200</published>
-				<link>http://angryant.com/2012/10/03/Invading-Planet-from-your-couch/</link>
 			</item>
 		
 	</channel>
