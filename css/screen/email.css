@@ -1,0 +1,61 @@
+#site
+{
+	width: 850px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#sidebar
+{
+	width: 250px;
+	float: left;
+	padding-top: 60px;
+	position: fixed;
+}
+#container
+{
+	width: 600px;
+	float: right;
+	padding-top: 50px;
+}
+
+#sidebar a
+{
+	float: left;
+	clear: both;
+	margin-top: 10pt;
+	margin-left: 20pt;
+}
+#submenu a
+{
+	font-size: 8pt;
+	margin-left: 35pt;
+	margin-top: 5pt;
+}
+#sidebar #external
+{
+	padding-top: 10pt;
+	clear: both;
+}
+#sidebar #external a
+{
+	margin-left: 0pt;
+	margin-top: 5pt;
+}
+#sidebar .comment
+{
+	clear: both;
+	margin: 0pt;
+	padding: 0pt;
+	padding-top: 20pt;
+	width: 180px;
+}
+#sidebar #logo
+{
+	float: right;
+	padding-top: 20pt;
+	padding-right: 30pt;
+	opacity: 0.1;
+	filter:alpha(opacity=10);
+	width: 100px;
+	height: 100px;
+}
