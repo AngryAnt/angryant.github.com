@@ -9,10 +9,10 @@
 			<item>
 				<title>Behave 2.0</title>
 				<description>&lt;p&gt;In 2010 the Unity Asset Store launched with an editor extension already live. That extension was Behave 1. Three years later, after way too long a pause, I have finally gotten around to releasing version 2.0 of Behave.&lt;/p&gt;
-&lt;p&gt;As you might have noticed, especially lately, I have had much chaos going on &amp;#8211; not the least of which is my recent exit from Unity Technologies and entry into freelancing.&lt;/p&gt;
+&lt;p&gt;As you might have noticed, especially lately, I have had quite a few things going on &amp;#8211; not the least of which is my recent exit from Unity Technologies and entry into freelancing. This all meant not a lot of time for Behave.&lt;/p&gt;
 &lt;p&gt;So anyway, this is what I was doing when I was not writing that Unity Hacks blog post you were waiting for.&lt;/p&gt;
 &lt;h2&gt;Behave&lt;/h2&gt;
-&lt;p&gt;If you have no idea what Behave is and don&amp;#8217;t feel like dropping by the subsection on this site (which I am updating momentarily by the way) dedicated to it, here is how it is defined on the Asset Store:&lt;/p&gt;
+&lt;p&gt;If you have no idea what Behave is and don&amp;#8217;t feel like dropping by the subsection on this site (which I am updating soon&amp;#8482;) dedicated to it, here is how it is defined on the Asset Store:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Behave is a system for designing, integrating and running behaviour logic using Behaviour Trees. At its core Behave has a drag-drop designer and a highly effective and flexible compiled runtime.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -192,8 +192,8 @@
 
 Pre-release:
  - Magic happened. Behave was born.&lt;/pre&gt;</description>
-				<published>2013-08-23 00:00:00 +0200</published>
-				<link>http://angryant.com/2013/08/23/Behave-2-0/</link>
+				<published>2013-08-24 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/08/24/Behave-2-0/</link>
 			</item>
 			
 		
