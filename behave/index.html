@@ -62,7 +62,7 @@
 			<div id="submenu">
 				
 					
-						<a href="/behave/documentation">Documentation</a>
+						<a href="/behave/documentation">Documentation (1.4)</a>
 					
 				
 					
@@ -99,28 +99,55 @@
 			<div id="container">
 				<h1 id="Top">The Behave project</h1>
 				<div id="content">
-					<p>Behave is a system for designing, integrating and running behaviour logic using Behaviour Trees. At its core Behave has a drag-drop designer and a highly effective and flexible compiled runtime.</p>
+					<p>Behave is a solution for designing, integrating and running behaviour logic using Behaviour Trees. At its core Behave has a drag-drop designer and a highly effective and flexible compiled runtime.</p>
 <p>No funky runtime data formats or interpretation. Designer &#8594; Compiler &#8594; Your code.</p>
+<h2>Unite</h2>
+<p>During Unite 2013 in Vancouver, the launch week of Behave 2, a draw for free licenses of Behave 2 takes place. For more information, see <a href="/unite2013">angryant.com/unite2013</a>.</p>
+<h2>Overview</h2>
+<video width="720" height="450" controls>
+<source src="/resources/behave/IntroductionToBehave2.mov" type="video/quicktime">
+<p><object data="/resources/behave/IntroductionToBehave2.mov" width="720" height="450">
+		<param name="autoplay" value="false">
+		<embed src="/resources/behave/IntroductionToBehave2.mov" width="720" height="450" autoplay="false">
+	</object></p>
+</video>
+<p>&nbsp;</p>
 <h2>Design</h2>
 <ul>
 	<li>Unobstructed design process <em>- designer is not blocked by developers not having implemented needed actions.</em></li>
 	<li>Flexible, non-limiting integration <em>- no heavy <span class="caps">API</span> requring you to jump through hoops to integrate with your code.</em></li>
 </ul>
+<p><img src="/resources/posts/2013-08-23-Behave-2-0/Behave2.png" alt="" /></p>
 <h2>Debugging</h2>
 <p>Completing the circle of tools and runtime, Behave ships with a powerful debugger runtime and UI with the following feature set:</p>
 <ul>
 	<li>Seamless integration &#8211; just build for debug.</li>
-	<li>Live visualisation of tree state.</li>
-	<li>Coming in Behave 2:
-	<ul>
-		<li>Un- and re-plugging of active trees for step-debugging.</li>
-		<li>Default action return overrides for scenario testing and working with yet unimplemented actions.</li>
-		<li>Remote debugging.</li>
-	</ul></li>
+	<li>Live visualisation of tree state as running in the Unity editor or on your target device.</li>
+	<li>Full support for execution break, step and reset within a running simulation.</li>
+	<li>Breakpoints.</li>
+	<li>Action return value overrides for scenario testing and working with yet unimplemented actions.</li>
 </ul>
 <h2>Access</h2>
 <p>The default Behave package lets you use the designer inside the Unity editor and compile your Behave libraries to the Unity .net runtime. Should you so desire, other compilers and a stand-alone editor is available on alternative licenses.</p>
 <p>For more information, see the Download page.</p>
+<h2>Changes</h2>
+<p>If you are familiar with Behave 1 and wondering what the changes are in Behave 2, here&#8217;s an excerpt from the changelog:</p>
+<ul>
+	<li>Unified all controls into one window, new keyboard interface.</li>
+	<li>All the extras in the debugger as described above.</li>
+	<li>Decorator rewrite into a control node.
+	<ul>
+		<li>No specific decorator handlers on agents.</li>
+		<li>Control is achieved via third connection socket.</li>
+		<li>Two initial decorator types: Repeater and Interrupter.</li>
+	</ul></li>
+	<li>IAgent.Tick (Tree, bool) changed to IAgent.Tick (Tree)
+	<ul>
+		<li>Init calls can now only be handled explicitly</li>
+	</ul></li>
+	<li>Full coverage online documentation and other community resources.</li>
+	<li>Countless fixes and polish items.</li>
+</ul>
 				</div>
 				<p class="footnote" style="margin-top: 50px; margin-bottom: 10px; clear: both;">Copyright &#169; AngryAnt&trade; <script>document.write ((new Date ()).getFullYear ());</script>. All public github gists are public domain.</p>
 <script>document.write ('<img src="/resources/footers/' + Math.floor (Math.random () * 23 + 1) + '.png" width="600" height="300" class="noprint" style="margin-bottom: -5px;">');</script>
