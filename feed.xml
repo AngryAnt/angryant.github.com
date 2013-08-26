@@ -21,8 +21,14 @@
 &lt;blockquote&gt;
 &lt;p&gt;What is the use of a workflow extension without proper rapid iteration tools? Connect the visual debugger with break, step, reset, breakpoints and overrides directly to your project in the editor or on your target device.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: An introductory video to Behave 2 is now available in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/resources/posts/2013-08-23-Behave-2-0/Behave2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: An introductory video to Behave 2 is now available:&lt;/p&gt;
+&lt;video width=&quot;720&quot; height=&quot;450&quot; controls&gt;
+&lt;source src=&quot;/resources/behave/IntroductionToBehave2.mov&quot; type=&quot;video/quicktime&quot;&gt;
+&lt;p&gt;&lt;object data=&quot;/resources/behave/IntroductionToBehave2.mov&quot; width=&quot;720&quot; height=&quot;450&quot;&gt;
+		&lt;embed src=&quot;/resources/behave/IntroductionToBehave2.mov&quot; width=&quot;720&quot; height=&quot;450&quot;&gt;
+	&lt;/object&gt;&lt;/p&gt;
+&lt;/video&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2&gt;Future&lt;/h2&gt;
 &lt;p&gt;Part of the challenge with any project is always to fight feature creep. This was very much also the case with Behave 2, so don&amp;#8217;t worry &amp;#8211; I have plenty of improvements to come. Not saying that this build is broken though &amp;#8211; go get it!&lt;/p&gt;
 &lt;h2&gt;License&lt;/h2&gt;
@@ -41,28 +47,28 @@
 
 2.0:
  - New editor.
-    - Unified all controls into one window.
-    - Completely customised look - compatible with both Unity light and dark skin.
-    - Keyboard authoring interface in addition to drag &amp;amp; drop.
+	- Unified all controls into one window.
+	- Completely customised look - compatible with both Unity light and dark skin.
+	- Keyboard authoring interface in addition to drag &amp;amp; drop.
  - Debugger upgrade.
-    - Remote debugging.
-    - Tick and reset.
-    - &quot;Unplug&quot; for debugger-only control.
-    - Breakpoints.
-    - Action overrides - override the return values of specified actions.
+	- Remote debugging.
+	- Tick and reset.
+	- &quot;Unplug&quot; for debugger-only control.
+	- Breakpoints.
+	- Action overrides - override the return values of specified actions.
  - Decorator rewrite.
-    - Deprecated old decorator.
-       - Still compiles, but cannot be added.
-    - Decorators are now control-type components.
-       - No specific decorator handlers on agents.
-       - Control is achieved via third connection socket.
-    - Two initial decorator types: Repeater and Interrupter.
+	- Deprecated old decorator.
+	   - Still compiles, but cannot be added.
+	- Decorators are now control-type components.
+	   - No specific decorator handlers on agents.
+	   - Control is achieved via third connection socket.
+	- Two initial decorator types: Repeater and Interrupter.
  - Asset restructuring.
-    - No more collections - for nesting, use paths in tree names.
-    - New serialization format - see Readme.txt for upgrade instructions.
-    - Collections are gone. Use Unix-style path names for tree organisation.
+	- No more collections - for nesting, use paths in tree names.
+	- New serialization format - see Readme.txt for upgrade instructions.
+	- Collections are gone. Use Unix-style path names for tree organisation.
  - IAgent.Tick (Tree, bool) changed to IAgent.Tick (Tree)
-    - Init calls can now only be handled explicitly
+	- Init calls can now only be handled explicitly
  - Full coverage online documentation and other community resources.
  - Countless fixes and polish items.
 
@@ -113,13 +119,13 @@
 1.2:
  - Fixed release building.
  - Added the priority selector, introducing the API points:
-    - int IAgent.SelectTopPriority (Tree sender, params int[] IDs);
-    - enum BL[LibraryName].PriorityType { PriorityName, ..., Unknown };
+	- int IAgent.SelectTopPriority (Tree sender, params int[] IDs);
+	- enum BL[LibraryName].PriorityType { PriorityName, ..., Unknown };
  - Added support for branch contexts, introducing the API points:
-    - enum BL[LibraryName].ContextType { ContextName, ..., Unknown };
-    - int Tree.ActiveContext { get; }
+	- enum BL[LibraryName].ContextType { ContextName, ..., Unknown };
+	- int Tree.ActiveContext { get; }
  - Changed IAgent interface:
-    - Tick (bool init, Tree sender) -&amp;gt; Tick (Tree sender, bool init)
+	- Tick (bool init, Tree sender) -&amp;gt; Tick (Tree sender, bool init)
  - Added &quot;Select asset&quot; button to the standard inspector.
  - Interface polish.
 
@@ -132,23 +138,23 @@
  - Added Tree.Tick () and Tree.Reset () methods using the IAgent instance given at instantiation of the tree.
  - Removed the abstract Library class.
  - Changed generated library class:
-    - Trees -&amp;gt; TreeType.
-    - Actions -&amp;gt; ActionType.
-    - Decorators -&amp;gt; DecoratorType.
-    - Tree InstantiateTree (int, IAgent) -&amp;gt; static Tree InstantiateTree (TreeType, IAgent)
-    - int TreeID (Tree) -&amp;gt; static TreeType Type (Tree)
-    - bool IsAction (int) -&amp;gt; static bool IsAction (int)
-    - bool IsDecorator (int) -&amp;gt; static bool IsDecorator (int)
+	- Trees -&amp;gt; TreeType.
+	- Actions -&amp;gt; ActionType.
+	- Decorators -&amp;gt; DecoratorType.
+	- Tree InstantiateTree (int, IAgent) -&amp;gt; static Tree InstantiateTree (TreeType, IAgent)
+	- int TreeID (Tree) -&amp;gt; static TreeType Type (Tree)
+	- bool IsAction (int) -&amp;gt; static bool IsAction (int)
+	- bool IsDecorator (int) -&amp;gt; static bool IsDecorator (int)
  - Upped editor performance.
  - New asset structure change with automatic import of Behave 1.0 assets.
  - Changed action and decorator handlers. These are now the handlers mapped:
-    - public BehaveResult Init[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
-    - public BehaveResult Tick[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
-    - public void Reset[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
-    - public BehaveResult Init[Name][Action/Decorator] (Tree sender);
-    - public BehaveResult Tick[Name][Action/Decorator] (Tree sender);
-    - public void Reset[Name][Action/Decorator] (Tree sender);
-    - public BehaveResult [Name][Action/Decorator] {get; set;}
+	- public BehaveResult Init[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+	- public BehaveResult Tick[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+	- public void Reset[Name][Action/Decorator] (Tree sender, string stringParameter, float floatParameter, IAgent agent, object data);
+	- public BehaveResult Init[Name][Action/Decorator] (Tree sender);
+	- public BehaveResult Tick[Name][Action/Decorator] (Tree sender);
+	- public void Reset[Name][Action/Decorator] (Tree sender);
+	- public BehaveResult [Name][Action/Decorator] {get; set;}
  - Added support for collection duplication.
  - Moved debug rendering into the editor with its own dedicated debugger window, including actor listing.
  - Debugger now renders active sub-trees as well.
@@ -156,8 +162,8 @@
 1.0:
  - Lots o fixes for Unity 2.5 compatibility.
  - Closer editor integration with new UI.
-    - Component bar.
-    - Node inspection.
+	- Component bar.
+	- Node inspection.
  - Runtime tree debugging.
  - Direct mapping of action and delegate handlers via reflection.
  - Kitty demo.
@@ -166,12 +172,12 @@
  - Various tweaks to the editor UI.
  - Optimised the compiler.
  - Fixed the following editor bugs from the bug list:
-    - When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour.
-    - When a compile fails, the Behave compiler is locked and unusable – requiring a unity relaunch.
+	- When the editor scrips are recompiled and when the user enters and exits play mode, running editors will loose references, causing undetermined behaviour.
+	- When a compile fails, the Behave compiler is locked and unusable – requiring a unity relaunch.
  - Implemented the following wishlist items:
-    - Behaviour tree decorators.
-    - Stand-alone edition of the Behave editor.
-    - Behaviour tree debugging features.
+	- Behaviour tree decorators.
+	- Stand-alone edition of the Behave editor.
+	- Behaviour tree debugging features.
 
 0.2b:
  - Made the demo project a whole lot more interesting.
@@ -179,11 +185,11 @@
  - Various tweaks to the editor UI.
  - Fixed a ton of bugs in the compiler.
  - Fixed the following editor bugs from the bug list:
-    - Not able to delete collections from library.
-    - Not able to delete trees from library.
-    - Not able to rename collections from library.
-    - Not able to rename trees from library.
-    - Missing &quot;tree has been changed, save changes?&quot; dialog.
+	- Not able to delete collections from library.
+	- Not able to delete trees from library.
+	- Not able to rename collections from library.
+	- Not able to rename trees from library.
+	- Missing &quot;tree has been changed, save changes?&quot; dialog.
 
 0.1b:
  - Some documentation is available.
