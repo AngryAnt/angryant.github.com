@@ -23,12 +23,7 @@
 &lt;p&gt;What is the use of a workflow extension without proper rapid iteration tools? Connect the visual debugger with break, step, reset, breakpoints and overrides directly to your project in the editor or on your target device.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: An introductory video to Behave 2 is now available:&lt;/p&gt;
-&lt;video width=&quot;720&quot; height=&quot;450&quot; controls&gt;
-&lt;source src=&quot;/resources/behave/IntroductionToBehave2.mov&quot; type=&quot;video/quicktime&quot;&gt;
-&lt;p&gt;&lt;object data=&quot;/resources/behave/IntroductionToBehave2.mov&quot; width=&quot;720&quot; height=&quot;450&quot;&gt;
-		&lt;embed src=&quot;/resources/behave/IntroductionToBehave2.mov&quot; width=&quot;720&quot; height=&quot;450&quot;&gt;
-	&lt;/object&gt;&lt;/p&gt;
-&lt;/video&gt;
+&lt;p&gt;&lt;iframe width=&quot;600&quot; height=&quot;400&quot; src=&quot;//www.youtube.com/embed/vcsFjM-cw9k&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;&lt;/p&gt;
 &lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2&gt;Future&lt;/h2&gt;
 &lt;p&gt;Part of the challenge with any project is always to fight feature creep. This was very much also the case with Behave 2, so don&amp;#8217;t worry &amp;#8211; I have plenty of improvements to come. Not saying that this build is broken though &amp;#8211; go get it!&lt;/p&gt;
