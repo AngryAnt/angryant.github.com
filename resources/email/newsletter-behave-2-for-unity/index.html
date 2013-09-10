@@ -32,13 +32,13 @@
 <p>So with the history lesson out of the way, what <strong>is</strong> Behave really? In short, it is an AI behaviour logic system. It allows you to visually design behaviour trees, link them directly to your own code through a highly efficient compiler, and finally debug the trees at runtime in the editor or on your target device.</p>
 <p>One of the guiding principles behind Behave is to as much as possible avoid systemic requirements &#8211; that is things which might chain your runtime integration into a certain way of operating. The result is a very lean and efficient runtime with the integration possibilities more or less just limited to your imagination and practical needs.</p>
 <h2>Behaviour trees</h2>
-<p style="float:right;"><img src="/resources/email/newsletter-behave-2-for-unity/halo.jpg" alt="" /></p>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/halo.jpg" alt="" /></p>
 <p>Behaviour trees you say? Yes I do. A widely standardise method of describing behaviour logic, first used on scale in Halo, behaviour trees set themselves apart from methods like state machines in that they scale much better, are easy to read and make very responsive.</p>
 <p>I am going to assume familiarity with state machines to use them as a reference in describing behaviour trees. Though I clearly cannot describe all that is behaviour trees in the length of this article.</p>
 <p>For further reading, I recommend you check out the thorough <a href="http://en.wikipedia.org/wiki/Behaviour_Trees">wikipedia article</a> on behaviour trees as well as <a href="http://aigamedev.com">AIgameDev.com</a>, which available to its free tier accounts, has a lot of great articles on behaviour trees.</p>
 <p>While state machines are in the business of selecting states within which actions are performed, behaviour trees build states implicitly from their structure and focus squarely on selecting actions to perform.</p>
 <p>This means that while state machines allow you to set up states with any number of transitions (at scale often ending up in a hard to maintain spider-web of transitions), behaviour trees have a strict set of rules for connectivity and evaluation.</p>
-<p style="float:right;"><img src="/resources/email/newsletter-behave-2-for-unity/tree-structure.png" alt="" /></p>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/tree-structure.png" alt="" /></p>
 <p>A behaviour tree is basically an upside-down tree structure &#8211; evaluation starting from the root at the top, filtering through a number of interconnected control nodes and ending in leaf nodes &#8211; actions. Actions are where you interface game logic with behaviour logic &#8211; hooking up sensors and motors.</p>
 <p>The responsiveness of behaviour trees stems from the fact that they are most often evaluated continuously &#8211; at some frame rate. Each evaluation start at the top and given the rules for the different control nodes, the flow is directed until an action node is hit.</p>
 <p>Each node will then, rather than block on execution, return a signal back to its parent node. The parent then interprets, reacts and returns its own signal back up the chain until the root is reached again.</p>
@@ -66,6 +66,7 @@
 <p>So as you can already see at this point, Behave does indeed follow the design goal of low complexity &#8211; leaving design decisions in the integration layer completely up to you.</p>
 <p>The Behave runtime has much more runtime <span class="caps">API</span> and integration flexibility, but that is unfortunately a bit much to cover in this overview.</p>
 <h1><span class="caps">EOF</span></h1>
+<p><img src="/resources/profile.jpg" title="My face" alt="My face" /></p>
 <p>I hope you found this introduction useful and that you will consider using Behave for your next AI project. Again, I would recommend you check out the following sources for more information on behaviour trees:</p>
 <ul>
 	<li><a href="http://en.wikipedia.org/wiki/Behaviour_Trees">Behaviour trees on Wikipedia</a></li>
