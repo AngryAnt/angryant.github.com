@@ -22,22 +22,23 @@
 				<div id="content">
 					<p>Hello everybody! My name is Emil and I will be your guide on this tour of Behave 2 for Unity. Having previously worked at Unity Technologies from April 2009 till July 2013, I now work as a freelance game AI developer under my company- and nickname &#8220;AngryAnt&#8221;.</p>
 <h1>Background</h1>
-<p>The Behave project first started to take shape in 2008, when I first picked up Unity and found that I was missing some tools I had used at my previous job, which I very much could not fit in my personal budget.</p>
-<p>So I first built Path (now open source, <span class="caps">MIT</span>) and then Behave. As it so often happens (indeed Unity itself being an example), I got caught up in writing the tools and never got around to making my game (for the record, Unity / <span class="caps">OTEE</span> did launch Gooball though).</p>
-<p>I was therefore, at Unite 08 in Copenhagen, cornered by Tom Higgins and David Helgason in a bar (quite unfairly) and persuaded to give an open-mic talk about the project the next day.</p>
-<p>That was Behave 0.3b. The first full-on middleware solution integrated in the Unity editor (as editor scripting landed in 2.1). I took what time I had and later released 1.0 &#8211; first a direct download on my own site and later part of the packages available at asset store launch in 2010.</p>
-<p>Of-course I was very busy at Unity and with a family to take care of, the spare time I could dedicate towards Behave was not a whole lot. I therefore set out to make things easier for myself by cutting loose Path and start a series of re-factoring operations on Behave.</p>
-<p>A boatload of feature creep later, this finally turned into Behave 2. With support for multiple platforms and editors, Unity of-course remains the main attraction.</p>
-<p>And just to ease your mind on the maintenance and release schedule: 2.1 and its awesome features is not going to take anywhere near the time to release that 1.4 &#8594; 2.0 did.</p>
+<p>The Behave project, along with Path (now open-source <span class="caps">MIT</span>) was among the first projects I did in Unity after picking it up in the beginning of 2008. In an all too familiar story, I created the tools to replace those I had used at my previous job, but ended up focusing more on the tools than my game project.</p>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/old-behave.png" style="max-width:300px;float:right;" title="Behave 0.4b2" alt="Behave 0.4b2" /></p>
+<p>I first shared the project at Unite 08, when Tom Higgins and David Helgason (quite unfairly) cornered me in a bar and persuaded me to give an open mic talk the next day &#8211; on what at the time was the only full-on middleware solution integrated in the Unity editor.</p>
+<p>This was Behave 0.3b &#8211; with 1.0 released a couple of months later and 1.2 in 2010 going live as one of the launch packages of the asset store.</p>
+<p>When at Unity, my schedule was pretty packed, so 2.0 has been quite a while under way. Large refactors, support for multiple engines and platforms plus feature creep did not help much either. But here we are and rest assured that 2.0&#8594;2.1 is not going to take the time that 1.4&#8594;2.0 did &#8211; a good deal of the feature set already done.
+<img src="/resources/posts/2013-08-23-Behave-2-0/Behave2.png" alt="" /></p>
 <h1>Overview</h1>
 <p>So with the history lesson out of the way, what <strong>is</strong> Behave really? In short, it is an AI behaviour logic system. It allows you to visually design behaviour trees, link them directly to your own code through a highly efficient compiler, and finally debug the trees at runtime in the editor or on your target device.</p>
 <p>One of the guiding principles behind Behave is to as much as possible avoid systemic requirements &#8211; that is things which might chain your runtime integration into a certain way of operating. The result is a very lean and efficient runtime with the integration possibilities more or less just limited to your imagination and practical needs.</p>
 <h2>Behaviour trees</h2>
+<p style="float:right;"><img src="/resources/email/newsletter-behave-2-for-unity/halo.jpg" alt="" /></p>
 <p>Behaviour trees you say? Yes I do. A widely standardise method of describing behaviour logic, first used on scale in Halo, behaviour trees set themselves apart from methods like state machines in that they scale much better, are easy to read and make very responsive.</p>
-<p>I am going to assume familiarity with state machines to use them as a reference in describing behaviour trees. Though I clearly cannot describe all that is behaviour trees here.</p>
-<p>For further reading, I recommend you check out the thorough <a href="http://en.wikipedia.org/wiki/Behaviour_Trees">wikipedia article</a> on behaviour trees as well as <a href="http://aigamedev.com">AIgameDev.com</a>, which available to its free tier accounts has a lot of great articles on behaviour trees.</p>
+<p>I am going to assume familiarity with state machines to use them as a reference in describing behaviour trees. Though I clearly cannot describe all that is behaviour trees in the length of this article.</p>
+<p>For further reading, I recommend you check out the thorough <a href="http://en.wikipedia.org/wiki/Behaviour_Trees">wikipedia article</a> on behaviour trees as well as <a href="http://aigamedev.com">AIgameDev.com</a>, which available to its free tier accounts, has a lot of great articles on behaviour trees.</p>
 <p>While state machines are in the business of selecting states within which actions are performed, behaviour trees build states implicitly from their structure and focus squarely on selecting actions to perform.</p>
 <p>This means that while state machines allow you to set up states with any number of transitions (at scale often ending up in a hard to maintain spider-web of transitions), behaviour trees have a strict set of rules for connectivity and evaluation.</p>
+<p style="float:right;"><img src="/resources/email/newsletter-behave-2-for-unity/tree-structure.png" alt="" /></p>
 <p>A behaviour tree is basically an upside-down tree structure &#8211; evaluation starting from the root at the top, filtering through a number of interconnected control nodes and ending in leaf nodes &#8211; actions. Actions are where you interface game logic with behaviour logic &#8211; hooking up sensors and motors.</p>
 <p>The responsiveness of behaviour trees stems from the fact that they are most often evaluated continuously &#8211; at some frame rate. Each evaluation start at the top and given the rules for the different control nodes, the flow is directed until an action node is hit.</p>
 <p>Each node will then, rather than block on execution, return a signal back to its parent node. The parent then interprets, reacts and returns its own signal back up the chain until the root is reached again.</p>
@@ -62,6 +63,7 @@
 <p>Out of the box Behave offers two ways of implementing action handlers. The default is you derive from the IAgent interface. In this case Behave will reflect your class for action handlers on instantiation &#8211; much like the Unity messaging system.</p>
 <p>The second way of implementing action handlers is to define an agent blueprint in your library. At runtime this results in an abstract agent class being defined &#8211; with predefined virtual handlers for all actions used by the trees supported by that blueprint. This method is less flexible, but removes the overhead of reflection on tree instantiation and gives you auto-complete on action handler methods in your favourite code editor.</p>
 <p>With handlers defined, you then simply call the <code>Tick</code> method on the tree instance at a frame-rate or in response to some game event and the tree will in turn call one or more of your action handlers &#8211; depending on its design.</p>
+<p>So as you can already see at this point, Behave does indeed follow the design goal of low complexity &#8211; leaving design decisions in the integration layer completely up to you.</p>
 <p>The Behave runtime has much more runtime <span class="caps">API</span> and integration flexibility, but that is unfortunately a bit much to cover in this overview.</p>
 <h1><span class="caps">EOF</span></h1>
 <p>I hope you found this introduction useful and that you will consider using Behave for your next AI project. Again, I would recommend you check out the following sources for more information on behaviour trees:</p>
@@ -69,10 +71,11 @@
 	<li><a href="http://en.wikipedia.org/wiki/Behaviour_Trees">Behaviour trees on Wikipedia</a></li>
 	<li><a href="http://aigamedev.com">AIgameDev.com</a></li>
 </ul>
+<p>And of-course more information on Behave can be found on <a href="http://angryant.com/behave">AngryAnt.com/Behave</a>.</p>
 <p>Have fun!</p>
 - Emil &#8220;AngryAnt&#8221; Johansen
-
-
+<p><br><br>
+<br><br></p>
 
 				</div>
 			</div>
