@@ -27,18 +27,19 @@
 <p>I first shared the project at Unite 08, when Tom Higgins and David Helgason (quite unfairly) cornered me in a bar and persuaded me to give an open mic talk the next day &#8211; on what at the time was the only full-on middleware solution integrated in the Unity editor.</p>
 <p>This was Behave 0.3b &#8211; with 1.0 released a couple of months later and 1.2 in 2010 going live as one of the launch packages of the asset store.</p>
 <p>When at Unity, my schedule was pretty packed, so 2.0 has been quite a while under way. Large refactors, support for multiple engines and platforms plus feature creep did not help much either. But here we are and rest assured that 2.0&#8594;2.1 is not going to take the time that 1.4&#8594;2.0 did &#8211; a good deal of the feature set already done.
-<img src="/resources/posts/2013-08-23-Behave-2-0/Behave2.png" alt="" /></p>
+<img src="/resources/posts/2013-08-23-Behave-2-0/Behave2.png" title="Behave 2.0" alt="Behave 2.0" /></p>
 <h1>Overview</h1>
-<p>So with the history lesson out of the way, what <strong>is</strong> Behave really? In short, it is an AI behaviour logic system. It allows you to visually design behaviour trees, link them directly to your own code through a highly efficient compiler, and finally debug the trees at runtime in the editor or on your target device.</p>
-<p>One of the guiding principles behind Behave is to as much as possible avoid systemic requirements &#8211; that is things which might chain your runtime integration into a certain way of operating. The result is a very lean and efficient runtime with the integration possibilities more or less just limited to your imagination and practical needs.</p>
+<p>So with the history lesson out of the way, what <strong>is</strong> Behave really? In short, it is an AI behaviour logic system. It allows you to visually design behaviour trees, link them directly to your own code through a highly efficient compiler, and finally debug the trees &#8211; running in the editor or on your target device.</p>
+<p>One of the guiding principles behind Behave is to as much as possible avoid systemic requirements &#8211; that is designs which might chain your runtime integration into a certain way of operating. The result is a very lean and efficient runtime, with the integration possibilities more or less just limited to your imagination and practical needs.</p>
 <h2>Behaviour trees</h2>
-<p><img src="/resources/email/newsletter-behave-2-for-unity/halo.jpg" alt="" /></p>
-<p>Behaviour trees you say? Yes I do. A widely standardise method of describing behaviour logic, first used on scale in Halo, behaviour trees set themselves apart from methods like state machines in that they scale much better, are easy to read and make very responsive.</p>
-<p>I am going to assume familiarity with state machines to use them as a reference in describing behaviour trees. Though I clearly cannot describe all that is behaviour trees in the length of this article.</p>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/halo.jpg" title="Halo" alt="Halo" /></p>
+<p>Behaviour trees you say? Yes I do. A widely standardise method of describing behaviour logic, first used on scale in Halo, behaviour trees set themselves apart from methods like state machines in that they scale much better, are easy to read and to make very responsive.</p>
+<p>I am going to assume familiarity with state machines &#8211; to use them as a reference in describing behaviour trees. Though I clearly cannot describe all that is behaviour trees in the length of this article.</p>
 <p>For further reading, I recommend you check out the thorough <a href="http://en.wikipedia.org/wiki/Behaviour_Trees">wikipedia article</a> on behaviour trees as well as <a href="http://aigamedev.com">AIgameDev.com</a>, which available to its free tier accounts, has a lot of great articles on behaviour trees.</p>
 <p>While state machines are in the business of selecting states within which actions are performed, behaviour trees build states implicitly from their structure and focus squarely on selecting actions to perform.</p>
 <p>This means that while state machines allow you to set up states with any number of transitions (at scale often ending up in a hard to maintain spider-web of transitions), behaviour trees have a strict set of rules for connectivity and evaluation.</p>
-<p><img src="/resources/email/newsletter-behave-2-for-unity/tree-structure.png" alt="" /></p>
+<h3>Them rules</h3>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/tree-structure.png" title="Behaviour tree structure" alt="Behaviour tree structure" /></p>
 <p>A behaviour tree is basically an upside-down tree structure &#8211; evaluation starting from the root at the top, filtering through a number of interconnected control nodes and ending in leaf nodes &#8211; actions. Actions are where you interface game logic with behaviour logic &#8211; hooking up sensors and motors.</p>
 <p>The responsiveness of behaviour trees stems from the fact that they are most often evaluated continuously &#8211; at some frame rate. Each evaluation start at the top and given the rules for the different control nodes, the flow is directed until an action node is hit.</p>
 <p>Each node will then, rather than block on execution, return a signal back to its parent node. The parent then interprets, reacts and returns its own signal back up the chain until the root is reached again.</p>
@@ -46,7 +47,7 @@
 <p>Example actions could be HasTarget which would return Success if the agent executing the tree has a target and otherwise Failure or GoToTarget which would return Running while on its way to the target and then Success when reached or Failure when determined to be unreachable.</p>
 <h2>Behave integration</h2>
 <p>So while the graphical editor lets you easily connect together these control nodes and actions, you of-course need to hook this up to your AI agents at some point.</p>
-<p>This is achieved via the one-click compilation of your Behave library (the asset containing your trees), which for Unity generates a .net assembly, compiling in with the rest of your code.</p>
+<p>This is achieved via the one-click compilation of your Behave library (the asset containing your trees), which for the Unity target compiler generates a .net assembly. As it is output in your assets folder, Unity will automatically compile it in with the rest of your code.</p>
 <p>What this means is that once you hit compile, you will be able to access generated classes from your code, representing your behaviour trees at runtime.</p>
 <script src='https://gist.github.com/5555031.js?file=BLMyLibrary.cs'></script><div><noscript><pre><code>public class BLMyLibrary
 {
@@ -60,9 +61,12 @@
 }
 </code></pre></noscript></div>
 <p>The central method of the generated library class &#8220;BL[AssetName]&#8221; is the <code>InstantiateTree</code> method. This takes as parameter first the tree type you wish instantiated (via an enum generated from the tree names in the editor) and second the agent you wish to integrate the tree with. This is the class which will need to implement the action handlers described earlier.</p>
+<h3>Flexibility</h3>
+<p><img src="/resources/email/newsletter-behave-2-for-unity/agent.jpg" title="Agent" alt="Agent" /></p>
 <p>Out of the box Behave offers two ways of implementing action handlers. The default is you derive from the IAgent interface. In this case Behave will reflect your class for action handlers on instantiation &#8211; much like the Unity messaging system.</p>
 <p>The second way of implementing action handlers is to define an agent blueprint in your library. At runtime this results in an abstract agent class being defined &#8211; with predefined virtual handlers for all actions used by the trees supported by that blueprint. This method is less flexible, but removes the overhead of reflection on tree instantiation and gives you auto-complete on action handler methods in your favourite code editor.</p>
 <p>With handlers defined, you then simply call the <code>Tick</code> method on the tree instance at a frame-rate or in response to some game event and the tree will in turn call one or more of your action handlers &#8211; depending on its design.</p>
+<p>For core character behaviour logic, I usually create a coroutine named <code>AIUpdate</code> or turn <code>Start</code> into a coroutine, containing a loop which ticks the tree and then yields <code>WaitForSeconds</code> one divided by the frequency property of the tree. This property serves no other purpose at runtime than to communicate an intend from the designer to the programmer.</p>
 <p>So as you can already see at this point, Behave does indeed follow the design goal of low complexity &#8211; leaving design decisions in the integration layer completely up to you.</p>
 <p>The Behave runtime has much more runtime <span class="caps">API</span> and integration flexibility, but that is unfortunately a bit much to cover in this overview.</p>
 <h1><span class="caps">EOF</span></h1>
@@ -80,6 +84,7 @@
 - Emil &#8220;AngryAnt&#8221; Johansen
 <p><br><br>
 <br><br></p>
+<p class="footer">Halo is a registered trademark of Bungie. The Matrix is a registered trademark of Warner Brothers.</p>
 
 				</div>
 			</div>
