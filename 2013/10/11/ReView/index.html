@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - OnRenderTextureGUI - </title>
+		<title>AngryAnt - ReView - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,7 +29,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">OnRenderTextureGUI</div>
+<div id="subtitle">ReView</div>
 
 	
 		<a href="/">Home</a>
@@ -81,32 +81,27 @@
 
 			</div>
 			<div id="container">
-				<span class="date">17 Jul 2013</span>
-				<h1 id="Top">OnRenderTextureGUI</h1>
+				<span class="date">11 Oct 2013</span>
+				<h1 id="Top">ReView</h1>
 				
 				<div id="content">
-					<p class="post"><p>Have you ever wanted to apply a full-screen effect to your <span class="caps">GUI</span> without having to completely restructuring the way you set up your OnGUI structure? Or how about rendering text and <span class="caps">GUI</span> controls onto in-scene virtual screens and objects? Yea me too.</p>
-<p>So a couple of years ago I did a friday project investigating the possibility of a setup like this. What I wanted was a Doom 3 &#8211; style in-game numpad, responding to mouse clicks. Unfortunately I couldn&#8217;t get there 100% and in a nice and straight-forward way, so I abandoned it with no further time spent.</p>
-<p>The specific problem was that while I could get my <span class="caps">GUI</span> to render to the object just fine, the <span class="caps">GUI</span> system had no way of injecting events or modifying existing ones. This meant that if I wanted <span class="caps">GUI</span> to respond to events, I would have to bypass the <span class="caps">GUI</span> event system and effectively rewrite the basic <span class="caps">GUI</span> controls. That failed my &#8220;nice and straight-forward&#8221; requirement.</p>
-<p>However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school <span class="caps">CRT</span> display. It looked great, except the <span class="caps">GUI</span> was just rendered on top of everything &#8211; as per usual &#8211; with no warping. Since the <span class="caps">GUI</span> was non-interactive, there was no down-side to using the approach I had come up with before to include the <span class="caps">GUI</span> in the full-screen effect rendering.</p>
-<p>It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &#8211; rendering the <span class="caps">GUI</span> on a plane, rendered always on top, in front of the Oculus cameras.</p>
-<p>So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &#8211; at least twice &#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.</p>
-<p>The trick therefore becomes:
-<script src='https://gist.github.com/5984299.js?file='></script><div><noscript><pre><code></code></pre></noscript></div></p>
-<p>Remember that this is not immediately useful if you need interactive <span class="caps">GUI</span> as this would require work to handle input gathered from the regular UnityEngine.Input <span class="caps">API</span>. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.</p>
-<p>I hope you find it useful!</p></p>
+					<p class="post"><p>Earlier this week ReView went live on the Unity Asset Store. It is a small tool I wrote, extending the Unity editor with the ability to define separate window layouts for edit and play mode.</p>
+<p>I was basically getting tired of adjusting layouts all the time &#8211; with the built-in &#8220;maximise on play&#8221; basically only being useful for demoing.</p>
+<p>So I wrote ReView, letting you define two window layouts, just like you always do, and then append &#8220;-edit&#8221; to one and &#8220;-play&#8221; to another &#8211; automatically switching to the counterpart when you enter or exit playmode.</p>
+<ul>
+	<li><a href="/tools">More info and video</a></li>
+	<li><a href="http://u3d.as/5B5">ReView on the Asset Store</a></li>
+</ul></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2013/10/11/ReView/" class="titleSmall">ReView</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -140,10 +135,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2013/07/17/OnRenderTextureGUI/" class="titleSmall">OnRenderTextureGUI</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								

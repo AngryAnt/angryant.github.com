@@ -6,6 +6,19 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>ReView</title>
+				<description>&lt;p&gt;Earlier this week ReView went live on the Unity Asset Store. It is a small tool I wrote, extending the Unity editor with the ability to define separate window layouts for edit and play mode.&lt;/p&gt;
+&lt;p&gt;I was basically getting tired of adjusting layouts all the time &amp;#8211; with the built-in &amp;#8220;maximise on play&amp;#8221; basically only being useful for demoing.&lt;/p&gt;
+&lt;p&gt;So I wrote ReView, letting you define two window layouts, just like you always do, and then append &amp;#8220;-edit&amp;#8221; to one and &amp;#8220;-play&amp;#8221; to another &amp;#8211; automatically switching to the counterpart when you enter or exit playmode.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;/tools&quot;&gt;More info and video&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://u3d.as/5B5&quot;&gt;ReView on the Asset Store&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>2013-10-11 00:00:00 +0200</published>
+				<link>http://angryant.com/2013/10/11/ReView/</link>
+			</item>
+		
+			<item>
 				<title>Behave 2.1</title>
 				<description>&lt;p&gt;A little over a month ago &lt;a href=&quot;http://angryant.com/2013/08/25/Behave-2-0/&quot;&gt;I shipped Behave 2&lt;/a&gt; after having spent quite a while rewiring a lot of the core of the project. Today you get to see even more benefit of this work as already I am ready with version 2.1.&lt;/p&gt;
 &lt;p&gt;I would like to take this opportunity to thank the members of the AngryAnt community who have been a great help in identifying bugs I had not found and properly corner those I had.&lt;/p&gt;
@@ -662,16 +675,6 @@ void ReadBroadcasts ()
 &lt;p&gt;Until next time!&lt;/p&gt;</description>
 				<published>2013-05-21 00:00:00 +0200</published>
 				<link>http://angryant.com/2013/05/21/Talks-and-progress/</link>
-			</item>
-		
-			<item>
-				<title>Five years of Unity expertise looking for contracts</title>
-				<description>&lt;p&gt;On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &amp;#8211; doing consulting / contract work.&lt;/p&gt;
-&lt;p&gt;I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.&lt;/p&gt;
-&lt;p&gt;So I am available for contracts from July 1st, offering up among other things, my five years of Unity expertise. For more details on the things that I do there is this site and my &lt;a href=&quot;http://eej.dk&quot;&gt;LinkedIn profile&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;And, well, that&amp;#8217;s pretty much it. Want to play? Please use the handy contact form I set up: &lt;a href=&quot;/contracting&quot;&gt;Handy contact form&lt;/a&gt;.&lt;/p&gt;</description>
-				<published>2013-05-14 00:00:00 +0200</published>
-				<link>http://angryant.com/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/</link>
 			</item>
 		
 	</channel>
