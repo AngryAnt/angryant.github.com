@@ -8,7 +8,7 @@
 			
 			<item>
 				<title>Unity and .net assemblies</title>
-				<description>&lt;p&gt;Since I started making middleware for Unity in early 2008, I have been working with Unity and .net assemblies. Since then, I have had many opportunities to juggle the two in many different contexts, so I figured a sort of summary of what I learned would make sense.&lt;/p&gt;
+				<description>&lt;p&gt;Since I started making middleware for Unity in early 2008, I have been working with Unity and .net assemblies. I have in this time had many opportunities to juggle the two in many different contexts, so I figured a sort of summary of what I learned would make sense.&lt;/p&gt;
 &lt;p&gt;Why not start off by setting a few facts straight, eh?&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;Aside from the extension and a header, .net assemblies have little to do with Windows Dynamic Link Libraries.
