@@ -6,6 +6,82 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Unity and .net assemblies</title>
+				<description>&lt;p&gt;Since I started making middleware for Unity in early 2008, I have been working with Unity and .net assemblies. Since then, I have had many opportunities to juggle the two in many different contexts, so I figured a sort of summary of what I learned would make sense.&lt;/p&gt;
+&lt;p&gt;Why not start off by setting a few facts straight, eh?&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Aside from the extension and a header, .net assemblies have little to do with Windows Dynamic Link Libraries.
+	&lt;ul&gt;
+		&lt;li&gt;Windows DLLs contain binary code, usually with a very simple interface, while .net assemblies contain .net bytecode (or &lt;span class=&quot;caps&quot;&gt;CIL&lt;/span&gt;).&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Unity pro is not required to use .net assemblies.
+	&lt;ul&gt;
+		&lt;li&gt;Binary plugins require Unity pro (at time of writing) and must be placed in Assets/Plugins. However .net assemblies are just bytecode &amp;#8211; just like what Unity turns your scripts into, so none of these requirements apply.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;.net assemblies run on all platforms &amp;#8211; including webplayer.
+	&lt;ul&gt;
+		&lt;li&gt;Again, as we are talking about bytecode which is fed directly to the mono runtime &amp;#8211; like the compiled result of your scripts, the same rules go.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Distributing .net assemblies in stead of script files does not copy protect your code.
+	&lt;ul&gt;
+		&lt;li&gt;Since the mono runtime has to Just In Time compile your assembly to run on the current platform, the bytecode is quite verbose and while some information is lost, generally it is very easy to decompile and read .net assemblies.&lt;/li&gt;
+		&lt;li&gt;Remember that this is true for your script source in most project builds as well, since for most platforms Unity builds your scripts to .net assemblies.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Argh! But my kodes!&lt;/h1&gt;
+&lt;p&gt;I will not get into source protection too much, but generally I would not worry too much about it.&lt;/p&gt;
+&lt;p&gt;Source code in and of itself does not mean that someone can instantly copy and use parts of your work. It takes actual skill and time investment to make use of it, integrated in a different setup from what it was originally designed for. In the end it is my opinion that it would not be worth it compared to doing the same work from scratch.&lt;/p&gt;
+&lt;p&gt;Consider that the entire source of Half Life 2 was very publicly leaked shortly before its originally scheduled release and how we are all now drowning in games based on it.&lt;/p&gt;
+&lt;p&gt;If you have client-side security measures which you would like to protect &amp;#8211; like in-app purchases or other anti-cheat measures, you may indeed want to consider splitting out and encrypting part of this logic as well as applying some measure of source obfuscation.&lt;/p&gt;
+&lt;p&gt;A word of caution: While source-level obfuscation is fine and usually sufficient, assembly-level obfuscation can be risky as it generally relies on bugs in the mono runtime in order to function. Bugs which might get fixed at any time &amp;#8211; at which point you will need to go back and revisit your security efforts.&lt;/p&gt;
+&lt;p&gt;And remember: Encryption and obfuscation is just about making it harder for people to do things you don&amp;#8217;t want them to. In the end this all has to be understood by processors and even binaries are routinely reverse engineered. The best security is gained by not making what you wish to protect available outside of hardware in your control.&lt;/p&gt;
+&lt;p&gt;For more information on protecting sensitive client-side information from tampering, see the Unite Asia 2013 &amp;#8220;Protecting Your Android Content&amp;#8221; talk by Erik Hemming.&lt;/p&gt;
+&lt;p&gt;Note that Unity does not distribute .net assemblies on all platforms. Some platforms do not run the mono &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler because reasons and for those Unity will in stead perform Ahead Of Time compilation on your code while building.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compilation basically means that in stead of relying on the &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler to at runtime load your bytecode when relevant and compile it for the specific hardware it is running on, the &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compiler will compile all your assembly to platform-specific binary right up front.&lt;/p&gt;
+&lt;p&gt;This means that your source code assemblies, any assemblies present in your project as well as the Unity engine assemblies are all jumbled into one binary. In most cases this should disincentivise tampering sufficiently.&lt;/p&gt;
+&lt;p&gt;At time of writing, Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compiling on iOS and the console platforms.&lt;/p&gt;
+&lt;h1&gt;What is the point then?&lt;/h1&gt;
+&lt;p&gt;Now that you know what assemblies are not, you might be wondering why you should be interested in them at all. And rightly so.&lt;/p&gt;
+&lt;p&gt;I think it is always healthy to have some understanding of what goes on in the lower layers of your technology stack, but most Unity developers will not need to know about .net assemblies.&lt;/p&gt;
+&lt;p&gt;However here are some reasons why they are really cool:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;If you are distributing middleware, they allow you to significantly reduce your distribution footprint without compromising your development environment (one assembly vs. a bunch of script files).
+	&lt;ul&gt;
+		&lt;li&gt;Like their Windows cousins, .net assemblies allow embedded resources, which means you can literally put everything you need &amp;#8211; textures, audio, whatever &amp;#8211; inside one file.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Where &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; is available, new assembly can be loaded at runtime.
+	&lt;ul&gt;
+		&lt;li&gt;So what? So live patching baby!&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Since the &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler routinely loads bytecode from disk and compiles and executes it, there is nothing preventing you from having it load bytecode which was not included in your original build.&lt;/p&gt;
+&lt;p&gt;The class System.Reflection.Assembly lets you load in bytecode from a file or a byte array, after which you can use reflection to find and instantiate types, call functions and all that other good stuff on what is contained in the assembly.&lt;/p&gt;
+&lt;p&gt;Remember that since Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; and not &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; on some platforms, this functionality is not available everywhere.&lt;/p&gt;
+&lt;p&gt;For an example of loading in new assembly, see the code-in-asset-bundles example from the &amp;#8220;Unity Hacks&amp;#8221; talk available on the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; page (source included).&lt;/p&gt;
+&lt;p&gt;A word of caution: If you plan on employing remote patching, make sure to at least sign your transfers in order to avoid man in the middle injection attacks.&lt;/p&gt;
+&lt;h1&gt;Wohoo! Assemble all of the things!&lt;/h1&gt;
+&lt;p&gt;This is all great, but how do you get started building assemblies for all them things? Well, dear reader, there are different approaches:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;If you are already set up with Visual Studio or Mono Develop, you can simply create a new project for a .net assembly using the project creation wizard. In order to access Unity types, simply add the UnityEngine.dll (and if necessary the UnityEditor.dll) assemblies to the project references and off you go.&lt;/li&gt;
+	&lt;li&gt;Should you be of a different persuasion and if you are not one to shy away from a terminal window, you can use the the gmcs binary as distributed with Unity or the mono &lt;span class=&quot;caps&quot;&gt;SDK&lt;/span&gt; to build your assembly by command-line.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Either of these will produce a .dll file with all of your kodes (and potentially resources). Simply drop it anywhere in your assets folder to gain access to the contained classes. The same compile order rules which apply to scripts, also hold true for assemblies.&lt;/p&gt;
+&lt;p&gt;Any public ScriptableObject or MonoBehaviour derived classes will appear as children of the assembly asset. Simply click the folding widget next to the asset in order to view and be able to drag-drop them.&lt;/p&gt;
+&lt;p&gt;Ah and if you were too lazy to check out the Unity Hacks talk (you really should, it is full of useful snippets), the trick for putting code in asset bundles is to compile the scripts to an assembly rather than letting Unity compile them and then save the assembly in your assets folder with the .bytes extension rather than .dll.&lt;/p&gt;
+&lt;p&gt;This makes Unity import the assembly as a TextAsset which is not addressed by Unitys compiler and can be included in asset bundles. At runtime, the bytes property of the asset reference is then passed to the Assembly constructor as described earlier.&lt;/p&gt;
+&lt;h1&gt;And the catch?&lt;/h1&gt;
+&lt;p&gt;Given that we are reaching the end of this article, that would mean it is high time for some dream bursting. This all sounds very easy and optimal to work with, but of-course it is not that simple.&lt;/p&gt;
+&lt;p&gt;While Unity makes it fairly straight forward to debug your scripts using MonoDevelop, it will by default do absolutely nothing to help you with your assemblies.&lt;/p&gt;
+&lt;p&gt;To help it on its way, you need to first build your assemblies for debug and secondly copy the generated [AssemblyName].mdb file to your assets folder along side the .dll file.&lt;/p&gt;
+&lt;p&gt;If you went ahead and looked for the mdb file right as I had ended the above paragraph, you would stand some chance of not finding it. Should you be on Windows, a pdb file rather than an mdb is generated and it is absolutely useless to the Unity debugging runtime.&lt;/p&gt;
+&lt;p&gt;Should you be stuck with a pdb file, you will need to use the pdb2mdb command-line tool as distributed with the Unity mono runtime or the mono &lt;span class=&quot;caps&quot;&gt;SDK&lt;/span&gt;. However running this command by hand every time you need to debug gets old really fast, so I recommend adding it in as a post-build step on your MonoDevelop or VisualStudio project.&lt;/p&gt;
+&lt;p&gt;For more information on debugging assemblies in Unity and indeed general use of assemblies in Unity, see this excellent article in the Unity documentation: &lt;a href=&quot;http://docs.unity3d.com/Documentation/Manual/UsingDLL.html&quot;&gt;Using Mono DLLs in a Unity Project&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;And that is all, folks. I hope you find it useful!&lt;/p&gt;</description>
+				<published>2014-01-03 00:00:00 +0100</published>
+				<link>http://angryant.com/2014/01/03/Unity-and-net-assemblies/</link>
+			</item>
+		
+			<item>
 				<title>Behave 2.2</title>
 				<description>&lt;p&gt;It is finally here! Sorry about this release taking a bit longer than the prior ones. I have experienced the very luxurious &amp;#8220;problem&amp;#8221; of &lt;a href=&quot;/work/&quot;&gt;having lots to do&lt;/a&gt;. The last contract of the year finished this Friday though, so here we are: 2.2 :)&lt;/p&gt;
 &lt;h2&gt;Contents&lt;/h2&gt;
@@ -775,119 +851,6 @@ Pre-release:
 &lt;p&gt;Find link to video, presentation and examples in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section.&lt;/p&gt;</description>
 				<published>2013-07-05 00:00:00 +0200</published>
 				<link>http://angryant.com/2013/07/05/Unite-13-video-Unity-Hacks-available/</link>
-			</item>
-		
-			<item>
-				<title>The implicit local network interface</title>
-				<description>&lt;p&gt;I foolishly promised I would resume my posting of tech stuff on this blog, so I suppose I better own up to that.&lt;/p&gt;
-&lt;h1&gt;Story time&lt;/h1&gt;
-&lt;p&gt;You are playing some amazingly addictive game on your iOS device when commuting home. Let&amp;#8217;s say it&amp;#8217;s a Mario clone.&lt;/p&gt;
-&lt;p&gt;As you arrive home, you want more of this gaming goodness. So you switch on your television and use AirPlay to continue the game on your TV, controls on your iOS device, via your Apple TV or other AirServer hosting, TV connected, device.&lt;/p&gt;
-&lt;p&gt;Now your good friend Bob comes by (you forgot to lock the door, so he walks straight in). Obviously this game is too good to put down, so in stead you instruct Bob to buy a copy of it. Bob pulls out his android phone, jumps on your wifi, downloads the game and starts playing.&lt;/p&gt;
-&lt;p&gt;At one point in Bobs game he sees this funky spinning portal in the level and opts to tap it. And poof! Bobs character is sucked into your game on the TV.&lt;/p&gt;
-&lt;p&gt;Unfortunately Bob is a terrible player of this game and ruins your score, but it was pretty cool to try this game in multiplayer mode.&lt;/p&gt;
-&lt;h1&gt;Do want!&lt;/h1&gt;
-&lt;p&gt;The above scenario may sound complex to set up, but like so many other cases, it is just a nice combination of simpler bits. So let&amp;#8217;s look into how we enable something like this in our (Unity based) game.&lt;/p&gt;
-&lt;p&gt;First up, AirPlay support was recently added to Unity and I posted &lt;a href=&quot;https://gist.github.com/AngryAnt/5160204&quot;&gt;a gist&lt;/a&gt; to help people get started with it.&lt;/p&gt;
-&lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
-&lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
-&lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:
-&lt;script src=&#39;https://gist.github.com/5730611.js?file=Broadcaster.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
-// Setup broadcast of hosting service
-{
-	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
-&lt;p&gt;try
-	{
-		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (
-			SocketOptionLevel.IP,
-			SocketOptionName.AddMembership,
-			new MulticastOption (broadcastGroup)
-		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.SetSocketOption (
-			SocketOptionLevel.IP,
-			SocketOptionName.MulticastTimeToLive,
-			1
-		);&lt;/p&gt;
-&lt;p&gt;m_BroadcastSocket.Connect (new IPEndPoint (broadcastGroup, kBroadcastPort));
-	}
-	catch (Exception e)
-	{
-		Debug.LogError (string.Format (
-			&amp;quot;Exception when attempting to set up service broadcast ({0}:{1}): {2}&amp;quot;,
-			kBroadcastGroup,
-			kBroadcastPort,
-			e
-		));&lt;/p&gt;
-&lt;p&gt;return false;
-	}&lt;/p&gt;
-&lt;p&gt;m_BroadcastTimer = new Timer (kBroadcastDelay);&lt;/p&gt;
-&lt;p&gt;m_BroadcastTimer.Elapsed += new ElapsedEventHandler (
-		(object s, ElapsedEventArgs e) =&amp;gt;
-		{
-			m_BroadcastSocket.Send (GetBroadcastBytes ());
-		}
-	);
-	m_BroadcastTimer.Enabled = true;
-}&lt;/p&gt;
-&lt;p&gt;return true;&lt;/p&gt;
-&lt;p&gt;// &amp;#8230;&lt;/p&gt;
-&lt;p&gt;byte[] GetBroadcastBytes ()
-{
-	/*
-		Return byte array containing IP and port of our host socket plus meta data
-		such as current level and perhaps location (for portal placement)
-	*/
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;Let&amp;#8217;s go over the interface for this gist:&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;m_BroadcastTimer&lt;/strong&gt; and &lt;strong&gt;kBroadcastDelay&lt;/strong&gt; control how often &lt;strong&gt;m_BroadcastSocket&lt;/strong&gt; will send out the broadcast message generated by &lt;strong&gt;GetBroadcastBytes&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/5730611.js?file=Seeker.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_SeekerSocket == null)
-{
-	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-	try
-	{
-		m_SeekerSocket.Bind (new IPEndPoint (IPAddress.Any, kBroadcastPort));
-
-		IPAddress broadcastGroup = IPAddress.Parse (kBroadcastGroup);
-
-		m_SeekerSocket.SetSocketOption (
-			SocketOptionLevel.IP,
-			SocketOptionName.AddMembership,
-			new MulticastOption (broadcastGroup, IPAddress.Any)
-		);
-
-		ReadBroadcasts ();
-	}
-	catch (Exception e)
-	{
-		Debug.LogError (string.Format (
-			&amp;amp;quot;Exception when attempting to set up service listener ({0}:{1}): {2}&amp;amp;quot;,
-			kBroadcastGroup,
-			kBroadcastPort,
-			e
-		));
-
-		m_SeekerSocket.Dispose ();
-	}
-}
-
-// ...
-
-void ReadBroadcasts ()
-{
-	/*
-		Now set up periodic or event-driven reading from m_SeekerSocket, parsing
-		broadcast packages containing IP, port and meta data of locally available games
-	*/
-}&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;p&gt;Like with the broadcaster, &lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are used with the same values to make sure we are listening on the same multi-cast setup as the broadcaster.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;m_SeekerSocket&lt;/strong&gt; is the socket on which broadcasts will be received &amp;#8211; just like you would on any other reception socket.&lt;/p&gt;
-&lt;p&gt;And that is all there is to it. I hope you found it useful.&lt;/p&gt;</description>
-				<published>2013-06-07 00:00:00 +0200</published>
-				<link>http://angryant.com/2013/06/07/The-implicit-local-network-interface/</link>
 			</item>
 		
 	</channel>

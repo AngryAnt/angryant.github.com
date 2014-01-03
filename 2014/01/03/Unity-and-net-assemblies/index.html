@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - AIgameDev master class video now online - </title>
+		<title>AngryAnt - Unity and .net assemblies - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,7 +29,7 @@
 		<div id="site">
 			<div id="sidebar">
 				<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">AIgameDev master class video now online</div>
+<div id="subtitle">Unity and .net assemblies</div>
 
 	
 		<a href="/">Home</a>
@@ -81,24 +81,90 @@
 
 			</div>
 			<div id="container">
-				<span class="date">25 Jan 2011</span>
-				<h1 id="Top">AIgameDev master class video now online</h1>
+				<span class="date">03 Jan 2014</span>
+				<h1 id="Top">Unity and .net assemblies</h1>
 				
 				<div id="content">
-					<p class="post"><p>For those of you who didn&#8217;t have a chance to dial in live, but would still like to view the master class I did for AIgameDev last year: The video recording is now available here:</p>
-<p><a href="http://aigamedev.com/premium/masterclass/unity-behave/">http://aigamedev.com/premium/masterclass/unity-behave/</a></p></p>
+					<p class="post"><p>Since I started making middleware for Unity in early 2008, I have been working with Unity and .net assemblies. Since then, I have had many opportunities to juggle the two in many different contexts, so I figured a sort of summary of what I learned would make sense.</p>
+<p>Why not start off by setting a few facts straight, eh?</p>
+<ul>
+	<li>Aside from the extension and a header, .net assemblies have little to do with Windows Dynamic Link Libraries.
+	<ul>
+		<li>Windows DLLs contain binary code, usually with a very simple interface, while .net assemblies contain .net bytecode (or <span class="caps">CIL</span>).</li>
+	</ul></li>
+	<li>Unity pro is not required to use .net assemblies.
+	<ul>
+		<li>Binary plugins require Unity pro (at time of writing) and must be placed in Assets/Plugins. However .net assemblies are just bytecode &#8211; just like what Unity turns your scripts into, so none of these requirements apply.</li>
+	</ul></li>
+	<li>.net assemblies run on all platforms &#8211; including webplayer.
+	<ul>
+		<li>Again, as we are talking about bytecode which is fed directly to the mono runtime &#8211; like the compiled result of your scripts, the same rules go.</li>
+	</ul></li>
+	<li>Distributing .net assemblies in stead of script files does not copy protect your code.
+	<ul>
+		<li>Since the mono runtime has to Just In Time compile your assembly to run on the current platform, the bytecode is quite verbose and while some information is lost, generally it is very easy to decompile and read .net assemblies.</li>
+		<li>Remember that this is true for your script source in most project builds as well, since for most platforms Unity builds your scripts to .net assemblies.</li>
+	</ul></li>
+</ul>
+<h1>Argh! But my kodes!</h1>
+<p>I will not get into source protection too much, but generally I would not worry too much about it.</p>
+<p>Source code in and of itself does not mean that someone can instantly copy and use parts of your work. It takes actual skill and time investment to make use of it, integrated in a different setup from what it was originally designed for. In the end it is my opinion that it would not be worth it compared to doing the same work from scratch.</p>
+<p>Consider that the entire source of Half Life 2 was very publicly leaked shortly before its originally scheduled release and how we are all now drowning in games based on it.</p>
+<p>If you have client-side security measures which you would like to protect &#8211; like in-app purchases or other anti-cheat measures, you may indeed want to consider splitting out and encrypting part of this logic as well as applying some measure of source obfuscation.</p>
+<p>A word of caution: While source-level obfuscation is fine and usually sufficient, assembly-level obfuscation can be risky as it generally relies on bugs in the mono runtime in order to function. Bugs which might get fixed at any time &#8211; at which point you will need to go back and revisit your security efforts.</p>
+<p>And remember: Encryption and obfuscation is just about making it harder for people to do things you don&#8217;t want them to. In the end this all has to be understood by processors and even binaries are routinely reverse engineered. The best security is gained by not making what you wish to protect available outside of hardware in your control.</p>
+<p>For more information on protecting sensitive client-side information from tampering, see the Unite Asia 2013 &#8220;Protecting Your Android Content&#8221; talk by Erik Hemming.</p>
+<p>Note that Unity does not distribute .net assemblies on all platforms. Some platforms do not run the mono <span class="caps">JIT</span> compiler because reasons and for those Unity will in stead perform Ahead Of Time compilation on your code while building.</p>
+<p><span class="caps">AOT</span> compilation basically means that in stead of relying on the <span class="caps">JIT</span> compiler to at runtime load your bytecode when relevant and compile it for the specific hardware it is running on, the <span class="caps">AOT</span> compiler will compile all your assembly to platform-specific binary right up front.</p>
+<p>This means that your source code assemblies, any assemblies present in your project as well as the Unity engine assemblies are all jumbled into one binary. In most cases this should disincentivise tampering sufficiently.</p>
+<p>At time of writing, Unity employs <span class="caps">AOT</span> compiling on iOS and the console platforms.</p>
+<h1>What is the point then?</h1>
+<p>Now that you know what assemblies are not, you might be wondering why you should be interested in them at all. And rightly so.</p>
+<p>I think it is always healthy to have some understanding of what goes on in the lower layers of your technology stack, but most Unity developers will not need to know about .net assemblies.</p>
+<p>However here are some reasons why they are really cool:</p>
+<ul>
+	<li>If you are distributing middleware, they allow you to significantly reduce your distribution footprint without compromising your development environment (one assembly vs. a bunch of script files).
+	<ul>
+		<li>Like their Windows cousins, .net assemblies allow embedded resources, which means you can literally put everything you need &#8211; textures, audio, whatever &#8211; inside one file.</li>
+	</ul></li>
+	<li>Where <span class="caps">JIT</span> is available, new assembly can be loaded at runtime.
+	<ul>
+		<li>So what? So live patching baby!</li>
+	</ul></li>
+</ul>
+<p>Since the <span class="caps">JIT</span> compiler routinely loads bytecode from disk and compiles and executes it, there is nothing preventing you from having it load bytecode which was not included in your original build.</p>
+<p>The class System.Reflection.Assembly lets you load in bytecode from a file or a byte array, after which you can use reflection to find and instantiate types, call functions and all that other good stuff on what is contained in the assembly.</p>
+<p>Remember that since Unity employs <span class="caps">AOT</span> and not <span class="caps">JIT</span> on some platforms, this functionality is not available everywhere.</p>
+<p>For an example of loading in new assembly, see the code-in-asset-bundles example from the &#8220;Unity Hacks&#8221; talk available on the <a href="/videos">videos</a> page (source included).</p>
+<p>A word of caution: If you plan on employing remote patching, make sure to at least sign your transfers in order to avoid man in the middle injection attacks.</p>
+<h1>Wohoo! Assemble all of the things!</h1>
+<p>This is all great, but how do you get started building assemblies for all them things? Well, dear reader, there are different approaches:</p>
+<ul>
+	<li>If you are already set up with Visual Studio or Mono Develop, you can simply create a new project for a .net assembly using the project creation wizard. In order to access Unity types, simply add the UnityEngine.dll (and if necessary the UnityEditor.dll) assemblies to the project references and off you go.</li>
+	<li>Should you be of a different persuasion and if you are not one to shy away from a terminal window, you can use the the gmcs binary as distributed with Unity or the mono <span class="caps">SDK</span> to build your assembly by command-line.</li>
+</ul>
+<p>Either of these will produce a .dll file with all of your kodes (and potentially resources). Simply drop it anywhere in your assets folder to gain access to the contained classes. The same compile order rules which apply to scripts, also hold true for assemblies.</p>
+<p>Any public ScriptableObject or MonoBehaviour derived classes will appear as children of the assembly asset. Simply click the folding widget next to the asset in order to view and be able to drag-drop them.</p>
+<p>Ah and if you were too lazy to check out the Unity Hacks talk (you really should, it is full of useful snippets), the trick for putting code in asset bundles is to compile the scripts to an assembly rather than letting Unity compile them and then save the assembly in your assets folder with the .bytes extension rather than .dll.</p>
+<p>This makes Unity import the assembly as a TextAsset which is not addressed by Unitys compiler and can be included in asset bundles. At runtime, the bytes property of the asset reference is then passed to the Assembly constructor as described earlier.</p>
+<h1>And the catch?</h1>
+<p>Given that we are reaching the end of this article, that would mean it is high time for some dream bursting. This all sounds very easy and optimal to work with, but of-course it is not that simple.</p>
+<p>While Unity makes it fairly straight forward to debug your scripts using MonoDevelop, it will by default do absolutely nothing to help you with your assemblies.</p>
+<p>To help it on its way, you need to first build your assemblies for debug and secondly copy the generated [AssemblyName].mdb file to your assets folder along side the .dll file.</p>
+<p>If you went ahead and looked for the mdb file right as I had ended the above paragraph, you would stand some chance of not finding it. Should you be on Windows, a pdb file rather than an mdb is generated and it is absolutely useless to the Unity debugging runtime.</p>
+<p>Should you be stuck with a pdb file, you will need to use the pdb2mdb command-line tool as distributed with the Unity mono runtime or the mono <span class="caps">SDK</span>. However running this command by hand every time you need to debug gets old really fast, so I recommend adding it in as a post-build step on your MonoDevelop or VisualStudio project.</p>
+<p>For more information on debugging assemblies in Unity and indeed general use of assemblies in Unity, see this excellent article in the Unity documentation: <a href="http://docs.unity3d.com/Documentation/Manual/UsingDLL.html">Using Mono DLLs in a Unity Project</a></p>
+<p>And that is all, folks. I hope you find it useful!</p></p>
 					<p>&nbsp;</p>
 
 					<div id="feed">
 						<div id="newer">
 							
 								
-									
-										<h1>Newer posts:</h1>
+									</div>
+									<div id="older">
+										<h1>Older posts:</h1>
 										<p style="max-height: 1pt">&nbsp;</p>
-									
-									<a href="/2014/01/03/Unity-and-net-assemblies/" class="titleSmall">Unity and .net assemblies</a>
-									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
@@ -282,10 +348,9 @@
 								
 							
 								
-									</div>
-									<div id="older">
-										<h1>Older posts:</h1>
-										<p style="max-height: 1pt">&nbsp;</p>
+									
+									<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a>
+									<p style="max-height: 1pt">&nbsp;</p>
 								
 							
 								
