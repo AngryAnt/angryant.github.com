@@ -35,13 +35,17 @@
 	}
 	#sidebar #external
 	{
+		width: 180px;
 		padding-top: 10pt;
 		clear: both;
+		float: none;
 	}
 	#sidebar #external a
 	{
 		margin-left: 0pt;
 		margin-top: 5pt;
+		margin-right: 5pt;
+		clear: none;
 	}
 	#sidebar .comment
 	{
@@ -79,6 +83,11 @@
 	#feed
 	{
 		top: 140px;
+	}
+
+	#sidebar #availability
+	{
+		padding-top: 12pt;
 	}
 }
 
@@ -161,6 +170,16 @@
 	{
 		top: 260px;
 	}
+	#sidebar #availability
+	{
+		position: absolute;
+		top: 60px;
+		width: 570px;
+	}
+	#sidebar #availability a
+	{
+		float: right;
+	}
 }
 
 .post
@@ -234,4 +253,28 @@ html, body
 	margin-top: -340px;
 	width: 600px;
 	height: 340px;
+}
+
+#sidebar #availability
+{
+	font-size: 8pt;
+	color: black;
+	clear: both;
+	float: none;
+}
+
+#sidebar #availability #available
+{
+	font-weight: bold;
+}
+
+#sidebar #availability #unavailable
+{
+	font-weight: normal;
+}
+
+#sidebar #availability a
+{
+	padding: 0pt;
+	margin: 0pt;
 }
