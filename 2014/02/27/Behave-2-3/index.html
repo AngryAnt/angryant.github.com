@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 2.1 - </title>
+		<title>AngryAnt - Behave 2.3 - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Behave 2.1</div>
+<div id="subtitle">Behave 2.3</div>
 
 	
 		<a href="/">Home</a>
@@ -83,30 +83,92 @@
 
 			</div>
 			<div id="container">
-				<span class="date">06 Oct 2013</span>
-				<h1 id="Top">Behave 2.1</h1>
+				<span class="date">27 Feb 2014</span>
+				<h1 id="Top">Behave 2.3</h1>
 				
 				<div id="content">
-					<div class="post"><p>A little over a month ago <a href="http://angryant.com/2013/08/25/Behave-2-0/">I shipped Behave 2</a> after having spent quite a while rewiring a lot of the core of the project. Today you get to see even more benefit of this work as already I am ready with version 2.1.</p>
-<p>I would like to take this opportunity to thank the members of the AngryAnt community who have been a great help in identifying bugs I had not found and properly corner those I had.</p>
+					<div class="post"><p>In good time for <span class="caps">GDC</span>, I present version 2.3 of Behave. Not exactly the rapid January release I had hoped for &#8211; admittedly I got a bit carried away. However that just means more goodies for everyone :)</p>
 <h2>Contents</h2>
-<p><img src="/resources/posts/2013-10-06-Behave-2-1/Parameter.png" alt="" />
-While the full changelist will follow the body of this post as per usual, I would still like to draw out a few of the main changes in 2.1:</p>
+<p>Highlights from the changelist below:</p>
 <ul>
-	<li>Auto complete on contexts, action names and string parameters makes for faster editing and helps guard against typos.</li>
-	<li>Partial library export and import-to-library makes moving trees between projects a breeze.</li>
-	<li>Parameterised trees increase tree re-usability even more by exposing select node settings as tree parameters, tweak-able per reference.</li>
+	<li>Great new behaviour for Repeaters and decorator components in general.</li>
+	<li>Mandatory contexts.</li>
+	<li>Useful runtime <span class="caps">API</span> tweaks.</li>
+	<li>A good, thick coat of editor polish.</li>
 </ul>
+<p>A word of caution on the new instant repeater: It <strong>will</strong> very easily send you into an infinite loop if you are not watching out. Just in case you by accident set one up, the compiler will warn about this potential scenario.</p>
+<p>For this release, the AngryAnt community has again provided great bug reports and many suggestions for changes and additions. Thanks! I hope you enjoy this release &#8211; do let me know in either case.</p>
 <h2>Onwards</h2>
-<p>While 2.1 brings great additions to the solid feature set of Behave 2, I am far from done.</p>
-<p>I realise that many currently still on the fence with regards to upgrading from 1.x have asked for more in terms of examples and demos and I will do my best to get to that as soon as possible.</p>
-<p>As always, I greatly appreciate any feedback you might have.</p>
+<p>As noted in the release notes, a good deal of time was spent refactoring while working on this release. This puts me on a good path for some exciting additions later on.</p>
+<p>However with <span class="caps">GDC</span> right around the corner, I will likely have to reduce my velocity on Behave a bit. So let&#8217;s keep this new stuff as a surprise for later. No need for letting out all the spoilers now, right?</p>
 <ul>
 	<li><a href="http://u3d.as/5hA">Behave 2 for Unity on the asset store</a>.</li>
 	<li><a href="/behave/">Project information</a>.</li>
 </ul>
 <pre>
 Changelist:
+
+
+2.3:
+ - Added support for instant repeaters.
+ - Added support for mandatory contexts.
+ - Added optional target parameter to Tree.ResetForwards.
+ - Added Tree.TickWrapping method.
+ - Added debugger auto-launch settings to library build options.
+ - Added home screen - shown on launch or via the Help menu, full of resources.
+ - Behavioural change: Decorators no longer forward the instant flag of their child node.
+ - Behaviour of decorators receiving a Running signal from their control connection is now defined.
+ - Dependencies now shipped as separate (replaceable) files for minimal project impact.
+ - Editor polish.
+     - Added support for running multiple editor debugging instances on one machine.
+     - Added focus-follow for debugger and canvas.
+     - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
+     - Drag connection to occupied input slot to replace.
+     - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
+     - "Last edited library" now tracked per project.
+     - Last selected tree is now also restored between sessions and playmode transitions.
+     - A bunch of minor adjustments and improvements.
+     - Performance + memory + disk space optimisations.
+     - Minor bugfixes.
+ - New documentation layout and enhancements (already released as available).
+ - Reshuffling of code to make way for exciting new things down the road.
+
+
+2.2.2:
+ - Addressed protobuf issue causing Parallel component completion setting to not get stored correctly.
+
+
+2.2.1:
+ - Fixed issue causing parallel components to fail compilation.
+
+
+2.2:
+ - Behavioural change: Support for multiple different action handler signatures is discontinued effective immediately.
+    - Generated agent blueprint as well as accepted reflected signatures are now only:
+        - public BehaveResult [Tick/Init][Name]Action (Tree sender);
+        - public void Reset[Name]Action (Tree sender);
+ - Added Tree class accessors - all valid only during an active init/tick/reset handler call:
+    - string ActiveStringParameter
+    - float ActiveFloatParameter
+    - IAgent ActiveAgent
+    - object ActiveData
+ - Rather than waiting for the Unity bugfix, the built-in compiler API is now bypassed in favour of direct compiler binary execution.
+    - An additional system-level mono SDK install is no longer needed to work around this Unity bug.
+ - Tree.SetForward now returns boolean success value rather than logging error when passed unused action.
+ - Full-library export now also available from the library settings in stead of menu-only access.
+ - Even more UI polish: Better word-wrap, more contrasts for emphasis, instant flag hidden in unaffected scenarios and much more.
+ - "Form new tree" nicely moves the new subtree up around the root socket rather than retaining the old position.
+ - Default frame-rate of DebugUpdater now set to 20 fps rather than every frame. Gun safety and all that.
+ - Massive codegen size save for larger libraries - from optimisation of tree-agent introspection codegen. Compile-time win.
+ - More rigid parameter evaluation (remove needless occasional extra codegen).
+ - Fixed copy and duplication procedures incorrectly not copying parameter values.
+ - Force Unity to write serialised data before compiling.
+
+
+2.1.1:
+ - Fixed issue with tree paramterisation breaking debugger visualisation.
+
 
 2.1:
  - Added autocomplete on action names, string parameters and component contexts.
