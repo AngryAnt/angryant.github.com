@@ -6,6 +6,94 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Moving in Unity</title>
+				<description>&lt;p&gt;Moving something around on the screen in Unity is really not that hard. The point of this post is therefore not to introduce you to how this is accomplished, but rather to point out where you&amp;#8217;re doing it wrong&amp;#8482;.&lt;/p&gt;
+&lt;p&gt;Generally Unity moves objects using one of three systems:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Direct transform manipulation.&lt;/li&gt;
+	&lt;li&gt;Physics.&lt;/li&gt;
+	&lt;li&gt;Navigation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the end, movement is measured on transform updates. I make the distinction from the point of view of where you provide the input. Technically you could argue that animation should be up there as well, but I choose to lump that in with transform manipulation, since disabling the application of movement by the animation system has no other side effects.&lt;/p&gt;
+&lt;p&gt;As a side-note, since 4.3 it is possible to partially or completely disable having the animation system update the transform hierarchy.&lt;/p&gt;
+&lt;h1&gt;Transform&lt;/h1&gt;
+&lt;p&gt;So long as the goal is simply to move an object and nothing else, modifying the values of the transform component, or using its various useful methods to do so, is all you need.&lt;/p&gt;
+&lt;p&gt;This includes directly animating the transform via the animation window or by enabling animation root motion.&lt;/p&gt;
+&lt;p&gt;However chances are that your situation is more complex than this and you would do well to read on.&lt;/p&gt;
+&lt;h1&gt;Physics&lt;/h1&gt;
+&lt;p&gt;When your object in any way needs to affect and/or be affected by the physics simulation, you need to make some extra considerations. Simply slapping on a collider and calling it a day will ruin your next.&lt;/p&gt;
+&lt;p&gt;To properly participate as a dynamic part of the physics simulation, an object needs to have a rigidbody component attached somewhere in its transform hierarchy.&lt;/p&gt;
+&lt;p&gt;The physics system considers separate transform hierarchies as separate objects, so one (and only one) rigidbody component will mark the rest of its hierarchy as dynamic.&lt;/p&gt;
+&lt;p&gt;Multiple rigidbodies in the same hierarchy leads to undetermined behaviour (read: weirdnessness) &amp;#8211; the only exception being if those rigidbodies are connected by a joint &amp;#8211; thus making their behaviour again well defined.&lt;/p&gt;
+&lt;h2&gt;Kinematic&lt;/h2&gt;
+&lt;p&gt;&amp;#8220;But I don&amp;#8217;t need gravity or forces or all that other nonsense!&amp;#8221; &amp;#8211; be cool, that is what the &amp;#8220;kinematic&amp;#8221; switch is for. This basically tells the physics simulation that your object is dynamic, but you will take care of all its movement.&lt;/p&gt;
+&lt;p&gt;Kinematic rigidbodies will not be affected by forces or collisions, but will collide with non-kinematic rigidbodies, sending collision events and pushing them out of the way (assuming there are colliders present somewhere in the transform hierarchy of the object).&lt;/p&gt;
+&lt;p&gt;&amp;#8220;So why add the rigidbody in the first place? Things work just fine without!&amp;#8221; &amp;#8211; if you have Unity pro, I would direct your attention at the profiler as you move about &amp;#8211; if not, take my word for it that it is not a joyous sight.&lt;/p&gt;
+&lt;p&gt;Any object (unique transform hierarchy) with no rigidbody present is treated by the physics simulation as static. For optimal performance, all static colliders are baked into a static collision geometry, securing optimal performance when doing collision checks.&lt;/p&gt;
+&lt;p&gt;However every time one static collider (note that this has nothing to do with the static flags on the GameObject &amp;#8211; just the presence of absence of a rigidbody on the object in question) is moved, the whole static collision geometry is marked dirty and regenerated.&lt;/p&gt;
+&lt;p&gt;This is not a terribly costly operation, so moving pieces of level geometry from one position to another from time to time is fine. However moving a character of one or more static colliders around every frame will cost you.&lt;/p&gt;
+&lt;p&gt;Note that while moving by directly modifying the transform of a kinematic rigidbody is just fine, you will get better results for rapid movement by using the MovePosition and MoveRotation rigidbody functions.&lt;/p&gt;
+&lt;p&gt;The former will effectively &amp;#8220;teleport&amp;#8221; the physical object &amp;#8211; fine for short distances and minor rotations, but less so for longer moves. MoveRotation and -Position effectively &amp;#8220;drags&amp;#8221; the object from A to B.&lt;/p&gt;
+&lt;h2&gt;Kine-not-so-matic&lt;/h2&gt;
+&lt;p&gt;&amp;#8220;Ok, so maybe it would pretty useful if my character could walk into walls, get pushed by others and that sort of thing&amp;#8230;&amp;#8221; No problem. Disable the kinematic flag and start moving via the rigidbody component. If you wanted proper forces and all that, I&amp;#8217;m sure you&amp;#8217;re already all over the AddForce function and all that.&lt;/p&gt;
+&lt;p&gt;However if you still want strict control &amp;#8211; just with a touch of presence &amp;#8211; you should look at directly setting the velocity property of the rigidbody.&lt;/p&gt;
+&lt;p&gt;Given sideways and forward movement input, forming a velocity vector is easy. By setting the velocity of the rigidbody you add that information to the physics simulation as well as tell it to update the position of the object smoothly.&lt;/p&gt;
+&lt;p&gt;That includes pushes from other rigidbodies or pushbacks from static geometry. However directly setting the velocity will override any directional change and so momentum will remain unchanged.&lt;/p&gt;
+&lt;p&gt;Therefore consider factoring in some acceleration when building your target velocity vector &amp;#8211; for a more natural look after your character is pushed or makes an abrupt change of direction.&lt;/p&gt;
+&lt;h1&gt;Navigation&lt;/h1&gt;
+&lt;p&gt;Parallel to the physics simulation you find the navigation runtime. Similarly to how the rendered world model is defined by static and dynamic geometry and the physics world model is defined by static colliders and rigidbodies, the navigation world model is defined by interconnected navigation mesh and dynamic obstacles.&lt;/p&gt;
+&lt;p&gt;While the static physics geometry defines areas of no access, navigation mesh defines areas which &lt;strong&gt;are&lt;/strong&gt; navigable. This information is used for finding a valid path from point A to B, but more importantly it is used to constrain characters and inform them of their surroundings.&lt;/p&gt;
+&lt;p&gt;The physics simulation can be used for this as well and traditionally is. However the data covered by the physics system is vastly more complex and its ability to define traversable space is a side effect of its ability to define non-traversable space.&lt;/p&gt;
+&lt;p&gt;This is where you end up spending way too much time blocking off sections of scenery and later testing that there are indeed no holes in that. Navmeshes on the other hand define a surface on which characters of a given height and with a given radius can move.&lt;/p&gt;
+&lt;h2&gt;NavMeshAgent&lt;/h2&gt;
+&lt;p&gt;Similarly to the rigidbody component, the NavMeshAgent component wires an object to the navigation runtime. In stead of the single kinematic switch, however, the NavMeshAgent has separate updatePosition and updateRotation toggles.&lt;/p&gt;
+&lt;p&gt;To get things going, you can either set a path by one of the many accessors for that or directly set the velocity. Assuming that the NavMeshAgent is configured to update the position, this will start smoothly moving the object like with the rigidbody &amp;#8211; only this time constrained by the navigation meshes rather than collision geometry.&lt;/p&gt;
+&lt;p&gt;In addition to pathfinding and staying on the navigation mesh, the navigation runtime will also attempt to have the various NavMeshAgents avoid one-another by adjusting velocity based on the position and velocity of nearby dynamic obstacles and NavMeshAgents.&lt;/p&gt;
+&lt;p&gt;Avoidance can be completely tweaked though &amp;#8211; so that one NavMeshAgent can ignore it completely or itself be ignored or weigh different NavMeshAgents differently.&lt;/p&gt;
+&lt;h2&gt;Direct control&lt;/h2&gt;
+&lt;p&gt;&amp;#8220;Pathfinding? I just need to move this character around based on input.&amp;#8221; Sure, fine &amp;#8211; that is where you just go set the velocity of the NavMeshAgent rather than trying to set a path or destination for it.&lt;/p&gt;
+&lt;p&gt;Like with the rigidbody, this starts moving the NavMeshAgent smoothly and tells the runtime about its current velocity &amp;#8211; giving other agents a chance to avoid. Note that even if you do not let the NavMeshAgent directly control the position of your character, you should still feed the velocity back to it &amp;#8211; in order to keep the avoidance runtime up to date.&lt;/p&gt;
+&lt;h1&gt;Animation&lt;/h1&gt;
+&lt;p&gt;&amp;#8220;&lt;span class=&quot;caps&quot;&gt;WAT&lt;/span&gt;! You did not count this as one of the three ways of moving stuff!&amp;#8221; &amp;#8211; nop, quite right. However root motion is awesome, so let&amp;#8217;s briefly touch on how we tie that to the other systems for much greatness.&lt;/p&gt;
+&lt;p&gt;While most of what the animation system does is not of too much concern for your movement logic, one very useful feature is. By analysing animations on import, the surface movement relevant for those animations is calculated and later blended as the animations are blended.&lt;/p&gt;
+&lt;p&gt;By default the animation system will, with root motion enabled, move an animated object around by directly updating the transform position based on the root motion of the currently playing animation blend. Animation nicely synchronised with world movement.&lt;/p&gt;
+&lt;h2&gt;I&amp;#8217;ll root my own motion, thank you&lt;/h2&gt;
+&lt;p&gt;However while that looks mighty cool, it really isn&amp;#8217;t very considerate of your carefully crafted physics simulation or your neatly marked navigation runtime. Luckily it does give an in by allowing you to override the actual application of the root motion.&lt;/p&gt;
+&lt;p&gt;This is accomplished by, on the same game object as your animator component, attaching a script implementing the method OnAnimatorMove. Once that method is defined, the animation system will no longer directly apply root motion and in stead call this implementation post-evaluation.&lt;/p&gt;
+&lt;p&gt;In the implementation of the OnAnimatorMove callback, you could then update a target velocity vector and similarly rotation. And once we have desired movement in the form of a velocity vector, plenty of the earlier described scenarios become relevant.&lt;/p&gt;
+&lt;h2&gt;Most interactive niceness&lt;/h2&gt;
+&lt;p&gt;&amp;#8220;Great, I&amp;#8217;ll take one of each!&amp;#8221; Sure, no problem. Well&amp;#8230; It&amp;#8217;s not exactly straight forward, but it is indeed possible to combine all of these things to get something that is responsive, embedded in your simulations and looks great.&lt;/p&gt;
+&lt;p&gt;The chain of data goes a little something like this:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Player controlled characters:
+	&lt;ol&gt;
+		&lt;li&gt;Feed input to the animator, resulting in nicely blended animations and root motion.&lt;/li&gt;
+		&lt;li&gt;Generate a target velocity in OnAnimatorMove.&lt;/li&gt;
+		&lt;li&gt;Set velocity of NavMeshAgent (configured to not update position or rotation).&lt;/li&gt;
+		&lt;li&gt;Set velocity and rotation of non-kinematic rigidbody (properly constrained on rotation so it doesn&amp;#8217;t tip over).&lt;/li&gt;
+	&lt;/ol&gt;&lt;/li&gt;
+	&lt;li&gt;Non-player characters or indirectly controlled player characters:
+	&lt;ol&gt;
+		&lt;li&gt;Set destination or path of NavMeshAgent.&lt;/li&gt;
+		&lt;li&gt;Feed desiredVelocity of NavMeshAgent to animator.&lt;/li&gt;
+		&lt;li&gt;Repeat as for player controlled characters from 2.&lt;/li&gt;
+	&lt;/ol&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;What this setup does not give you is responsiveness to being bumped into. However velocity-wise this is not something your movement implementation should handle directly unless you are ok with breaking that nice root motion setup you just established.&lt;/p&gt;
+&lt;p&gt;In stead I would recommend using queries on the surrounding physics and navigation environment to inform the animation state machine of special conditions like &amp;#8220;player wants to go full speed, but there&amp;#8217;s a wall two units from here&amp;#8221; and handle slowing down, stopping and similar in there where the result will look good.&lt;/p&gt;
+&lt;p&gt;One simple trick is to do a navigation raycast along the forward vector of the moving transform for some amount of look-ahead distance and if a navigation mesh edge is hit and do a physics raycast further forward from a point slightly elevated from that edge hit point.&lt;/p&gt;
+&lt;p&gt;With that setup you can very simply gather information about where the character is headed &amp;#8211; if into a steep wall or perhaps to a ledge or obstacle which could be leapt.&lt;/p&gt;
+&lt;h1&gt;Unity Hacks&lt;/h1&gt;
+&lt;p&gt;Since apparently I lumped just about everything into that project, unsurprisingly the Unity Hacks project has some work on this form of wired up movement. Particularly the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Movement/Mover.cs&quot;&gt;Mover&lt;/a&gt; component attempts to create a system-agnostic movement interface as well as some simple movement on networked setups not covered here.&lt;/p&gt;
+&lt;p&gt;While not complete or in any way a final answer, I hope that with the information provided here, it turns out useful for you.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Movement/Mover.cs&quot;&gt;Mover.cs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>2014-03-07 00:00:00 +0100</published>
+				<link>http://angryant.com/2014/03/07/Moving-in-Unity/</link>
+			</item>
+		
+			<item>
 				<title>Behave 2.3</title>
 				<description>&lt;p&gt;In good time for &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt;, I present version 2.3 of Behave. Not exactly the rapid January release I had hoped for &amp;#8211; admittedly I got a bit carried away. However that just means more goodies for everyone :)&lt;/p&gt;
 &lt;h2&gt;Contents&lt;/h2&gt;
@@ -1095,22 +1183,6 @@ Pre-release:
 &lt;/ul&gt;</description>
 				<published>2013-07-19 00:00:00 +0200</published>
 				<link>http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/</link>
-			</item>
-		
-			<item>
-				<title>OnRenderTextureGUI</title>
-				<description>&lt;p&gt;Have you ever wanted to apply a full-screen effect to your &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; without having to completely restructuring the way you set up your OnGUI structure? Or how about rendering text and &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; controls onto in-scene virtual screens and objects? Yea me too.&lt;/p&gt;
-&lt;p&gt;So a couple of years ago I did a friday project investigating the possibility of a setup like this. What I wanted was a Doom 3 &amp;#8211; style in-game numpad, responding to mouse clicks. Unfortunately I couldn&amp;#8217;t get there 100% and in a nice and straight-forward way, so I abandoned it with no further time spent.&lt;/p&gt;
-&lt;p&gt;The specific problem was that while I could get my &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; to render to the object just fine, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; system had no way of injecting events or modifying existing ones. This meant that if I wanted &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; to respond to events, I would have to bypass the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; event system and effectively rewrite the basic &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; controls. That failed my &amp;#8220;nice and straight-forward&amp;#8221; requirement.&lt;/p&gt;
-&lt;p&gt;However a while later, I came across a similar need: I had a project where the screen was warped slightly fish-eye, to give an impression of an old-school &lt;span class=&quot;caps&quot;&gt;CRT&lt;/span&gt; display. It looked great, except the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was just rendered on top of everything &amp;#8211; as per usual &amp;#8211; with no warping. Since the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; was non-interactive, there was no down-side to using the approach I had come up with before to include the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; in the full-screen effect rendering.&lt;/p&gt;
-&lt;p&gt;It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &amp;#8211; rendering the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; on a plane, rendered always on top, in front of the Oculus cameras.&lt;/p&gt;
-&lt;p&gt;So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &amp;#8211; at least twice &amp;#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.&lt;/p&gt;
-&lt;p&gt;The trick therefore becomes:
-&lt;script src=&#39;https://gist.github.com/5984299.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;Remember that this is not immediately useful if you need interactive &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; as this would require work to handle input gathered from the regular UnityEngine.Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.&lt;/p&gt;
-&lt;p&gt;I hope you find it useful!&lt;/p&gt;</description>
-				<published>2013-07-17 00:00:00 +0200</published>
-				<link>http://angryant.com/2013/07/17/OnRenderTextureGUI/</link>
 			</item>
 		
 	</channel>

@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - Moving in Unity - </title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/screen/base.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/screen/site.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print/base.css" type="text/css" media="print" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34029666-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+		<link rel="author" href="https://plus.google.com/+EmilJohansen" />
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
+<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
+<div id="subtitle">Moving in Unity</div>
+
+	
+		<a href="/">Home</a>
+		
+	
+
+	
+		<a href="/freelance">Freelance</a>
+		
+	
+
+	
+		<a href="/work">Work</a>
+		
+	
+
+	
+		<a href="/behave">Behave</a>
+		
+	
+
+	
+		<a href="/tools">Tools</a>
+		
+	
+
+	
+		<a href="/feed">Feed</a>
+		
+	
+
+	
+		<a href="/videos">Videos</a>
+		
+	
+
+
+<div id="availability">
+	<a href="/freelance">Next availability: <span id="available">February</span></a>
+</div>
+<div id="external">
+	<a href="/feed.xml">RSS</a>
+	<a href="/feed.articles.xml">Full RSS</a>
+	<a href="https://gist.github.com/AngryAnt">Gist</a>
+	<a href="https://twitter.com/AngryAnt">Twitter</a>
+	<a href="http://www.linkedin.com/in/EmilJohansen">LinkedIn</a>
+	<a href="http://lanyrd.com/profile/angryant/">Lanyrd</a>
+</div>
+
+			</div>
+			<div id="container">
+				<span class="date">07 Mar 2014</span>
+				<h1 id="Top">Moving in Unity</h1>
+				
+				<div id="content">
+					<div class="post"><p>Moving something around on the screen in Unity is really not that hard. The point of this post is therefore not to introduce you to how this is accomplished, but rather to point out where you&#8217;re doing it wrong&#8482;.</p>
+<p>Generally Unity moves objects using one of three systems:</p>
+<ul>
+	<li>Direct transform manipulation.</li>
+	<li>Physics.</li>
+	<li>Navigation.</li>
+</ul>
+<p>In the end, movement is measured on transform updates. I make the distinction from the point of view of where you provide the input. Technically you could argue that animation should be up there as well, but I choose to lump that in with transform manipulation, since disabling the application of movement by the animation system has no other side effects.</p>
+<p>As a side-note, since 4.3 it is possible to partially or completely disable having the animation system update the transform hierarchy.</p>
+<h1>Transform</h1>
+<p>So long as the goal is simply to move an object and nothing else, modifying the values of the transform component, or using its various useful methods to do so, is all you need.</p>
+<p>This includes directly animating the transform via the animation window or by enabling animation root motion.</p>
+<p>However chances are that your situation is more complex than this and you would do well to read on.</p>
+<h1>Physics</h1>
+<p>When your object in any way needs to affect and/or be affected by the physics simulation, you need to make some extra considerations. Simply slapping on a collider and calling it a day will ruin your next.</p>
+<p>To properly participate as a dynamic part of the physics simulation, an object needs to have a rigidbody component attached somewhere in its transform hierarchy.</p>
+<p>The physics system considers separate transform hierarchies as separate objects, so one (and only one) rigidbody component will mark the rest of its hierarchy as dynamic.</p>
+<p>Multiple rigidbodies in the same hierarchy leads to undetermined behaviour (read: weirdnessness) &#8211; the only exception being if those rigidbodies are connected by a joint &#8211; thus making their behaviour again well defined.</p>
+<h2>Kinematic</h2>
+<p>&#8220;But I don&#8217;t need gravity or forces or all that other nonsense!&#8221; &#8211; be cool, that is what the &#8220;kinematic&#8221; switch is for. This basically tells the physics simulation that your object is dynamic, but you will take care of all its movement.</p>
+<p>Kinematic rigidbodies will not be affected by forces or collisions, but will collide with non-kinematic rigidbodies, sending collision events and pushing them out of the way (assuming there are colliders present somewhere in the transform hierarchy of the object).</p>
+<p>&#8220;So why add the rigidbody in the first place? Things work just fine without!&#8221; &#8211; if you have Unity pro, I would direct your attention at the profiler as you move about &#8211; if not, take my word for it that it is not a joyous sight.</p>
+<p>Any object (unique transform hierarchy) with no rigidbody present is treated by the physics simulation as static. For optimal performance, all static colliders are baked into a static collision geometry, securing optimal performance when doing collision checks.</p>
+<p>However every time one static collider (note that this has nothing to do with the static flags on the GameObject &#8211; just the presence of absence of a rigidbody on the object in question) is moved, the whole static collision geometry is marked dirty and regenerated.</p>
+<p>This is not a terribly costly operation, so moving pieces of level geometry from one position to another from time to time is fine. However moving a character of one or more static colliders around every frame will cost you.</p>
+<p>Note that while moving by directly modifying the transform of a kinematic rigidbody is just fine, you will get better results for rapid movement by using the MovePosition and MoveRotation rigidbody functions.</p>
+<p>The former will effectively &#8220;teleport&#8221; the physical object &#8211; fine for short distances and minor rotations, but less so for longer moves. MoveRotation and -Position effectively &#8220;drags&#8221; the object from A to B.</p>
+<h2>Kine-not-so-matic</h2>
+<p>&#8220;Ok, so maybe it would pretty useful if my character could walk into walls, get pushed by others and that sort of thing&#8230;&#8221; No problem. Disable the kinematic flag and start moving via the rigidbody component. If you wanted proper forces and all that, I&#8217;m sure you&#8217;re already all over the AddForce function and all that.</p>
+<p>However if you still want strict control &#8211; just with a touch of presence &#8211; you should look at directly setting the velocity property of the rigidbody.</p>
+<p>Given sideways and forward movement input, forming a velocity vector is easy. By setting the velocity of the rigidbody you add that information to the physics simulation as well as tell it to update the position of the object smoothly.</p>
+<p>That includes pushes from other rigidbodies or pushbacks from static geometry. However directly setting the velocity will override any directional change and so momentum will remain unchanged.</p>
+<p>Therefore consider factoring in some acceleration when building your target velocity vector &#8211; for a more natural look after your character is pushed or makes an abrupt change of direction.</p>
+<h1>Navigation</h1>
+<p>Parallel to the physics simulation you find the navigation runtime. Similarly to how the rendered world model is defined by static and dynamic geometry and the physics world model is defined by static colliders and rigidbodies, the navigation world model is defined by interconnected navigation mesh and dynamic obstacles.</p>
+<p>While the static physics geometry defines areas of no access, navigation mesh defines areas which <strong>are</strong> navigable. This information is used for finding a valid path from point A to B, but more importantly it is used to constrain characters and inform them of their surroundings.</p>
+<p>The physics simulation can be used for this as well and traditionally is. However the data covered by the physics system is vastly more complex and its ability to define traversable space is a side effect of its ability to define non-traversable space.</p>
+<p>This is where you end up spending way too much time blocking off sections of scenery and later testing that there are indeed no holes in that. Navmeshes on the other hand define a surface on which characters of a given height and with a given radius can move.</p>
+<h2>NavMeshAgent</h2>
+<p>Similarly to the rigidbody component, the NavMeshAgent component wires an object to the navigation runtime. In stead of the single kinematic switch, however, the NavMeshAgent has separate updatePosition and updateRotation toggles.</p>
+<p>To get things going, you can either set a path by one of the many accessors for that or directly set the velocity. Assuming that the NavMeshAgent is configured to update the position, this will start smoothly moving the object like with the rigidbody &#8211; only this time constrained by the navigation meshes rather than collision geometry.</p>
+<p>In addition to pathfinding and staying on the navigation mesh, the navigation runtime will also attempt to have the various NavMeshAgents avoid one-another by adjusting velocity based on the position and velocity of nearby dynamic obstacles and NavMeshAgents.</p>
+<p>Avoidance can be completely tweaked though &#8211; so that one NavMeshAgent can ignore it completely or itself be ignored or weigh different NavMeshAgents differently.</p>
+<h2>Direct control</h2>
+<p>&#8220;Pathfinding? I just need to move this character around based on input.&#8221; Sure, fine &#8211; that is where you just go set the velocity of the NavMeshAgent rather than trying to set a path or destination for it.</p>
+<p>Like with the rigidbody, this starts moving the NavMeshAgent smoothly and tells the runtime about its current velocity &#8211; giving other agents a chance to avoid. Note that even if you do not let the NavMeshAgent directly control the position of your character, you should still feed the velocity back to it &#8211; in order to keep the avoidance runtime up to date.</p>
+<h1>Animation</h1>
+<p>&#8220;<span class="caps">WAT</span>! You did not count this as one of the three ways of moving stuff!&#8221; &#8211; nop, quite right. However root motion is awesome, so let&#8217;s briefly touch on how we tie that to the other systems for much greatness.</p>
+<p>While most of what the animation system does is not of too much concern for your movement logic, one very useful feature is. By analysing animations on import, the surface movement relevant for those animations is calculated and later blended as the animations are blended.</p>
+<p>By default the animation system will, with root motion enabled, move an animated object around by directly updating the transform position based on the root motion of the currently playing animation blend. Animation nicely synchronised with world movement.</p>
+<h2>I&#8217;ll root my own motion, thank you</h2>
+<p>However while that looks mighty cool, it really isn&#8217;t very considerate of your carefully crafted physics simulation or your neatly marked navigation runtime. Luckily it does give an in by allowing you to override the actual application of the root motion.</p>
+<p>This is accomplished by, on the same game object as your animator component, attaching a script implementing the method OnAnimatorMove. Once that method is defined, the animation system will no longer directly apply root motion and in stead call this implementation post-evaluation.</p>
+<p>In the implementation of the OnAnimatorMove callback, you could then update a target velocity vector and similarly rotation. And once we have desired movement in the form of a velocity vector, plenty of the earlier described scenarios become relevant.</p>
+<h2>Most interactive niceness</h2>
+<p>&#8220;Great, I&#8217;ll take one of each!&#8221; Sure, no problem. Well&#8230; It&#8217;s not exactly straight forward, but it is indeed possible to combine all of these things to get something that is responsive, embedded in your simulations and looks great.</p>
+<p>The chain of data goes a little something like this:</p>
+<ul>
+	<li>Player controlled characters:
+	<ol>
+		<li>Feed input to the animator, resulting in nicely blended animations and root motion.</li>
+		<li>Generate a target velocity in OnAnimatorMove.</li>
+		<li>Set velocity of NavMeshAgent (configured to not update position or rotation).</li>
+		<li>Set velocity and rotation of non-kinematic rigidbody (properly constrained on rotation so it doesn&#8217;t tip over).</li>
+	</ol></li>
+	<li>Non-player characters or indirectly controlled player characters:
+	<ol>
+		<li>Set destination or path of NavMeshAgent.</li>
+		<li>Feed desiredVelocity of NavMeshAgent to animator.</li>
+		<li>Repeat as for player controlled characters from 2.</li>
+	</ol></li>
+</ul>
+<p>What this setup does not give you is responsiveness to being bumped into. However velocity-wise this is not something your movement implementation should handle directly unless you are ok with breaking that nice root motion setup you just established.</p>
+<p>In stead I would recommend using queries on the surrounding physics and navigation environment to inform the animation state machine of special conditions like &#8220;player wants to go full speed, but there&#8217;s a wall two units from here&#8221; and handle slowing down, stopping and similar in there where the result will look good.</p>
+<p>One simple trick is to do a navigation raycast along the forward vector of the moving transform for some amount of look-ahead distance and if a navigation mesh edge is hit and do a physics raycast further forward from a point slightly elevated from that edge hit point.</p>
+<p>With that setup you can very simply gather information about where the character is headed &#8211; if into a steep wall or perhaps to a ledge or obstacle which could be leapt.</p>
+<h1>Unity Hacks</h1>
+<p>Since apparently I lumped just about everything into that project, unsurprisingly the Unity Hacks project has some work on this form of wired up movement. Particularly the <a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Movement/Mover.cs">Mover</a> component attempts to create a system-agnostic movement interface as well as some simple movement on networked setups not covered here.</p>
+<p>While not complete or in any way a final answer, I hope that with the information provided here, it turns out useful for you.</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Movement/Mover.cs">Mover.cs</a></li>
+</ul></div>
+				</div>
+				<div id="feed">
+					
+						<a href="/2014/03/07/Moving-in-Unity/" class="titleSmall">Moving in Unity</a><br />
+					
+						<a href="/2014/02/27/Behave-2-3/" class="titleSmall">Behave 2.3</a><br />
+					
+						<a href="/2014/01/03/Unity-and-net-assemblies/" class="titleSmall">Unity and .net assemblies</a><br />
+					
+						<a href="/2013/12/23/Behave-2-2/" class="titleSmall">Behave 2.2</a><br />
+					
+						<a href="/2013/10/11/ReView/" class="titleSmall">ReView</a><br />
+					
+						<a href="/2013/10/06/Behave-2-1/" class="titleSmall">Behave 2.1</a><br />
+					
+						<a href="/2013/08/25/Behave-2-0/" class="titleSmall">Behave 2.0</a><br />
+					
+						<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a><br />
+					
+						<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a><br />
+					
+						<a href="/2013/07/19/Unity-Hacks-Touch-gestures/" class="titleSmall">Unity Hacks: Touch gestures</a><br />
+					
+						<a href="/2013/07/17/OnRenderTextureGUI/" class="titleSmall">OnRenderTextureGUI</a><br />
+					
+						<a href="/2013/07/05/Unite-13-video-Unity-Hacks-available/" class="titleSmall">Unite 13 video "Unity Hacks" available</a><br />
+					
+						<a href="/2013/06/07/The-implicit-local-network-interface/" class="titleSmall">The implicit local network interface</a><br />
+					
+						<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a><br />
+					
+						<a href="/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/" class="titleSmall">Five years of Unity expertise looking for contracts</a><br />
+					
+						<a href="/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/" class="titleSmall">Automagic Unity Android Java gadget OF DOOM!</a><br />
+					
+						<a href="/2012/10/03/Invading-Planet-from-your-couch/" class="titleSmall">Invading Planet from your couch</a><br />
+					
+						<a href="/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/" class="titleSmall">Mountain Lion and laggy bluetooth and duct-tape</a><br />
+					
+						<a href="/2012/09/23/Unite-12-video-and-new-videos-section-available/" class="titleSmall">Unite 12 video and new videos section available</a><br />
+					
+						<a href="/2012/08/28/Asia-Bootcamp-videos-now-available/" class="titleSmall">Asia Bootcamp videos now available</a><br />
+					
+						<a href="/2012/05/17/path-is-now-mit-licensed/" class="titleSmall">Path is now MIT licensed</a><br />
+					
+						<a href="/2011/11/30/behave-1-4-released/" class="titleSmall">Behave 1.4 released</a><br />
+					
+						<a href="/2011/10/09/so-ive-been-a-bit-busy-lately/" class="titleSmall">So I've been a bit busy lately</a><br />
+					
+						<a href="/2011/04/28/behave-1-3-released/" class="titleSmall">Behave 1.3 released</a><br />
+					
+						<a href="/2011/04/23/igda-unity-sig-slides/" class="titleSmall">IGDA Unity SIG slides</a><br />
+					
+						<a href="/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/" class="titleSmall">Second Unity IGDA SIG this evening: Scene construction and AI</a><br />
+					
+						<a href="/2011/03/10/first-igda-unity-sig-this-evening/" class="titleSmall">First IGDA Unity SIG this evening</a><br />
+					
+						<a href="/2011/03/03/alternative-licensing-available/" class="titleSmall">Alternative licensing available</a><br />
+					
+						<a href="/2011/02/15/pathfinding-in-two-line/" class="titleSmall">Pathfinding in two lines</a><br />
+					
+						<a href="/2011/02/15/path-2-released/" class="titleSmall">Path 2 released</a><br />
+					
+						<a href="/2011/02/02/assembling-and-assimilating/" class="titleSmall">Assembling and assimilating</a><br />
+					
+						<a href="/2011/01/29/path-2-intro-screencast/" class="titleSmall">Path 2 intro screencast</a><br />
+					
+						<a href="/2011/01/29/path-2-beta-release-for-ggj/" class="titleSmall">Path 2 beta release for GGJ</a><br />
+					
+						<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a><br />
+					
+						<a href="/2011/01/09/expanding-beta/" class="titleSmall">Expanding beta</a><br />
+					
+						<a href="/2010/11/28/behave-aigamedev-master-class-public-stream/" class="titleSmall">Behave AIgameDev master class public stream</a><br />
+					
+						<a href="/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/" class="titleSmall">Behave master class on open AIgameDev stream tomorrow</a><br />
+					
+						<a href="/2010/10/29/interview-with-aigamedev/" class="titleSmall">Interview with AIGameDev</a><br />
+					
+						<a href="/2010/10/24/new-video-from-tree-to-code/" class="titleSmall">New video: From tree to code</a><br />
+					
+						<a href="/2010/10/23/issue-tracking-on-github-behave-release-project/" class="titleSmall">Issue tracking on github Behave release project</a><br />
+					
+						<a href="/2010/10/22/it-university-copenhagen-unity-course-completed/" class="titleSmall">IT University Copenhagen Unity course completed</a><br />
+					
+						<a href="/2010/10/21/it-university-copenhagen-unity-course-files-thursday/" class="titleSmall">IT University Copenhagen Unity course files Thursday</a><br />
+					
+						<a href="/2010/10/20/cph-it-university-unity-course-files/" class="titleSmall">CPH IT University Unity course files</a><br />
+					
+						<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a><br />
+					
+						<a href="/2010/09/29/video-behave-starting-from-scratch/" class="titleSmall">Video: Behave - starting from scratch</a><br />
+					
+						<a href="/2010/09/29/behave-runtime-documentation-updated/" class="titleSmall">Behave runtime documentation updated</a><br />
+					
+						<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a><br />
+					
+						<a href="/2010/03/19/faff-cleanup-sketch/" class="titleSmall">FAFF cleanup: Sketch</a><br />
+					
+						<a href="/2010/03/15/building-a-menu-of-delegates-and-enums/" class="titleSmall">Building a menu of delegates and enums</a><br />
+					
+						<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a><br />
+					
+						<a href="/2010/01/14/optimising-coroutine-yielding-in-c/" class="titleSmall">Optimising coroutine yielding in C#</a><br />
+					
+						<a href="/2010/01/05/downloading-the-hydra/" class="titleSmall">Downloading the hydra</a><br />
+					
+						<a href="/2009/11/15/new-license-of-path-gpl/" class="titleSmall">New license of Path: GPL</a><br />
+					
+						<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a><br />
+					
+						<a href="/2009/10/04/magnetic/" class="titleSmall">Magnetic</a><br />
+					
+						<a href="/2009/09/18/gui-drag-drop/" class="titleSmall">GUI drag-drop</a><br />
+					
+						<a href="/2009/09/17/logging-an-entire-gameobject/" class="titleSmall">Logging an entire GameObject</a><br />
+					
+						<a href="/2009/09/07/i-bet-you-cant-type-an-a/" class="titleSmall">I bet you can't type an A!</a><br />
+					
+						<a href="/2009/08/31/where-did-that-component-go/" class="titleSmall">Where did that component go?</a><br />
+					
+						<a href="/2009/08/19/unitysteer/" class="titleSmall">UnitySteer</a><br />
+					
+						<a href="/2009/05/18/new-and-improved-behave-10-released/" class="titleSmall">New and improved: Behave 1.0 released</a><br />
+					
+						<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a><br />
+					
+						<a href="/2009/03/20/behave-03b-hotfix/" class="titleSmall">Behave 0.3b hotfix</a><br />
+					
+						<a href="/2009/03/19/path-tutorial-video-available/" class="titleSmall">Path tutorial video available</a><br />
+					
+						<a href="/2009/03/18/path-10-launched/" class="titleSmall">Path 1.0 launched!</a><br />
+					
+						<a href="/2008/12/17/community-tutorial-2/" class="titleSmall">Continued community tutorials</a><br />
+					
+						<a href="/2008/11/30/community-tutorial/" class="titleSmall">Community tutorial</a><br />
+					
+						<a href="/2008/11/28/new-tutorial/" class="titleSmall">New tutorial</a><br />
+					
+						<a href="/2008/11/04/first-tutorial-available/" class="titleSmall">First tutorial available</a><br />
+					
+						<a href="/2008/11/02/behave-03b/" class="titleSmall">Behave 0.3b</a><br />
+					
+						<a href="/2008/10/25/unite-08-open-mic-session/" class="titleSmall">unite '08 open-mic session</a><br />
+					
+						<a href="/2008/09/24/behave-02b/" class="titleSmall">Behave 0.2b</a><br />
+					
+						<a href="/2008/09/09/behave-01b/" class="titleSmall">Behave 0.1b</a><br />
+					
+						<a href="/2008/09/08/behave-pre-release/" class="titleSmall">Behave pre-release</a><br />
+					
+						<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a><br />
+					
+						<a href="/2008/04/12/path-beta-02b/" class="titleSmall">Path beta 0.2b</a><br />
+					
+						<a href="/2008/04/05/path-beta-01b/" class="titleSmall">Path beta 0.1b</a><br />
+					
+						<a href="/2008/03/30/path-pre-release/" class="titleSmall">Path pre-release</a><br />
+					
+				</div>
+				<div id="footer">
+	<p class="footnote" style="margin-top: 50px; margin-bottom: 10px; clear: both;">Copyright &#169; AngryAnt&trade; <script>document.write ((new Date ()).getFullYear ());</script>. All public github gists are public domain.</p>
+	<script>document.write ('<img src="/resources/footers/' + Math.floor (Math.random () * 23 + 1) + '.png" width="600" height="300" class="noprint" style="margin-bottom: -5px;">');</script>
+</div>
+
+			</div>
+		</div>
+		
+
+	</body>
+</html>
