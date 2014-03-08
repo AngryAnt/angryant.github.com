@@ -7,7 +7,8 @@
 		
 			<item>
 				<title>Moving in Unity</title>
-				<description>&lt;p&gt;Moving something around on the screen in Unity is really not that hard. The point of this post is therefore not to introduce you to how this is accomplished, but rather to point out where you&amp;#8217;re doing it wrong&amp;#8482;.&lt;/p&gt;
+				<description>&lt;p&gt;&lt;strong&gt;Updated March 8th&lt;/strong&gt;: Added a few more details on mapping to navmesh and extrapolating the root motion vector.&lt;/p&gt;
+&lt;p&gt;Moving something around on the screen in Unity is really not that hard. The point of this post is therefore not to introduce you to how this is accomplished, but rather to point out where you&amp;#8217;re doing it wrong&amp;#8482;.&lt;/p&gt;
 &lt;p&gt;Generally Unity moves objects using one of three systems:&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;Direct transform manipulation.&lt;/li&gt;
@@ -60,7 +61,7 @@
 &lt;h2&gt;I&amp;#8217;ll root my own motion, thank you&lt;/h2&gt;
 &lt;p&gt;However while that looks mighty cool, it really isn&amp;#8217;t very considerate of your carefully crafted physics simulation or your neatly marked navigation runtime. Luckily it does give an in by allowing you to override the actual application of the root motion.&lt;/p&gt;
 &lt;p&gt;This is accomplished by, on the same game object as your animator component, attaching a script implementing the method OnAnimatorMove. Once that method is defined, the animation system will no longer directly apply root motion and in stead call this implementation post-evaluation.&lt;/p&gt;
-&lt;p&gt;In the implementation of the OnAnimatorMove callback, you could then update a target velocity vector and similarly rotation. And once we have desired movement in the form of a velocity vector, plenty of the earlier described scenarios become relevant.&lt;/p&gt;
+&lt;p&gt;In the implementation of the OnAnimatorMove callback, you could then update a target velocity vector by simply dividing animator.deltaPosition by Time.deltaTime and similarly rotation. And once we have desired movement in the form of a velocity vector, plenty of the earlier described scenarios become relevant.&lt;/p&gt;
 &lt;h2&gt;Most interactive niceness&lt;/h2&gt;
 &lt;p&gt;&amp;#8220;Great, I&amp;#8217;ll take one of each!&amp;#8221; Sure, no problem. Well&amp;#8230; It&amp;#8217;s not exactly straight forward, but it is indeed possible to combine all of these things to get something that is responsive, embedded in your simulations and looks great.&lt;/p&gt;
 &lt;p&gt;The chain of data goes a little something like this:&lt;/p&gt;
@@ -71,6 +72,7 @@
 		&lt;li&gt;Generate a target velocity in OnAnimatorMove.&lt;/li&gt;
 		&lt;li&gt;Set velocity of NavMeshAgent (configured to not update position or rotation).&lt;/li&gt;
 		&lt;li&gt;Set velocity and rotation of non-kinematic rigidbody (properly constrained on rotation so it doesn&amp;#8217;t tip over).&lt;/li&gt;
+		&lt;li&gt;Map transform position to navigation mesh via NavMesh.SamplePosition.&lt;/li&gt;
 	&lt;/ol&gt;&lt;/li&gt;
 	&lt;li&gt;Non-player characters or indirectly controlled player characters:
 	&lt;ol&gt;
