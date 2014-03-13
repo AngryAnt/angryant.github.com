@@ -7,6 +7,21 @@
 		
 			
 			<item>
+				<title>GDC 14: The Quest For Fun</title>
+				<description>&lt;p&gt;Next week is that wondrous time of &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; again and boy am I looking forward to saying hi to old friends, meeting new ones and absorbing some great talks.&lt;/p&gt;
+&lt;p&gt;Unlike my previous visits however, this time I attend representing not an employer, but myself as a freelancer. Freelancing in Q3 and 4 of 2013 was filled with lots of fun and great challenges, so my mission at this years &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; will be to build my schedule to make 2014 at least as much fun.&lt;/p&gt;
+&lt;p&gt;For more information on my freelancing services and references, please see the &lt;a href=&quot;/freelance&quot;&gt;Freelance&lt;/a&gt; and &lt;a href=&quot;/work&quot;&gt;Work&lt;/a&gt; pages.&lt;/p&gt;
+&lt;p&gt;If you have a task or project you think we could do some good work on together / want to talk about Behave for a bit or just say hi, please do not hesitate to give me a ping.&lt;/p&gt;
+&lt;p&gt;Shortly after arrival I will pick up a prepaid &lt;span class=&quot;caps&quot;&gt;SIM&lt;/span&gt;, so I am reachable via &lt;a href=&quot;http://twitter.com/AngryAnt&quot;&gt;Twitter&lt;/a&gt; or the &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; app PM system.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ll also be co-hosting the &lt;span class=&quot;caps&quot;&gt;IGDA&lt;/span&gt; Unity and AI &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt; meetings Wednesday (&lt;a href=&quot;http://schedule.gdconf.com/session-id/828274&quot;&gt;Unity &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt;&lt;/a&gt;) and Friday (&lt;a href=&quot;http://schedule.gdconf.com/session-id/828292&quot;&gt;AI &lt;span class=&quot;caps&quot;&gt;SIG&lt;/span&gt;&lt;/a&gt;). Do stop by if you have an interest in either of those topics.&lt;/p&gt;
+&lt;p&gt;In any case, if you&amp;#8217;re attending &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; I hope you have a good time &amp;#8211; I know I plan to.&lt;/p&gt;</description>
+				<published>2014-03-13 00:00:00 +0100</published>
+				<link>http://angryant.com/2014/03/13/GDC-14-The-Quest-For-Fun/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Moving in Unity</title>
 				<description>&lt;p&gt;&lt;strong&gt;Updated March 8th&lt;/strong&gt;: Added a few more details on mapping to navmesh and extrapolating the root motion vector.&lt;/p&gt;
 &lt;p&gt;Moving something around on the screen in Unity is really not that hard. The point of this post is therefore not to introduce you to how this is accomplished, but rather to point out where you&amp;#8217;re doing it wrong&amp;#8482;.&lt;/p&gt;
