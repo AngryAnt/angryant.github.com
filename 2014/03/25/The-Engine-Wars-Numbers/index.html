@@ -2,13 +2,15 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Unite 13 video "Unity Hacks" available - </title>
+		<title>AngryAnt - The Engine Wars: Numbers - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="/css/screen/base.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="/css/screen/site.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="/css/print/base.css" type="text/css" media="print" />
+
+	<script type="text/javascript" src="/resources/posts/2014-03-25-The-Engine-Wars-Numbers/calculate.js"></script>
 
 <script type="text/javascript">
 
@@ -32,7 +34,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Unite 13 video "Unity Hacks" available</div>
+<div id="subtitle">The Engine Wars: Numbers</div>
 
 	
 		<a href="/">Home</a>
@@ -84,12 +86,162 @@
 
 			</div>
 			<div id="container">
-				<span class="date">05 Jul 2013</span>
-				<h1 id="Top">Unite 13 video "Unity Hacks" available</h1>
+				<span class="date">25 Mar 2014</span>
+				<h1 id="Top">The Engine Wars: Numbers</h1>
 				
 				<div id="content">
-					<div class="post"><p>The &#8220;Unity Hacks&#8221; presentation, containing a good chunk of practical tips &amp; tricks and example code, I did for Unite 13 Korea, Japan, China and Nordic is now available as video and presentation/examples download. The specific video recording is the one from Unite Japan.</p>
-<p>Find link to video, presentation and examples in the <a href="/videos">videos</a> section.</p></div>
+					<div class="post"><p>So this years <span class="caps">GDC</span> did indeed not disappoint &#8211; lots of great talks, meetings and announcements. Thanks for saying hi if you did &#8211; if not, maybe next year. Of the announcements, I would like to just focus on the engine ones here.</p>
+<h1>Overview</h1>
+<p>Unity 5 was announced with a great feature set, Unreal 4 was released to the public on an attractive subscription license (including full source) and the same for CryEngine (though no source).</p>
+<p>This heavy escalation of the engine wars means that now more than ever, the choice of tech to startups and indies is about tech rather than numbers.</p>
+<p>However the numbers are not exactly transparent or directly comparable and not all information is out there yet (especially for CryEngine). I have done my best to collect the available information, but please let me know if something is off or missing.</p>
+<ul>
+	<li>CryEngine is now available (no source) for indies at 9.9 $/€ per seat, per month.</li>
+</ul>
+<ul>
+	<li>Unreal4 is available (source included) at $19 per seat, per month, plus 5% revenue share on gross sales (meaning you get 65% payout from iOS sales in stead of 70% for instance).</li>
+</ul>
+<ul>
+	<li>Unity5 has no change in its licensing model (providing more options, also rendering it more confusing) &#8211; it has a free version (some features locked away), a rental and an up-front model &#8211; no revenue share on any of them. One core difference in the rental model for Unity is that you always bind for 12 months.</li>
+</ul>
+<p>The balance of the new CryEngine and Unreal offers in general over Unity is that most of the cost can be deferred to after sales, where Unity in general is up-front payment.</p>
+<h1>Comparison</h1>
+<p>In the form below you can adjust number of seats, duration of production and expected gross sales to see how this will affect the product prices. Note that the rows starting with &#8220;+&#8221; are added to the base cost.</p>
+<style>
+<p>.calculated td
+	{
+		font-size: 10pt;
+		padding: 10px;
+	}
+	.calculated td.header
+	{
+		font-size: 10pt;
+		padding: 10px;
+		color: #0083C3;
+	}</p>
+</style>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td>
+<p>Seats</p>
+</td>
+<td>
+<p>Duration (months)</p>
+</td>
+<td>
+<p>Gross sales</p>
+</td>
+</tr>
+<tr>
+<td>
+<input type="text" id="seats" value="4" onchange="update ()" />
+</td>
+<td>
+<input type="text" id="duration" value="10" onchange="update ()" />
+</td>
+<td>
+<input type="text" id="sales" value="500000" onchange="update ()" />
+</td>
+</tr>
+</table>
+<table class="calculated" cellspacing="0" cellpadding="0">
+<tr>
+		<td></td>
+		<td class="header">CryEngine<sup class="footnote" id="fnr1"><a href="#fn1">1</a></sup> </td>
+		<td class="header">Unity5</td>
+		<td class="header">Unity5 pro</td>
+		<td class="header">Unity5 pro sub</td>
+		<td class="header">Unreal4</td>
+</tr>
+<tr>
+		<td class="header">Base</td>
+		<td formula="9.9 * seats * duration"></td>
+		<td>$0</td>
+		<td formula="1500 * seats"></td>
+		<td formula="75 * seats * ceiling (duration, 12)"></td>
+		<td formula="19 * seats * duration + sales * 0.05"></td>
+</tr>
+<tr>
+		<td class="header">+ Android</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td formula="1500 * seats"></td>
+		<td formula="75 * seats * ceiling (duration, 12)"></td>
+		<td>$0</td>
+</tr>
+<tr>
+		<td class="header">+ iOS <sup class="footnote" id="fnr2"><a href="#fn2">2</a></sup></td>
+		<td>$0</td>
+		<td>$0</td>
+		<td formula="1500 * seats"></td>
+		<td formula="75 * seats * ceiling (duration, 12)"></td>
+		<td>$0</td>
+</tr>
+<tr>
+		<td class="header">+ WinPhone 8</td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>N/A</td>
+</tr>
+<tr>
+		<td class="header">+ Blackberry</td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>N/A</td>
+</tr>
+<tr>
+		<td class="header">+ Web/GL</td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>$0</td>
+</tr>
+<tr>
+		<td class="header">+ PS4 <sup class="footnote" id="fnr2"><a href="#fn2">2</a></sup></td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+</tr>
+<tr>
+		<td class="header">+ XboxOne <sup class="footnote" id="fnr2"><a href="#fn2">2</a></sup></td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+</tr>
+<tr>
+		<td class="header">+ WiiU <sup class="footnote" id="fnr2"><a href="#fn2">2</a></sup></td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+		<td>N/A</td>
+		<td>$0</td>
+		<td>$0</td>
+		<td>Call us <sup class="footnote" id="fnr3"><a href="#fn3">3</a></sup></td>
+</tr>
+</table>
+<script>update ();</script><p class="footnote" id="fn1"><a href="#fnr1"><sup>1</sup></a> : On CryEngine:</p>
+<ul>
+	<li>While &#8220;Base&#8221; means Linux, Mac and Windows for the others, CryEngine does not support Mac and Linux.</li>
+	<li>Not a lot of details are available on licensing at this time.</li>
+	<li>It would seem that the as-a-service model has a company income limit &#8211; similar to Unity free being unavailable for $100k+ companies.</li>
+</ul>
+<p class="footnote" id="fn2"><a href="#fnr2"><sup>2</sup></a> : iOS and consoles require registering with platform owner</p>
+<p class="footnote" id="fn3"><a href="#fnr3"><sup>3</sup></a> : “Call us” most likely means old-school licensing as in up-front large cash payment / larger rev-share or a mix.</p>
+<h1>Sources</h1>
+<ul>
+	<li><a href="http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program">http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program</a></li>
+	<li><a href="https://store.unity3d.com/products/pricing">https://store.unity3d.com/products/pricing</a></li>
+	<li><a href="http://blogs.unity3d.com">http://blogs.unity3d.com</a></li>
+	<li><a href="https://www.unrealengine.com/register">https://www.unrealengine.com/register</a></li>
+</ul>
+<p>I hope you find this useful and again &#8211; this is what I could find. Do please let me know if something is missing or off.</p></div>
 				</div>
 				<div id="feed">
 					

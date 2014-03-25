@@ -7,6 +7,166 @@
 		
 			
 			<item>
+				<title>The Engine Wars: Numbers</title>
+				<description>&lt;p&gt;So this years &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; did indeed not disappoint &amp;#8211; lots of great talks, meetings and announcements. Thanks for saying hi if you did &amp;#8211; if not, maybe next year. Of the announcements, I would like to just focus on the engine ones here.&lt;/p&gt;
+&lt;h1&gt;Overview&lt;/h1&gt;
+&lt;p&gt;Unity 5 was announced with a great feature set, Unreal 4 was released to the public on an attractive subscription license (including full source) and the same for CryEngine (though no source).&lt;/p&gt;
+&lt;p&gt;This heavy escalation of the engine wars means that now more than ever, the choice of tech to startups and indies is about tech rather than numbers.&lt;/p&gt;
+&lt;p&gt;However the numbers are not exactly transparent or directly comparable and not all information is out there yet (especially for CryEngine). I have done my best to collect the available information, but please let me know if something is off or missing.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;CryEngine is now available (no source) for indies at 9.9 $/€ per seat, per month.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+	&lt;li&gt;Unreal4 is available (source included) at $19 per seat, per month, plus 5% revenue share on gross sales (meaning you get 65% payout from iOS sales in stead of 70% for instance).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+	&lt;li&gt;Unity5 has no change in its licensing model (providing more options, also rendering it more confusing) &amp;#8211; it has a free version (some features locked away), a rental and an up-front model &amp;#8211; no revenue share on any of them. One core difference in the rental model for Unity is that you always bind for 12 months.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The balance of the new CryEngine and Unreal offers in general over Unity is that most of the cost can be deferred to after sales, where Unity in general is up-front payment.&lt;/p&gt;
+&lt;h1&gt;Comparison&lt;/h1&gt;
+&lt;p&gt;In the form below you can adjust number of seats, duration of production and expected gross sales to see how this will affect the product prices. Note that the rows starting with &amp;#8220;+&amp;#8221; are added to the base cost.&lt;/p&gt;
+&lt;style&gt;
+&lt;p&gt;.calculated td
+	{
+		font-size: 10pt;
+		padding: 10px;
+	}
+	.calculated td.header
+	{
+		font-size: 10pt;
+		padding: 10px;
+		color: #0083C3;
+	}&lt;/p&gt;
+&lt;/style&gt;
+&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;Seats&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Duration (months)&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Gross sales&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;input type=&quot;text&quot; id=&quot;seats&quot; value=&quot;4&quot; onchange=&quot;update ()&quot; /&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;input type=&quot;text&quot; id=&quot;duration&quot; value=&quot;10&quot; onchange=&quot;update ()&quot; /&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;input type=&quot;text&quot; id=&quot;sales&quot; value=&quot;500000&quot; onchange=&quot;update ()&quot; /&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table class=&quot;calculated&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tr&gt;
+		&lt;td&gt;&lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;CryEngine&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;Unity5&lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;Unity5 pro&lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;Unity5 pro sub&lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;Unreal4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;Base&lt;/td&gt;
+		&lt;td formula=&quot;9.9 * seats * duration&quot;&gt;&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td formula=&quot;1500 * seats&quot;&gt;&lt;/td&gt;
+		&lt;td formula=&quot;75 * seats * ceiling (duration, 12)&quot;&gt;&lt;/td&gt;
+		&lt;td formula=&quot;19 * seats * duration + sales * 0.05&quot;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ Android&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td formula=&quot;1500 * seats&quot;&gt;&lt;/td&gt;
+		&lt;td formula=&quot;75 * seats * ceiling (duration, 12)&quot;&gt;&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ iOS &lt;sup class=&quot;footnote&quot; id=&quot;fnr2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td formula=&quot;1500 * seats&quot;&gt;&lt;/td&gt;
+		&lt;td formula=&quot;75 * seats * ceiling (duration, 12)&quot;&gt;&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ WinPhone 8&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ Blackberry&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ Web/GL&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ PS4 &lt;sup class=&quot;footnote&quot; id=&quot;fnr2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ XboxOne &lt;sup class=&quot;footnote&quot; id=&quot;fnr2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+		&lt;td class=&quot;header&quot;&gt;+ WiiU &lt;sup class=&quot;footnote&quot; id=&quot;fnr2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+		&lt;td&gt;N/A&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;$0&lt;/td&gt;
+		&lt;td&gt;Call us &lt;sup class=&quot;footnote&quot; id=&quot;fnr3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;script&gt;update ();&lt;/script&gt;&lt;p class=&quot;footnote&quot; id=&quot;fn1&quot;&gt;&lt;a href=&quot;#fnr1&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; : On CryEngine:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;While &amp;#8220;Base&amp;#8221; means Linux, Mac and Windows for the others, CryEngine does not support Mac and Linux.&lt;/li&gt;
+	&lt;li&gt;Not a lot of details are available on licensing at this time.&lt;/li&gt;
+	&lt;li&gt;It would seem that the as-a-service model has a company income limit &amp;#8211; similar to Unity free being unavailable for $100k+ companies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn2&quot;&gt;&lt;a href=&quot;#fnr2&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; : iOS and consoles require registering with platform owner&lt;/p&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn3&quot;&gt;&lt;a href=&quot;#fnr3&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; : “Call us” most likely means old-school licensing as in up-front large cash payment / larger rev-share or a mix.&lt;/p&gt;
+&lt;h1&gt;Sources&lt;/h1&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program&quot;&gt;http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://store.unity3d.com/products/pricing&quot;&gt;https://store.unity3d.com/products/pricing&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://blogs.unity3d.com&quot;&gt;http://blogs.unity3d.com&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://www.unrealengine.com/register&quot;&gt;https://www.unrealengine.com/register&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I hope you find this useful and again &amp;#8211; this is what I could find. Do please let me know if something is missing or off.&lt;/p&gt;</description>
+				<published>2014-03-25 00:00:00 +0100</published>
+				<link>http://angryant.com/2014/03/25/The-Engine-Wars-Numbers/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>GDC 14: The Quest For Fun</title>
 				<description>&lt;p&gt;Next week is that wondrous time of &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; again and boy am I looking forward to saying hi to old friends, meeting new ones and absorbing some great talks.&lt;/p&gt;
 &lt;p&gt;Unlike my previous visits however, this time I attend representing not an employer, but myself as a freelancer. Freelancing in Q3 and 4 of 2013 was filled with lots of fun and great challenges, so my mission at this years &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; will be to build my schedule to make 2014 at least as much fun.&lt;/p&gt;
