@@ -29,12 +29,14 @@
 	{
 		font-size: 10pt;
 		padding: 10px;
+		white-space: nowrap;
 	}
 	.calculated td.header
 	{
 		font-size: 10pt;
 		padding: 10px;
 		color: #0083C3;
+		white-space: nowrap;
 	}&lt;/p&gt;
 &lt;/style&gt;
 &lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
