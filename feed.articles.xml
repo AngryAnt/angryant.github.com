@@ -65,11 +65,11 @@
 &lt;table class=&quot;calculated&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
 &lt;tr&gt;
 		&lt;td&gt;&lt;/td&gt;
-		&lt;td class=&quot;header&quot;&gt;CryEngine&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; &lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;CryEngine&lt;sup class=&quot;footnote&quot; id=&quot;fnr1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
 		&lt;td class=&quot;header&quot;&gt;Unity5&lt;/td&gt;
 		&lt;td class=&quot;header&quot;&gt;Unity5 pro&lt;/td&gt;
 		&lt;td class=&quot;header&quot;&gt;Unity5 pro sub&lt;/td&gt;
-		&lt;td class=&quot;header&quot;&gt;Unreal4&lt;/td&gt;
+		&lt;td class=&quot;header&quot;&gt;Unreal4&lt;sup class=&quot;footnote&quot; id=&quot;fnr4&quot;&gt;&lt;a href=&quot;#fn4&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 		&lt;td class=&quot;header&quot;&gt;Base&lt;/td&gt;
@@ -152,6 +152,8 @@
 &lt;/ul&gt;
 &lt;p class=&quot;footnote&quot; id=&quot;fn2&quot;&gt;&lt;a href=&quot;#fnr2&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; : iOS and consoles require registering with platform owner&lt;/p&gt;
 &lt;p class=&quot;footnote&quot; id=&quot;fn3&quot;&gt;&lt;a href=&quot;#fnr3&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt; : “Call us” most likely means old-school licensing as in up-front large cash payment / larger rev-share or a mix.&lt;/p&gt;
+&lt;p class=&quot;footnote&quot; id=&quot;fn4&quot;&gt;&lt;a href=&quot;#fnr4&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; : Keep in mind that since revenue share for Unreal4 is taken of gross, any publisher or investor deal involving revenue share will relatively scale your effective cost of the engine share.&lt;/p&gt;
+&lt;p&gt;Also keep in mind that none of the providers are closed to the idea of doing tailored quotes on bulk or custom deals. This post is mostly intended for startups and indies who generally would not receive such quotes.&lt;/p&gt;
 &lt;h1&gt;Sources&lt;/h1&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program&quot;&gt;http://www.cryengine.com/news/crytek-announces-its-cryengine-as-a-service-program&lt;/a&gt;&lt;/li&gt;
