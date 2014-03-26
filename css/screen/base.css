@@ -230,3 +230,9 @@ h3
 	float: right;
 	padding: 10px;
 }
+#content .center
+{
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
