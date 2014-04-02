@@ -80,7 +80,7 @@
 		clear: both;
 	}
 
-	#feed
+	#feed-container
 	{
 		top: 140px;
 	}
@@ -166,7 +166,7 @@
 		opacity: 0.5;
 		filter:alpha(opacity=50);
 	}
-	#feed
+	#feed-container
 	{
 		top: 260px;
 	}
@@ -179,6 +179,17 @@
 	#sidebar #availability a
 	{
 		float: right;
+	}
+}
+
+@media only screen and (max-width: 650px)
+{
+	#feed-container
+	{
+		right: auto;
+		left: 0px;
+		top: 260px;
+		width: 630px;
 	}
 }
 
@@ -208,15 +219,21 @@
 	color: #888;
 }
 
-#feed
+#feed-container
 {
 	position: absolute;
 	right: 20px;
+}
+
+#feed
+{
+	float: right;
 	width: 150px;
 }
 
 #feed a
 {
+	background: white;
 	color: black;
 	font-size: 8pt;
 	text-decoration: none;
