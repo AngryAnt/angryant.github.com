@@ -6,6 +6,110 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Construct</title>
+				<description>&lt;p&gt;A while ago I &lt;a href=&quot;http://angryant.com/2010/01/05/downloading-the-hydra/&quot;&gt;published a post&lt;/a&gt; referencing &lt;a href=&quot;http://www.imdb.com/title/tt0244244/&quot;&gt;Hollywoods take on programming anno 2001&lt;/a&gt;. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.&lt;/p&gt;
+&lt;p&gt;The post was pretty brief, just covering the raw basics of the technique and not dealing with any of the challenges in integrating it with a more complete patching solution.&lt;/p&gt;
+&lt;p&gt;Luckily I have recently had a chance to return to working with it and implementing it fully on a project. This post will cover the challenges met and my solutions to them.&lt;/p&gt;
+&lt;p&gt;Unlike the original post, this one is not exactly brief, so, uh, hang on to something?&lt;/p&gt;
+&lt;h1&gt;Overview&lt;/h1&gt;
+&lt;p&gt;The basic method of integrating new code in an existing Unity runtime is as follows:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Build the patch code to a .net assembly.&lt;/li&gt;
+	&lt;li&gt;Load the byte stream of that assembly to an array at runtime.&lt;/li&gt;
+	&lt;li&gt;Create a System.Reflection.Assembly instance from the bytes.&lt;/li&gt;
+	&lt;li&gt;Instantiate classes, attach components and call methods via reflection.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This works really well for simple logic expansions. However if you want to couple the logic update with content such as prefabs and scenes using new components defined in this new assembly, you are out of luck.&lt;/p&gt;
+&lt;p&gt;New content can be loaded into Unity runtimes via asset bundles (these require Unity pro at time of writing). However in order to build these asset bundles as well as loading them afterwards, Unity needs to know all the components used in the contained scenes and prefabs.&lt;/p&gt;
+&lt;p&gt;Unfortunately this is not possible as that would require the presence of our new MonoBehaviours in the shipped build, which we are obviously not very interested in, given that we are working on a post-shipping patch.&lt;/p&gt;
+&lt;p&gt;The challenge is therefore to somehow construct asset bundles which can be built and loaded without the Unity editor or runtime knowing about all the MonoBehaviours used in the bundles.&lt;/p&gt;
+&lt;p&gt;Fun, right?&lt;/p&gt;
+&lt;h1&gt;Approach&lt;/h1&gt;
+&lt;p&gt;Right, getting this one sorted will take a few lines to explain, but let&amp;#8217;s just jump straight into it. The solution I went with goes a little something like this:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Compile bundle scripts to an assembly, from which components are attached in bundle scenes and on bundle prefabs.&lt;/li&gt;
+	&lt;li&gt;Before bundle build, pack each of these components into a container component, holding the data and type of the original, replacing it as attached on the same Game Object.&lt;/li&gt;
+	&lt;li&gt;When loading the bundle, load the new assembly and then run an unpack step for each container component on each prefab, restoring the original data and references to a newly instantiated component of the correct type, on the same GameObject.&lt;/li&gt;
+	&lt;li&gt;When scenes from the bundle are loaded, the same unpacking process runs for each container component in there.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;While this does sound very straight forward, there are of-course a few gotchas in there. So let us jump in a bit deeper.&lt;/p&gt;
+&lt;h2&gt;Workflow&lt;/h2&gt;
+&lt;p&gt;The goal here is to make sure that the programmers, level designers and artists working on new bundles get to maintain as much of their familiar Unity workflow as possible.&lt;/p&gt;
+&lt;p&gt;So whatever building and packing solution we set up, the following must still be supported at the very least:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Assets are imported and used in prefabs and scenes as per usual.&lt;/li&gt;
+	&lt;li&gt;Scripts are auto-compiled when saved and can be drag-dropped onto Game Objects.&lt;/li&gt;
+	&lt;li&gt;Variables and references can easily be tweaked on new bundle components via the inspector.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;At first, these workflow requirements do seem to conflict with our technical requirements, given that all code unique to the bundle &lt;em&gt;must&lt;/em&gt; be built into a separate assembly loaded at runtime, rather than be part of the main script compile.&lt;/p&gt;
+&lt;p&gt;However where there&amp;#8217;s a will there&amp;#8217;s a way and a tall piles of hacks make for interesting realities.&lt;/p&gt;
+&lt;p&gt;In the &lt;a href=&quot;http://angryant.com/videos/&quot;&gt;Unity Hacks talk&lt;/a&gt; I demonstrate how to use an asset post processor to compile java files into a jar plugin automatically. The first step to keeping our workflow without breaking the technical requirements is to copy this, but for C# (and/or JS) files compiled into a .net assembly.&lt;/p&gt;
+&lt;p&gt;Rather than spending time going into detail on how you would do that, I point you to the beforementioned talk (and its available example code) as well as the gmcs compiler shipped with the Unity editor. You should be able to construct the flow just fine from that.&lt;/p&gt;
+&lt;p&gt;One important note is that the folder from which your asset post processor picks up your scripts should be somewhere in Assets/WebplayerTemplates, as Unity by default will not compile scripts located there into the main project assembly (this is set up to avoid website js getting mixed up for templates).&lt;/p&gt;
+&lt;p&gt;I chose a location looking something like this: Assets/WebplayerTemplates/Bundles/MyFirstBundle.&lt;/p&gt;
+&lt;p&gt;The asset post processor building the assembly should then drop it in a folder like Assets/Bundles/MyFirstBundle and make a duplicate of it, with the .txt extension.&lt;/p&gt;
+&lt;p&gt;The original will be from where you can drag components and the copy will be the one built into the bundle, since it is now imported as a TextAsset and can therefore be included, unlike the original assembly.&lt;/p&gt;
+&lt;p&gt;At this point you can start work on the contents of the bundle, saving scenes, prefabs and other assets unique to the bundle into the same folder as the assembly and text file &amp;#8211; subfolders under that would work fine as well.&lt;/p&gt;
+&lt;p&gt;It is important to note that attaching behaviours from the assembly, as well as behaviours defined in the core project to scene objects and prefabs in the bundle is just fine. However prefabs, scenes and scripts outside of the bundle should never reference behaviours or assets from the bundle directly.&lt;/p&gt;
+&lt;h2&gt;Building&lt;/h2&gt;
+&lt;h3&gt;Core&lt;/h3&gt;
+&lt;p&gt;It is worth spending a little bit of time writing an automated build step of the core project, which deletes all the bundle folders before running the actual build. That way you can, after testing, be pretty sure that nothing in the core project inadvertently referenced the contents of a bundle directly.&lt;/p&gt;
+&lt;p&gt;Should you feel like wanting a bit earlier warning on something like that, I would recommend spending a bit of time writing an extension checking for such references as scenes are saved and prefabs imported.&lt;/p&gt;
+&lt;h3&gt;Bundle&lt;/h3&gt;
+&lt;p&gt;The folder created earlier in under Assets/WebPlayerTemplates is only used for storing scripts and building them into assemblies. So at the point of building the assembly, all that matters is the contents of the folder with the resulting assembly, its .txt duplicate and any other assets placed in there.&lt;/p&gt;
+&lt;p&gt;Before running the actual bundle build process, we first (as outlined in the Approach) need to pack and remove all instances of MonoBehaviours defined in the bundle assembly.&lt;/p&gt;
+&lt;p&gt;First, run through each prefab and scene in the bundle folder and consider each instance of these behaviours.&lt;/p&gt;
+&lt;p&gt;For each, attach to the same Game Object an instance of your container component type, defined in the core project &amp;#8211; I am calling it BundledBehaviour in this post.&lt;/p&gt;
+&lt;h3&gt;Packing&lt;/h3&gt;
+&lt;p&gt;Store the full type name of the original in the BundledBehavior (we will need it to re-instantiate the original when unpacking) and add the two as a pair to a list.&lt;/p&gt;
+&lt;p&gt;Next, all serialised fields on the original must be stored in the BundledBehaviour. Iterating over that is a breeze with the SerialisedObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Value types can just be straight up serialised to a byte array and chucked onto the BundledBehaviour. For my implementation I chose to use protobuf-net for that, but you can really use whatever meets your fancy.&lt;/p&gt;
+&lt;p&gt;Once the value types are dealt with, we should move on to the next behaviour in the list, before handling reference types in a second pass. The reason for this will become apparent when we start dealing with inter-component referencing.&lt;/p&gt;
+&lt;h3&gt;References&lt;/h3&gt;
+&lt;p&gt;Bam. Done. Wasn&amp;#8217;t that quick? On to the second pass&amp;#8230;&lt;/p&gt;
+&lt;p&gt;Reference types get a bit trickier than value types. For each serialised reference, we need to add to a list on the BundledBehaviour an instance of a class pairing the field name and the reference. In the context of this post I will refer to that container class as ReferenceField.&lt;/p&gt;
+&lt;p&gt;At this point we unfortunately need to start distinguishing between asset type references, like textures and audio clips, and component type references. Where storing component references in a field of type Component works just fine, unfortunately asset references need to be stored on a field of their exact type.&lt;/p&gt;
+&lt;p&gt;I forget the exact reason for the Unity serialisation system working like this, but for the purpose of this post, how about we just file that under &amp;#8220;the law of the land&amp;#8221; and move on?&lt;/p&gt;
+&lt;p&gt;The result is that the ReferenceField type will need to have a &amp;#8220;field name&amp;#8221; string field, a &amp;#8220;component reference&amp;#8221; Component field and then an &amp;#8220;X reference&amp;#8221; X field for each asset type X.&lt;/p&gt;
+&lt;p&gt;Annoying to deal with, but remember that these are just references, so after having written that list once, the slight overhead and dealing with it in general &amp;#8211; through that wonderful interface you decided to put on it, will carry a minimum of pain.&lt;/p&gt;
+&lt;p&gt;When storing component references, do remember to first check if the reference is contained in that list of MonoBehaviour &amp;#8594; BundledBehaviour pairs built earlier. If so, store the a reference to the BundledBehaviour in stead.&lt;/p&gt;
+&lt;h3&gt;Finalise&lt;/h3&gt;
+&lt;p&gt;Now that all components instances from the bundle assembly have had a BundledBehaviour instance created, containing the type name, value type field data and reference type field references, we can safely go ahead and destroy all the original behaviours.&lt;/p&gt;
+&lt;p&gt;Great! Finally before building the actual bundle, a neat trick is to create a little asset bundle manifest &amp;#8211; basically a custom asset type which will be set as the main asset of the bundle, referencing assets we need handy.&lt;/p&gt;
+&lt;p&gt;Again, since there is plenty of documentation on how to do that in the &lt;a href=&quot;http://angryant.com/videos/&quot;&gt;Unity Hacks talk&lt;/a&gt;, I would direct you there rather than explain it here.&lt;/p&gt;
+&lt;p&gt;The bundle manifest should reference the TextAsset of the bundle assembly (since we need to load that before doing anything else) as well as all the prefabs being built into the assembly.&lt;/p&gt;
+&lt;p&gt;Once that is set up, all there is left to do is to initiate the asset bundle build process, specifying the bundle manifest as the main asset, rejoicing that this crazy cabal of hacks somehow worked.&lt;/p&gt;
+&lt;h2&gt;Loading&lt;/h2&gt;
+&lt;p&gt;So now we have an asset bundle which we need to somehow magically turn into a whole new self-contained game runtime or whatever it was we put in there.&lt;/p&gt;
+&lt;p&gt;First up, via bundle manifest &amp;#8211; accessible as the main asset of the bundle, the bytes of the assembly need to be passed to a System.Reflection.Assembly constructor.&lt;/p&gt;
+&lt;p&gt;With that done, all the behaviours defined in the assembly are available for attaching.&lt;/p&gt;
+&lt;p&gt;Next, all prefabs should be unpacked first. For each BundledBehaviour attached, run an Unpack function.&lt;/p&gt;
+&lt;h3&gt;Unpacking&lt;/h3&gt;
+&lt;p&gt;By passing the type name stored on the BundledBehaviour to a GetType call, we can get a reference to the original type, which we can pass to AddComponent, creating a new instance of the original. Store this pairing between BundledBehaviour and new instance in a list &amp;#8211; just like during the packing process.&lt;/p&gt;
+&lt;p&gt;Once available deserialise the simple fields, as stored in byte form on the BundledBehaviour, onto the new instance.&lt;/p&gt;
+&lt;p&gt;For each asset reference in the list of ReferenceFields, copy over the reference to the correct field on the new instance.&lt;/p&gt;
+&lt;p&gt;As with the packing process, dealing with reference type fields should be pushed to a second pass &amp;#8211; once all instances of the original types are available.&lt;/p&gt;
+&lt;h3&gt;References&lt;/h3&gt;
+&lt;p&gt;We can now pass over all BundledBehaviour previously treated and copy all references stored in the list of ReferenceFields to the members with the proper names &amp;#8211; as specified in the same.&lt;/p&gt;
+&lt;p&gt;When copying over a reference, check first if it is one of our BundledBehaviour instances and if so, copy over the new instance it is paired with in stead.&lt;/p&gt;
+&lt;p&gt;With all original data and references restored, all instances of BundledBehaviour on the prefabs can now be destroyed.&lt;/p&gt;
+&lt;h3&gt;Scenes&lt;/h3&gt;
+&lt;p&gt;Scenes can now be loaded normally from the bundle, since all prefabs have now been properly unpacked. BundledBehaviour should in its Awake handler start the same unpacking process used on the prefabs, so that loading a scene automatically unpacks it.&lt;/p&gt;
+&lt;p&gt;Violá! New inter-depended content and logic is now live in your runtime!&lt;/p&gt;
+&lt;h1&gt;Recommendations and Limitations&lt;/h1&gt;
+&lt;p&gt;Seeing as the BundledBehaviours are using Awake, that basically rules out behaviours depending on one-another during Awake. Not to worry though, you still have OnEnable and Start for initialisation. Just keep it in mind.&lt;/p&gt;
+&lt;p&gt;Depending on your use case for this, you might end up with an interesting web of different versions of bundles loaded on any given client machine. I would therefore recommend not spending time and resources on building a dependency tree between bundles and in stead strictly forbid one bundle using components defined in another. Additionally it would be a good idea to designate one namespace per bundle.&lt;/p&gt;
+&lt;p&gt;As mentioned in the original post, this whole trick depends on the mono &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; runtime being available. That means no fun for you if you are targeting iOS or the consoles &amp;#8211; at time of writing, those are the platforms on which Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; rather than &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt;.&lt;/p&gt;
+&lt;h1&gt;Security&lt;/h1&gt;
+&lt;p&gt;Before we run out and celebrate our great fortune, a word on security: Since a likely application for this technique is to load self-contained bundles over the internet, remember that a third party could potentially insert themselves mid-stream and modify the contents of your transmission.&lt;/p&gt;
+&lt;p&gt;If we were just transmitting textures and meshes, that should be just fine, but in this instance we are transmitting executable code which we intend to run in our application.&lt;/p&gt;
+&lt;p&gt;So it would probably be a good idea to somehow guard against someone inserting malicious code in there. At the very least you should employ some public key signing of the bundles &amp;#8211; optimally doing the whole transfer on a secured connection (whatever that means these days).&lt;/p&gt;
+&lt;p&gt;And that is about it. A fair bit of text &amp;#8211; I&amp;#8217;ll see about possibly adding some illustrations later, but for now I hope you found some use in this postmortem-ish post. I had fun writing it at least :)&lt;/p&gt;</description>
+				<published>2014-04-25 00:00:00 +0200</published>
+				<link>http://angryant.com/2014/04/25/Construct/</link>
+			</item>
+		
+			<item>
 				<title>The Engine Wars: Numbers</title>
 				<description>&lt;p&gt;So this years &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; did indeed not disappoint &amp;#8211; lots of great talks, meetings and announcements. Thanks for saying hi if you did &amp;#8211; if not, maybe next year. Of the announcements, I would like to just focus on the engine ones here.&lt;/p&gt;
 &lt;h1&gt;Overview&lt;/h1&gt;
@@ -1258,46 +1362,6 @@ Pre-release:
  - Magic happened. Behave was born.&lt;/pre&gt;</description>
 				<published>2013-08-25 00:00:00 +0200</published>
 				<link>http://angryant.com/2013/08/25/Behave-2-0/</link>
-			</item>
-		
-			<item>
-				<title>Unity Hacks: Dual sticks</title>
-				<description>&lt;p&gt;This is my third post in what looks like is going to turn into &lt;a href=&quot;http://angryant.com/2013/07/19/Unity-Hacks-Touch-gestures/&quot;&gt;a series&lt;/a&gt;, examining parts of the example project I provided for the Unity Hacks presentation &amp;#8211; delivered at a couple of the Unite conferences this year.&lt;/p&gt;
-&lt;p&gt;You can find the project and a recording of the presentation in the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; section of this site.&lt;/p&gt;
-&lt;h1&gt;DualControls&lt;/h1&gt;
-&lt;p&gt;The &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; interface has a very straight forward purpose: Provide a 2 &amp;#215; 2 axis input interface across platforms and compatible units. This is exposed via the DualControls.Left and DualControls.Right accessors &amp;#8211; each returning a Vector2.&lt;/p&gt;
-&lt;p&gt;Supported out of the box is:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;span class=&quot;caps&quot;&gt;WASD&lt;/span&gt; + mouse.&lt;/li&gt;
-	&lt;li&gt;Xbox360 controller (windows-only)&lt;/li&gt;
-	&lt;li&gt;ps3 controller (OS X-only)&lt;/li&gt;
-	&lt;li&gt;Shadowgun-style touch controls (left/right screen split)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;However abstraction is relaxed enough that virtual sticks or alternative input like the leap motion could be added fairly easily (assuming you have a means of capturing that input data in the first place).&lt;/p&gt;
-&lt;h1&gt;Controllers&lt;/h1&gt;
-&lt;p&gt;So controllers are not exactly nicely wrapped up in the current version of Unity. Which ungodly hack did I have to apply to get them to play along with just working out of the box in an easily installable package? It is actually not so bad. However I had to concede to some compromises up front. Basically when it comes to joysticks and controllers, you generally have two complications: the hardware itself and the driver.&lt;/p&gt;
-&lt;p&gt;So? What is so bad about that? Well, in a perfect world you had one driver for each controller type or at least all the drivers for the same hardware would map the buttons and axes in the same way, right?&lt;/p&gt;
-&lt;p&gt;Enter: This world. For every controller you always have at least two drivers set up differently: One for OS X and one for Windows (the Linux one often being based on the Windows one as I understand it). Why would anyone be content with just two drivers though? There exists a good number of different packages and open source solutions, vendor and OS provided drivers for the different controllers.&lt;/p&gt;
-&lt;p&gt;The way these are differentiated in the Unity runtime is via the joystick name string &amp;#8211; as accessible via Input.GetJoystickNames.&lt;/p&gt;
-&lt;p&gt;This is what &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls&lt;/a&gt; checks for in its Update handler. If a new joystick is found connected, it runs the name by the controller wiring and activates the appropriate controller (optionally if accepted by a callback).&lt;/p&gt;
-&lt;p&gt;Per default I have compromised and only provided wiring for the Xbox360 controller on Windows and the ps3 controller on OS X. This particular configuration stems from the fact that those OS&amp;#8217;es ship with a pre-installed default driver for those controllers.&lt;/p&gt;
-&lt;p&gt;Microsoft clearly should support their own hardware and I&amp;#8217;m assuming that Apple just supports the ps3 controller because it&amp;#8217;s hardware from a direct Microsoft competitor.&lt;/p&gt;
-&lt;p&gt;However, again, the abstraction is loose enough that if you want to, you should be able to add support for more controllers fairly easily. See the end of the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt; script for that.&lt;/p&gt;
-&lt;p&gt;Oh, but I almost forgot the hack: As I am using the standard Unity Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for this, the input manager needs configuring, right? So with no &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for it, how do you go about doing that for a package?&lt;/p&gt;
-&lt;p&gt;You use the AssetDatabase &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to load ProjectSettings/InputManager.asset and then the ScriptableObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to modify it.
-&lt;script src=&#39;https://gist.github.com/6151366.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;I hope you find this useful. For more details, these are the Unity Hacks scripts related to this post:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls.cs&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.Stick.cs&quot;&gt;DualControls.Stick.cs&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt;&lt;/li&gt;
-	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/ControllerInput.cs&quot;&gt;ControllerInput.cs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</description>
-				<published>2013-08-04 00:00:00 +0200</published>
-				<link>http://angryant.com/2013/08/04/Unity-Hacks-Dual-sticks/</link>
 			</item>
 		
 	</channel>
