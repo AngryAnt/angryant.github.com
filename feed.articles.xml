@@ -8,7 +8,8 @@
 			
 			<item>
 				<title>Construct</title>
-				<description>&lt;p&gt;A while ago I &lt;a href=&quot;http://angryant.com/2010/01/05/downloading-the-hydra/&quot;&gt;published a post&lt;/a&gt; referencing &lt;a href=&quot;http://www.imdb.com/title/tt0244244/&quot;&gt;Hollywoods take on programming anno 2001&lt;/a&gt;. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.&lt;/p&gt;
+				<description>&lt;p&gt;&lt;strong&gt;Updated&lt;/strong&gt; April 28th: Added illustrations.&lt;/p&gt;
+&lt;p&gt;A while ago I &lt;a href=&quot;http://angryant.com/2010/01/05/downloading-the-hydra/&quot;&gt;published a post&lt;/a&gt; referencing &lt;a href=&quot;http://www.imdb.com/title/tt0244244/&quot;&gt;Hollywoods take on programming anno 2001&lt;/a&gt;. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.&lt;/p&gt;
 &lt;p&gt;The post was pretty brief, just covering the raw basics of the technique and not dealing with any of the challenges in integrating it with a more complete patching solution.&lt;/p&gt;
 &lt;p&gt;Luckily I have recently had a chance to return to working with it and implementing it fully on a project. This post will cover the challenges met and my solutions to them.&lt;/p&gt;
 &lt;p&gt;Unlike the original post, this one is not exactly brief, so, uh, hang on to something?&lt;/p&gt;
@@ -20,6 +21,7 @@
 	&lt;li&gt;Create a System.Reflection.Assembly instance from the bytes.&lt;/li&gt;
 	&lt;li&gt;Instantiate classes, attach components and call methods via reflection.&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/1-Assembly.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Assembly process&quot; alt=&quot;Assembly process&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;This works really well for simple logic expansions. However if you want to couple the logic update with content such as prefabs and scenes using new components defined in this new assembly, you are out of luck.&lt;/p&gt;
 &lt;p&gt;New content can be loaded into Unity runtimes via asset bundles (these require Unity pro at time of writing). However in order to build these asset bundles as well as loading them afterwards, Unity needs to know all the components used in the contained scenes and prefabs.&lt;/p&gt;
 &lt;p&gt;Unfortunately this is not possible as that would require the presence of our new MonoBehaviours in the shipped build, which we are obviously not very interested in, given that we are working on a post-shipping patch.&lt;/p&gt;
@@ -50,6 +52,7 @@
 &lt;p&gt;I chose a location looking something like this: Assets/WebplayerTemplates/Bundles/MyFirstBundle.&lt;/p&gt;
 &lt;p&gt;The asset post processor building the assembly should then drop it in a folder like Assets/Bundles/MyFirstBundle and make a duplicate of it, with the .txt extension.&lt;/p&gt;
 &lt;p&gt;The original will be from where you can drag components and the copy will be the one built into the bundle, since it is now imported as a TextAsset and can therefore be included, unlike the original assembly.&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/2-Workflow.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Workflow&quot; alt=&quot;Workflow&quot; /&gt;&lt;/center&gt;
 &lt;p&gt;At this point you can start work on the contents of the bundle, saving scenes, prefabs and other assets unique to the bundle into the same folder as the assembly and text file &amp;#8211; subfolders under that would work fine as well.&lt;/p&gt;
 &lt;p&gt;It is important to note that attaching behaviours from the assembly, as well as behaviours defined in the core project to scene objects and prefabs in the bundle is just fine. However prefabs, scenes and scripts outside of the bundle should never reference behaviours or assets from the bundle directly.&lt;/p&gt;
 &lt;h2&gt;Building&lt;/h2&gt;
@@ -66,12 +69,14 @@
 &lt;p&gt;Next, all serialised fields on the original must be stored in the BundledBehaviour. Iterating over that is a breeze with the SerialisedObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;Value types can just be straight up serialised to a byte array and chucked onto the BundledBehaviour. For my implementation I chose to use protobuf-net for that, but you can really use whatever meets your fancy.&lt;/p&gt;
 &lt;p&gt;Once the value types are dealt with, we should move on to the next behaviour in the list, before handling reference types in a second pass. The reason for this will become apparent when we start dealing with inter-component referencing.&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/3-Building.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Building and packing&quot; alt=&quot;Building and packing&quot; /&gt;&lt;/center&gt;
 &lt;h3&gt;References&lt;/h3&gt;
 &lt;p&gt;Bam. Done. Wasn&amp;#8217;t that quick? On to the second pass&amp;#8230;&lt;/p&gt;
 &lt;p&gt;Reference types get a bit trickier than value types. For each serialised reference, we need to add to a list on the BundledBehaviour an instance of a class pairing the field name and the reference. In the context of this post I will refer to that container class as ReferenceField.&lt;/p&gt;
 &lt;p&gt;At this point we unfortunately need to start distinguishing between asset type references, like textures and audio clips, and component type references. Where storing component references in a field of type Component works just fine, unfortunately asset references need to be stored on a field of their exact type.&lt;/p&gt;
 &lt;p&gt;I forget the exact reason for the Unity serialisation system working like this, but for the purpose of this post, how about we just file that under &amp;#8220;the law of the land&amp;#8221; and move on?&lt;/p&gt;
 &lt;p&gt;The result is that the ReferenceField type will need to have a &amp;#8220;field name&amp;#8221; string field, a &amp;#8220;component reference&amp;#8221; Component field and then an &amp;#8220;X reference&amp;#8221; X field for each asset type X.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/4-Data.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Data storage&quot; alt=&quot;Data storage&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;Annoying to deal with, but remember that these are just references, so after having written that list once, the slight overhead and dealing with it in general &amp;#8211; through that wonderful interface you decided to put on it, will carry a minimum of pain.&lt;/p&gt;
 &lt;p&gt;When storing component references, do remember to first check if the reference is contained in that list of MonoBehaviour &amp;#8594; BundledBehaviour pairs built earlier. If so, store the a reference to the BundledBehaviour in stead.&lt;/p&gt;
 &lt;h3&gt;Finalise&lt;/h3&gt;
@@ -80,6 +85,7 @@
 &lt;p&gt;Again, since there is plenty of documentation on how to do that in the &lt;a href=&quot;http://angryant.com/videos/&quot;&gt;Unity Hacks talk&lt;/a&gt;, I would direct you there rather than explain it here.&lt;/p&gt;
 &lt;p&gt;The bundle manifest should reference the TextAsset of the bundle assembly (since we need to load that before doing anything else) as well as all the prefabs being built into the assembly.&lt;/p&gt;
 &lt;p&gt;Once that is set up, all there is left to do is to initiate the asset bundle build process, specifying the bundle manifest as the main asset, rejoicing that this crazy cabal of hacks somehow worked.&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/6-Manifest.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Bundle manifest&quot; alt=&quot;Bundle manifest&quot; /&gt;&lt;/center&gt;
 &lt;h2&gt;Loading&lt;/h2&gt;
 &lt;p&gt;So now we have an asset bundle which we need to somehow magically turn into a whole new self-contained game runtime or whatever it was we put in there.&lt;/p&gt;
 &lt;p&gt;First up, via bundle manifest &amp;#8211; accessible as the main asset of the bundle, the bytes of the assembly need to be passed to a System.Reflection.Assembly constructor.&lt;/p&gt;
@@ -90,6 +96,7 @@
 &lt;p&gt;Once available deserialise the simple fields, as stored in byte form on the BundledBehaviour, onto the new instance.&lt;/p&gt;
 &lt;p&gt;For each asset reference in the list of ReferenceFields, copy over the reference to the correct field on the new instance.&lt;/p&gt;
 &lt;p&gt;As with the packing process, dealing with reference type fields should be pushed to a second pass &amp;#8211; once all instances of the original types are available.&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/5-Unpack.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Loading and unpacking&quot; alt=&quot;Loading and unpacking&quot; /&gt;&lt;/center&gt;
 &lt;h3&gt;References&lt;/h3&gt;
 &lt;p&gt;We can now pass over all BundledBehaviour previously treated and copy all references stored in the list of ReferenceFields to the members with the proper names &amp;#8211; as specified in the same.&lt;/p&gt;
 &lt;p&gt;When copying over a reference, check first if it is one of our BundledBehaviour instances and if so, copy over the new instance it is paired with in stead.&lt;/p&gt;
@@ -105,7 +112,7 @@
 &lt;p&gt;Before we run out and celebrate our great fortune, a word on security: Since a likely application for this technique is to load self-contained bundles over the internet, remember that a third party could potentially insert themselves mid-stream and modify the contents of your transmission.&lt;/p&gt;
 &lt;p&gt;If we were just transmitting textures and meshes, that should be just fine, but in this instance we are transmitting executable code which we intend to run in our application.&lt;/p&gt;
 &lt;p&gt;So it would probably be a good idea to somehow guard against someone inserting malicious code in there. At the very least you should employ some public key signing of the bundles &amp;#8211; optimally doing the whole transfer on a secured connection (whatever that means these days).&lt;/p&gt;
-&lt;p&gt;And that is about it. A fair bit of text &amp;#8211; I&amp;#8217;ll see about possibly adding some illustrations later, but for now I hope you found some use in this postmortem-ish post. I had fun writing it at least :)&lt;/p&gt;</description>
+&lt;p&gt;And that is about it. A fair bit of text, but I hope you found some use in this postmortem-ish post. I had fun writing it at least :)&lt;/p&gt;</description>
 				<published>2014-04-25 00:00:00 +0200</published>
 				<link>http://angryant.com/2014/04/25/Construct/</link>
 			</item>

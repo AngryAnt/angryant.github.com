@@ -82,7 +82,8 @@
 				<h1 id="Top">Construct</h1>
 				
 				<div id="content">
-					<div class="post"><p>A while ago I <a href="http://angryant.com/2010/01/05/downloading-the-hydra/">published a post</a> referencing <a href="http://www.imdb.com/title/tt0244244/">Hollywoods take on programming anno 2001</a>. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.</p>
+					<div class="post"><p><strong>Updated</strong> April 28th: Added illustrations.</p>
+<p>A while ago I <a href="http://angryant.com/2010/01/05/downloading-the-hydra/">published a post</a> referencing <a href="http://www.imdb.com/title/tt0244244/">Hollywoods take on programming anno 2001</a>. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.</p>
 <p>The post was pretty brief, just covering the raw basics of the technique and not dealing with any of the challenges in integrating it with a more complete patching solution.</p>
 <p>Luckily I have recently had a chance to return to working with it and implementing it fully on a project. This post will cover the challenges met and my solutions to them.</p>
 <p>Unlike the original post, this one is not exactly brief, so, uh, hang on to something?</p>
@@ -94,6 +95,7 @@
 	<li>Create a System.Reflection.Assembly instance from the bytes.</li>
 	<li>Instantiate classes, attach components and call methods via reflection.</li>
 </ol>
+<p><img src="/resources/posts/2014-04-25-Construct/1-Assembly.png" style="float:none;clear:both;" title="Assembly process" alt="Assembly process" /></p>
 <p>This works really well for simple logic expansions. However if you want to couple the logic update with content such as prefabs and scenes using new components defined in this new assembly, you are out of luck.</p>
 <p>New content can be loaded into Unity runtimes via asset bundles (these require Unity pro at time of writing). However in order to build these asset bundles as well as loading them afterwards, Unity needs to know all the components used in the contained scenes and prefabs.</p>
 <p>Unfortunately this is not possible as that would require the presence of our new MonoBehaviours in the shipped build, which we are obviously not very interested in, given that we are working on a post-shipping patch.</p>
@@ -124,6 +126,7 @@
 <p>I chose a location looking something like this: Assets/WebplayerTemplates/Bundles/MyFirstBundle.</p>
 <p>The asset post processor building the assembly should then drop it in a folder like Assets/Bundles/MyFirstBundle and make a duplicate of it, with the .txt extension.</p>
 <p>The original will be from where you can drag components and the copy will be the one built into the bundle, since it is now imported as a TextAsset and can therefore be included, unlike the original assembly.</p>
+<center><img src="/resources/posts/2014-04-25-Construct/2-Workflow.png" style="float:none;clear:both;" title="Workflow" alt="Workflow" /></center>
 <p>At this point you can start work on the contents of the bundle, saving scenes, prefabs and other assets unique to the bundle into the same folder as the assembly and text file &#8211; subfolders under that would work fine as well.</p>
 <p>It is important to note that attaching behaviours from the assembly, as well as behaviours defined in the core project to scene objects and prefabs in the bundle is just fine. However prefabs, scenes and scripts outside of the bundle should never reference behaviours or assets from the bundle directly.</p>
 <h2>Building</h2>
@@ -140,12 +143,14 @@
 <p>Next, all serialised fields on the original must be stored in the BundledBehaviour. Iterating over that is a breeze with the SerialisedObject <span class="caps">API</span>.</p>
 <p>Value types can just be straight up serialised to a byte array and chucked onto the BundledBehaviour. For my implementation I chose to use protobuf-net for that, but you can really use whatever meets your fancy.</p>
 <p>Once the value types are dealt with, we should move on to the next behaviour in the list, before handling reference types in a second pass. The reason for this will become apparent when we start dealing with inter-component referencing.</p>
+<center><img src="/resources/posts/2014-04-25-Construct/3-Building.png" style="float:none;clear:both;" title="Building and packing" alt="Building and packing" /></center>
 <h3>References</h3>
 <p>Bam. Done. Wasn&#8217;t that quick? On to the second pass&#8230;</p>
 <p>Reference types get a bit trickier than value types. For each serialised reference, we need to add to a list on the BundledBehaviour an instance of a class pairing the field name and the reference. In the context of this post I will refer to that container class as ReferenceField.</p>
 <p>At this point we unfortunately need to start distinguishing between asset type references, like textures and audio clips, and component type references. Where storing component references in a field of type Component works just fine, unfortunately asset references need to be stored on a field of their exact type.</p>
 <p>I forget the exact reason for the Unity serialisation system working like this, but for the purpose of this post, how about we just file that under &#8220;the law of the land&#8221; and move on?</p>
 <p>The result is that the ReferenceField type will need to have a &#8220;field name&#8221; string field, a &#8220;component reference&#8221; Component field and then an &#8220;X reference&#8221; X field for each asset type X.</p>
+<p><img src="/resources/posts/2014-04-25-Construct/4-Data.png" style="float:none;clear:both;" title="Data storage" alt="Data storage" /></p>
 <p>Annoying to deal with, but remember that these are just references, so after having written that list once, the slight overhead and dealing with it in general &#8211; through that wonderful interface you decided to put on it, will carry a minimum of pain.</p>
 <p>When storing component references, do remember to first check if the reference is contained in that list of MonoBehaviour &#8594; BundledBehaviour pairs built earlier. If so, store the a reference to the BundledBehaviour in stead.</p>
 <h3>Finalise</h3>
@@ -154,6 +159,7 @@
 <p>Again, since there is plenty of documentation on how to do that in the <a href="http://angryant.com/videos/">Unity Hacks talk</a>, I would direct you there rather than explain it here.</p>
 <p>The bundle manifest should reference the TextAsset of the bundle assembly (since we need to load that before doing anything else) as well as all the prefabs being built into the assembly.</p>
 <p>Once that is set up, all there is left to do is to initiate the asset bundle build process, specifying the bundle manifest as the main asset, rejoicing that this crazy cabal of hacks somehow worked.</p>
+<center><img src="/resources/posts/2014-04-25-Construct/6-Manifest.png" style="float:none;clear:both;" title="Bundle manifest" alt="Bundle manifest" /></center>
 <h2>Loading</h2>
 <p>So now we have an asset bundle which we need to somehow magically turn into a whole new self-contained game runtime or whatever it was we put in there.</p>
 <p>First up, via bundle manifest &#8211; accessible as the main asset of the bundle, the bytes of the assembly need to be passed to a System.Reflection.Assembly constructor.</p>
@@ -164,6 +170,7 @@
 <p>Once available deserialise the simple fields, as stored in byte form on the BundledBehaviour, onto the new instance.</p>
 <p>For each asset reference in the list of ReferenceFields, copy over the reference to the correct field on the new instance.</p>
 <p>As with the packing process, dealing with reference type fields should be pushed to a second pass &#8211; once all instances of the original types are available.</p>
+<center><img src="/resources/posts/2014-04-25-Construct/5-Unpack.png" style="float:none;clear:both;" title="Loading and unpacking" alt="Loading and unpacking" /></center>
 <h3>References</h3>
 <p>We can now pass over all BundledBehaviour previously treated and copy all references stored in the list of ReferenceFields to the members with the proper names &#8211; as specified in the same.</p>
 <p>When copying over a reference, check first if it is one of our BundledBehaviour instances and if so, copy over the new instance it is paired with in stead.</p>
@@ -179,7 +186,7 @@
 <p>Before we run out and celebrate our great fortune, a word on security: Since a likely application for this technique is to load self-contained bundles over the internet, remember that a third party could potentially insert themselves mid-stream and modify the contents of your transmission.</p>
 <p>If we were just transmitting textures and meshes, that should be just fine, but in this instance we are transmitting executable code which we intend to run in our application.</p>
 <p>So it would probably be a good idea to somehow guard against someone inserting malicious code in there. At the very least you should employ some public key signing of the bundles &#8211; optimally doing the whole transfer on a secured connection (whatever that means these days).</p>
-<p>And that is about it. A fair bit of text &#8211; I&#8217;ll see about possibly adding some illustrations later, but for now I hope you found some use in this postmortem-ish post. I had fun writing it at least :)</p></div>
+<p>And that is about it. A fair bit of text, but I hope you found some use in this postmortem-ish post. I had fun writing it at least :)</p></div>
 				</div>
 				<div id="feed-container">
 					<div id="feed">
