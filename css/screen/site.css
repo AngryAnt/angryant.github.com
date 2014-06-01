@@ -297,3 +297,59 @@ html, body
 	padding: 0pt;
 	margin: 0pt;
 }
+
+.assetstore_content_title, .assetstore_content_rating, .assetstore_content_image
+{
+	clear: both !important;
+}
+
+.assetstore_contents, .assetstore_content_horizontal, .assetstore_content_medium, .assetstore_content
+{
+	float: right !important;
+	clear: right !important;
+	border: 0px white none !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	width: 200px !important;
+	text-align: center !important;
+}
+
+.assetstore_contents
+{
+	margin: 20px !important;
+}
+
+.assetstore_content_title
+{
+	margin: 0px !important;
+}
+
+.assetstore_content_title a
+{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size: 11pt !important;
+	line-height: 150% !important;
+	color: #888 !important;
+}
+
+.assetstore_content_image
+{
+	padding: 0px !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	float: none !important;
+}
+
+.assetstore_content_category, .assetstore_content_price
+{
+	display: none !important;
+}
+
+.assetstore_content_image img
+{
+	width: 100px !important;
+	height: 100px !important;
+	margin: 0px !important;
+	padding: 0px !important;
+	float: none !important;
+}
