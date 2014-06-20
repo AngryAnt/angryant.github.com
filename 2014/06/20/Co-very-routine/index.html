@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Unity Hacks: Touch gestures - </title>
+		<title>AngryAnt - Co-very-routine - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Unity Hacks: Touch gestures</div>
+<div id="subtitle">Co-very-routine</div>
 
 	
 		<a href="/">Home</a>
@@ -78,35 +78,93 @@
 
 			</div>
 			<div id="container">
-				<span class="date">19 Jul 2013</span>
-				<h1 id="Top">Unity Hacks: Touch gestures</h1>
+				<span class="date">20 Jun 2014</span>
+				<h1 id="Top">Co-very-routine</h1>
 				
 				<div id="content">
-					<div class="post"><p>So earlier this month I could finally push the Unity Hacks example code and slide show project <a href="https://github.com/AngryAnt/UnityHacks/">live</a> &#8211; after one of the <a href="/videos">videos</a> of the presentation was pushed live.</p>
-<p>The project is a pretty big treasure trove of handy scripts though and I didn&#8217;t like just tossing it out there and let people pick it apart on their own(feel free to go excavating if you learn better that way though). Therefore I plan for the next couple of posts here to cover various bits and bops from that project.</p>
-<p>Note that a bunch of these scripts &#8211; for instance the one I cover today &#8211; was at the time I was still at Unity Technologies slated for the new Standard Assets shipped with Unity. Since I left, I obviously can&#8217;t say if or when these are shipped and in which form. What&#8217;s in the Unity Hacks project is pretty much the last iteration I did on them before leaving.</p>
-<h1>TouchGestures.cs</h1>
-<p>The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.</p>
-<p>An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:
-<script src='https://gist.github.com/6039082.js?file='></script><div><noscript><pre><code></code></pre></noscript></div></p>
-<p>This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.</p>
-<p>Great, so what do the different configuration values mean? First, let&#8217;s take a look at the tracking clamps:</p>
+					<div class="post"><p>I really like coroutines. Like with most things, they should be applied in well-considered quantities, but when applied they can really expand what you can achieve in just a few lines of code. Particularly in our frame-bound world.</p>
+<p>However there has always been this little subset of extra things, which I would have liked to have seen supported by Unity coroutines out of the box.</p>
+<p>&#8220;Hang on, weren&#8217;t you just there?&#8221;</p>
+<p>Yep. I was and terrible as the excuse might be, there was always something that seemed shinier or more on fire.</p>
+<p>Then at <a href="http://unity3d.com/unite">Unite 13</a>, Devin and Matthew of <a href="http://twistedoakstudios.com/">Twisted Oak Studios</a> did an excellent <a href="https://www.youtube.com/watch?v=ciDD6Wl-Evk">talk about extending coroutines</a> by using extension methods to insert a proxy layer between coroutines and the Unity coroutine-system. Unfortunately I didn&#8217;t catch the talk live (I don&#8217;t see many talks at conferences), but shortly after I could catch it on YouTube. Technology, yay!</p>
+<p>In any case that really ended my supply of excuses, other than work.</p>
+<p>Devin and Matthew had specifically implemented the setup to allow coroutines to provide a return value, provide a nicer stopping mechanism, as well as provide a useful way of handling exceptions thrown during the execution of coroutines. This provided an excellent platform to work off and did tick three items off my wishlist, but didn&#8217;t quite deliver the whole package.</p>
+<p>It is an interesting talk and if you have the time, you should give it a look.</p>
+<h1>The Whole Package</h1>
+<p>So I slacked off doing work for a bit and somewhere in Q2 2014 got started writing my own implementation of extended coroutines, with the extra bits and bops on my list.</p>
+<p>This here is the list:</p>
 <ul>
-	<li>maxDuration: If a tracked touch remains active for longer than this time, it is no longer considered as part of a gesture. This avoids misinterpreting drags or virtual joysticks.</li>
-	<li>min[Pinch/Swipe]ScreenTravel: How much of the normalized screen size should a pinch or a swipe travel before it is considered valid? This avoids misinterpreting taps as mini pinches or swipes.</li>
-	<li>maxTapScreenTravel: What is the maximum normalized screen movement a tap gesture can have before it is no longer considered a tap?</li>
-	<li>maxTapDuration: For how long can a tracked touch be live before it is no longer considered a tap?</li>
+	<li>Coroutines providing return values (yay! free!)</li>
+	<li>Handle exceptions thrown during coroutine execution (yay! free!)</li>
+	<li>Useful stopping behaviour (yay! free!)</li>
+	<li>Built-in soft stop.</li>
+	<li>Better built-in communication between caller and coroutine.</li>
+	<li>Easier way of intermixing threading and coroutines.</li>
+	<li>Built-in simple load balancing.</li>
 </ul>
-<p>The last elements are somewhat less finicky and tweak happy, though the tracking clamps should have sensible default values:</p>
+<h2>Soft Stop</h2>
+<p>Straight up stopping a coroutine is fine, but dependent on what it was doing while being stopped, it might leave a mess behind. The idea with a soft stop mechanism is that in stead of directly stopping the coroutine, the external controller in stead requests that the coroutine stops.</p>
+<p>This allows the coroutine to monitor the state of the requested stop flag at appropriate points in its execution and terminate with the necessary cleanup in response.</p>
+<h2>Caller &#8211; Coroutine Communications</h2>
+<p>But why stop the communications at just requesting a nice stop? What if the work produced by the coroutine could have relevance throughout its execution?</p>
+<p>By making the result of the coroutine accessible before the completion of the coroutine, we gain the capability of not just reading it early on, but also contributing to its building from outside of the coroutine.</p>
+<h2>Threading</h2>
+<p>Sufficiently intense tasks, working on data types not tied to the UnityEngine, <span class="caps">API</span> can benefit from threading. Unfortunately, most of the time things aren&#8217;t that cleanly cut out, and only part of the task is suitable for threading.</p>
+<p>At that point the alternatives are to either forget about partially threading the task or to bridge the two types of concurrency system. Since the latter rarely turns out very pretty, the former is often chosen.</p>
+<p>Building threading right into the coroutine system makes the choice easy.</p>
+<h2>Simple Load Balancing</h2>
+<p>Finally, heavy tasks which for one reason or another cannot be threaded (perhaps the very nature of the task requires dealing with the UnityEngine <span class="caps">API</span>), can in stead be frame sliced inside a coroutine.</p>
+<p>However the logic for doing so can be more or less pretty and writing boilerplate is boring. Clearly this would be great to also have built into the base coroutine system.</p>
+<h1>Usage</h1>
+<p>So that is the full wish list implemented. Now let&#8217;s take a look at some quick example snippets.</p>
+<h2>Result</h2>
+<p>The base interface for using the extended coroutines is to start them via the new generic version of <code>MonoBehaviour.StartCoroutine</code>.</p>
+<p>For running regular coroutines, the only other difference is that in stead of yielding directly to the return value of <code>StartCoroutine&lt;T&gt;</code>, you yield to the .Coroutine member of its <code>CoroutineData&lt;T&gt;</code> return value.</p>
+<p>This is also the reference which gives you access to the result of the coroutine execution.</p>
+<script src='https://gist.github.com/.js?file=Result.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
 <ul>
-	<li>receivers: The list of MonoBehaviours interested in receiving a callback when a gesture has been identified.</li>
-	<li>trackingMask: This is a bitmask identifying which gestures you are interested in tracking. If you only need to deal with swipes, there is no need to spend time tracking any other gestures. Note that in order for this field to be set correctly, it is important that the custom inspector for the TouchGestures component is used.</li>
-	<li>trackMultiple: Should the gesture tracker allow multiple gestures to occur at the same time? Like a pinch and a swipe in different ends of the screen.</li>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Result.cs">Example</a></li>
 </ul>
-<p>And that is about it! You should have what you need to start using the TouchGestures component. Hopefully you will find it useful.</p>
+<h2>Exception</h2>
+<p>Since the coroutine calls are executed by the coroutine system and not the callee, normally exceptions just get swallowed up by the coroutine system and logged out.</p>
+<p>The approach of Devin and Matthew, as implemented here, is to swallow the exception, break coroutine execution and then re-throw the same exception when next the coroutine comes into contact with the caller &#8211; namely when its result is accessed.</p>
+<script src='https://gist.github.com/.js?file=Exception.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
 <ul>
-	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/TouchGestures.cs">TouchGestures.cs</a></li>
-	<li><a href="https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Editor/TouchGesturesInspector.cs">TouchGesturesInspector.cs</a></li>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Exception.cs">Example</a></li>
+</ul>
+<h2>Stop</h2>
+<p>In stead of relying on the strange, existing methods of stopping coroutines and the limitations they come with (such as only stopping a coroutine initially started by string parameter or stopping all coroutines on a behaviour), the <code>CoroutineData&lt;T&gt;</code> reference yields another possibility.</p>
+<p>Since it effectively represents an instance of an executing coroutine, adding a <code>Stop</code> method to it becomes much more intuitive.</p>
+<script src='https://gist.github.com/.js?file=Stop.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
+<ul>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Stop.cs">Example</a></li>
+</ul>
+<h2>Soft Stop</h2>
+<p>Requesting that a coroutine stops, requires a line of communication between the caller and coroutine. This is provided in the form of the instance of <code>CoroutineData&lt;T&gt;</code>.</p>
+<p>However in order to effectively pass this, the calling convention on the coroutine is slightly different. Rather than passing the return value of the coroutine to <code>StartCoroutine&lt;T&gt;</code>, the coroutine is passed as a delegate, taking <code>CoroutineData&lt;T&gt;</code> as its only parameter.</p>
+<p>The rest of the flow is exactly as with <code>Stop</code>, except <code>RequestStop</code> is used by the caller and the coroutine periodically checks <code>CoroutineData&lt;T&gt;.ShouldStop</code>.</p>
+<script src='https://gist.github.com/.js?file=SoftStop.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
+<ul>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/SoftStop.cs">Example</a></li>
+</ul>
+<h2>Threading</h2>
+<p>The interface for threading is really very simple. Two new yield classes have been added <code>WaitForWorkerThread</code> and <code>WaitForMainThread</code>. Yielding to an instance of either will do exactly as advertised. Yielding break or the result or throwing an exception will terminate the thread and the coroutine.</p>
+<p>When yielding <code>WaitForSeconds</code> on the worker thread, the thread will sleep for the specified amount of seconds. And finally the <code>CoroutineData&lt;T&gt;</code> holds a flag accessor to determine the thread state of the coroutine.</p>
+<script src='https://gist.github.com/.js?file=Threading.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
+<ul>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Threading.cs">Example</a></li>
+</ul>
+<h2>Load Balancing</h2>
+<p>Load balancing could be done in a bunch of different ways and I would encourage you to add your own (I would love to see your ideas as well). So I decided to just do the simplest I could think of.</p>
+<p><code>WaitIfFrameTime</code> will yield until the next frame if the current frame has taken longer than the specified amount of time. This way it effectively sets down a max frame time while utilising all the time leading up to that cap.</p>
+<script src='https://gist.github.com/.js?file=Load.cs'></script><div><noscript><pre><code></code></pre></noscript></div>
+<ul>
+	<li><a href="https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Load.cs">Example</a></li>
+</ul>
+<h1>Fin</h1>
+<p>And that is it! I hope you find some use of these extensions to the extensions and do let me know if you come up with some cool further extensions.</p>
+<ul>
+	<li><a href="https://gist.github.com/AngryAnt/a9cada6093e7d47bea1c">Source and examples</a></li>
 </ul></div>
 				</div>
 				<div id="feed-container">
