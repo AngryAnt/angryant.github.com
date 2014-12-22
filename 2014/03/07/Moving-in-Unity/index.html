@@ -98,6 +98,8 @@
 <p>To properly participate as a dynamic part of the physics simulation, an object needs to have a rigidbody component attached somewhere in its transform hierarchy.</p>
 <p>The physics system considers separate transform hierarchies as separate objects, so one (and only one) rigidbody component will mark the rest of its hierarchy as dynamic.</p>
 <p>Multiple rigidbodies in the same hierarchy leads to undetermined behaviour (read: weirdnessness) &#8211; the only exception being if those rigidbodies are connected by a joint &#8211; thus making their behaviour again well defined.</p>
+<p>To clarify, this does not apply to sibling hierarchies, but strictly scenarios where tracing from one rigidbody, through to the hierarchy root, encounters another rigidbody.</p>
+<p>In general, many systems &#8211; both built in and third party &#8211; rely on dynamic objects being separate transform hierarchies. Building with such a design is both safe and recommended practice.</p>
 <h2>Kinematic</h2>
 <p>&#8220;But I don&#8217;t need gravity or forces or all that other nonsense!&#8221; &#8211; be cool, that is what the &#8220;kinematic&#8221; switch is for. This basically tells the physics simulation that your object is dynamic, but you will take care of all its movement.</p>
 <p>Kinematic rigidbodies will not be affected by forces or collisions, but will collide with non-kinematic rigidbodies, sending collision events and pushing them out of the way (assuming there are colliders present somewhere in the transform hierarchy of the object).</p>
@@ -108,7 +110,7 @@
 <p>Note that while moving by directly modifying the transform of a kinematic rigidbody is just fine, you will get better results for rapid movement by using the MovePosition and MoveRotation rigidbody functions.</p>
 <p>The former will effectively &#8220;teleport&#8221; the physical object &#8211; fine for short distances and minor rotations, but less so for longer moves. MoveRotation and -Position effectively &#8220;drags&#8221; the object from A to B.</p>
 <h2>Kine-not-so-matic</h2>
-<p>&#8220;Ok, so maybe it would pretty useful if my character could walk into walls, get pushed by others and that sort of thing&#8230;&#8221; No problem. Disable the kinematic flag and start moving via the rigidbody component. If you wanted proper forces and all that, I&#8217;m sure you&#8217;re already all over the AddForce function and all that.</p>
+<p>&#8220;Ok, so maybe it would pretty useful if my character could walk into walls, get pushed by others and that sort of thing&#8230;&#8221; No problem. Disable the kinematic flag and start moving via the rigidbody component. If you wanted proper forces and all that, I&#8217;m sure you&#8217;re already all over the AddForce function and friends.</p>
 <p>However if you still want strict control &#8211; just with a touch of presence &#8211; you should look at directly setting the velocity property of the rigidbody.</p>
 <p>Given sideways and forward movement input, forming a velocity vector is easy. By setting the velocity of the rigidbody you add that information to the physics simulation as well as tell it to update the position of the object smoothly.</p>
 <p>That includes pushes from other rigidbodies or pushbacks from static geometry. However directly setting the velocity will override any directional change and so momentum will remain unchanged.</p>
