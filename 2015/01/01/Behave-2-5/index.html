@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 2.2 - </title>
+		<title>AngryAnt - Behave 2.5 - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Behave 2.2</div>
+<div id="subtitle">Behave 2.5</div>
 
 	
 		<a href="/">Home</a>
@@ -75,28 +75,150 @@
 
 			</div>
 			<div id="container">
-				<span class="date">23 Dec 2013</span>
-				<h1 id="Top">Behave 2.2</h1>
+				<span class="date">01 Jan 2015</span>
+				<h1 id="Top">Behave 2.5</h1>
 				
 				<div id="content">
-					<div class="post"><p>It is finally here! Sorry about this release taking a bit longer than the prior ones. I have experienced the very luxurious &#8220;problem&#8221; of <a href="/work/">having lots to do</a>. The last contract of the year finished this Friday though, so here we are: 2.2 :)</p>
+					<div class="post"><p>Welcome to 2015!</p>
+<p>I hope that you have had a great new years eve and will have a productive year. To assist with that, I would like to present you with version 2.5 of Behave.</p>
 <h2>Contents</h2>
-<p>While the full changelist will follow the body of this post as per usual, I would still like to draw out a few of the main changes in 2.2:</p>
-<ul>
-	<li>Behavioural change: Support for multiple different action handler signatures is discontinued effective immediately.</li>
-	<li>Rather than waiting for the Unity bugfix, the built-in compiler <span class="caps">API</span> is now bypassed in favour of direct compiler binary execution.</li>
-</ul>
-<p>Watch out for that behavioural change &#8211; it will very likely break code. I decided on this in order to reduce the size of your obligatory agent code. Additional parameters have been moved onto properties of the sender tree.</p>
-<p>The compiler change means we are finally rid of that annoying requirement of having mono installed next to Unity in order to run the Behave compiler. Yay!</p>
-<p>The remaining changes are more or less just heaps of UI- and workflow polish, plus a few bug fixes &#8211; again, many thanks to the AngryAnt community for providing invaluable assistance in identifying and tracking these down.</p>
+<p>Aside from lots of editor polish, particularly around the remote debugger, this version brings interesting compiler optimisations and optional text serialisation of Behave libraries.</p>
+<p>Do note that this upgrades the serialisation version of any Behave libraries touched by 2.5. As with any software upgrade, I advise you to keep a backup or earlier revision of your libraries available before upgrading to 2.5.</p>
+<p>Interestingly, the optimisation work on the compiler also brought with it some internal restructuring. This new structure facilitates even further optimisation work down the road.</p>
+<p>Given the existing zero-allocation, low <span class="caps">CPU</span>, low memory footprint nature of the Behave runtime, it is likely that these optimisations will mean little to a lot of users. Should you, however, be running massive amounts of autonomous agents with Behave, you will likely get some actual bang for the buck here.</p>
+<p>Also in this release are several changes and additions to the runtime, the details of which you will find in the full changelist below.</p>
 <h2>Onwards</h2>
-<p>Early next year I hope to have some more time for Behave, allowing me to do some rapid releases with new features in January. As always, any feedback you might have is very much appreciated.</p>
+<p>Lots of interesting stuff in the pipeline, with the ground work for much of it already in place. Stay tuned.</p>
 <ul>
 	<li><a href="http://u3d.as/5hA">Behave 2 for Unity on the asset store</a>.</li>
 	<li><a href="/behave/">Project information</a>.</li>
 </ul>
 <pre>
 Changelist:
+
+
+2.5:
+ - Optional text serialisation.
+     - Switch between text and binary serialisation in library settings.
+     - Full and partial exports to text or binary file.
+     - NOTE: Libraries opened in this version of Behave will be upgraded and are afterwards not backwards compatible.
+ - Compiler upgrade.
+     - Added lots of little CPU and memory optimisations.
+     - Added tree analysis leading to larger memory saves on references when possible.
+     - Improved handling of circular references.
+     - Improved error reporting.
+     - Changed name validation.
+         - Underscores are no longer allowed in names - in order to avoid name clashes with pathed assets.
+         - Fixed previously allowing leading numbers in names.
+ - Runtime API.
+     - Added library.ReflectForwards (ICollection, object).
+     - Added library.SupportedRecords (ICollection).
+     - Added blueprint.SupportedTrees.
+     - Added Library.DidInstantiate (ICollection / Tree).
+     - Changed generated enums to be valued continuously.
+     - Changed get calls for unhandled records to now return -1.
+ - Editor polish.
+     - Improved debugger view.
+         - Improved control bar layout.
+         - Improved rendering of active referenced trees.
+         - Fixes to follow-focus.
+         - Debug view no longer re-crops to current visible tree area, preventing the previous behaviour of the view jumping around even without follow-focus enabled.
+         - Improved sidebar listing of available- and connected runtimes.
+         - Improved handling of disconnecting runtimes.
+         - Improved tracking of available runtimes. No more need for refreshing.
+         - Improved UI for adding debugger overrides.
+         - Added "Add overrides enabled" setting (on by default).
+     - Library vertical scrollbar replaced by standalone scroll buttons top / bottom when relevant - reducing visual noise.
+     - Smaller tweaks and fixes.
+ - Improved internal test coverage.
+
+
+2.4.2:
+ - Fixed some issues related to handling priority selectors in the recently update debugger.
+
+
+2.4.1:
+ - Fix corner case when restructuring library assets.
+
+
+2.4:
+ - Introducing “records”.
+     - Float fields stored in “collections” - essentially ‘smart tables’.
+     - Blackboard fields.
+     - Utility curves.
+     - Utility graphs.
+     - Behaviour Tree integration.
+          - “Tester” component.
+          - “Writer” component.
+          - Record mode for Priority Selector component.
+ - Editor behavioural change: Deleting a tree no longer deletes reference nodes targeting that tree from other trees. Their target is merely cleared.
+ - Editor behavioural change: The Reference node is only available in the component bar if the library contains more than one tree. Same behaviour for Tester and Writer with records.
+ - Behavioural change: Invert flag is now properly applied by the Priority Selector.
+ - Debugger connection stability improvement.
+ - Connection disabling has been removed. This confusing feature caused more harm than good.
+ - Video player now displays video title and description.
+
+
+2.3.5:
+ - Fix home screen video player.
+
+
+2.3.4:
+ - Better error messages in case of insufficient file access privileges (OHAI Perforce).
+ - Added simple version check to the home screen.
+ - New icons for Priority Selector and "form new tree".
+ - Smaller, embedded, JSON library.
+ - Fix annoying behaviour with tree renaming where text fields would keep last entry.
+ - Fix similar behaviour with component text fields on tree selection change.
+ - Unity 5 compatibility fixes (tested on beta 2).
+
+
+2.3.3:
+ - Fix focus handling issue with auto-complete.
+ - Parametrisation is now correctly applied for reset handler calls.
+
+
+2.3.2:
+ - Fix sidebar item duplication and deletion only functional during rename.
+
+
+2.3.1:
+ - Fix GUI error being logged on tree selection.
+ - Proper handling of currently edited library asset being deleted.
+
+
+2.3:
+ - Added support for instant repeaters.
+ - Added support for mandatory contexts.
+ - Added optional target parameter to Tree.ResetForwards.
+ - Added Tree.TickWrapping method.
+ - Added debugger auto-launch settings to library build options.
+ - Added home screen - shown on launch or via the Help menu, full of resources.
+ - Behavioural change: Decorators no longer forward the instant flag of their child node.
+ - Behaviour of decorators receiving a Running signal from their control connection is now defined.
+ - Dependencies now shipped as separate (replaceable) files for minimal project impact.
+ - Editor polish.
+     - Added support for running multiple editor debugging instances on one machine.
+     - Added focus-follow for debugger and canvas.
+     - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
+     - Drag connection to occupied input slot to replace.
+     - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
+     - "Last edited library" now tracked per project.
+     - Last selected tree is now also restored between sessions and playmode transitions.
+     - A bunch of minor adjustments and improvements.
+     - Performance + memory + disk space optimisations.
+     - Minor bugfixes.
+ - New documentation layout and enhancements (already released as available).
+ - Reshuffling of code to make way for exciting new things down the road.
+
+
+2.2.2:
+ - Addressed protobuf issue causing Parallel component completion setting to not get stored correctly.
+
+
+2.2.1:
+ - Fixed issue causing parallel components to fail compilation.
 
 
 2.2:
@@ -168,11 +290,11 @@ Changelist:
        - Control is achieved via third connection socket.
     - Two initial decorator types: Repeater and Interrupter.
  - Asset restructuring.
-    - No more collections - for nesting, use paths in tree names.
-    - New serialization format - see Readme.txt for upgrade instructions.
+ 	- No more collections - for nesting, use paths in tree names.
+ 	- New serialization format - see Readme.txt for upgrade instructions.
     - Collections are gone. Use Unix-style path names for tree organisation.
  - IAgent.Tick (Tree, bool) changed to IAgent.Tick (Tree)
-    - Init calls can now only be handled explicitly
+	- Init calls can now only be handled explicitly
  - Full coverage online documentation and other community resources.
  - Countless fixes and polish items.
 
