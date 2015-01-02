@@ -7,6 +7,67 @@
 		
 			
 			<item>
+				<title>Mad Mash Versioning</title>
+				<description>&lt;p&gt;Through 2014, I had every once in a while heard people casually mention that they were versioning their projects in a combination of git and &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;. I didn&amp;#8217;t really take the time to ask for details on it, but it was one of those things, stuck in the back of my mind.&lt;/p&gt;
+&lt;p&gt;Filed under &amp;#8220;delightfully mad hacks&amp;#8221;, I finally found some time to look into it over Christmas &amp;#8211; as I was dodging various boring tasks in &lt;a href=&quot;/2015/01/01/Behave-2-5/&quot;&gt;finalising Behave 2.5&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;The Excuse&lt;/h2&gt;
+&lt;p&gt;Git is lovely for its decentralisation, easy branching and a bunch of other stuff. However where it is not so delightful is in its handling of binary files.&lt;/p&gt;
+&lt;p&gt;One alternative &lt;span class=&quot;caps&quot;&gt;VCS&lt;/span&gt; which is pretty good at handling binary files is &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;. So by putting binary project files in &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; and text files in git, you should be able to get the best of both worlds, right?&lt;/p&gt;
+&lt;p&gt;That is the idea anyway.&lt;/p&gt;
+&lt;h2&gt;The Hack&lt;/h2&gt;
+&lt;p&gt;Regardless of whether it is a good idea or not, it is an interesting hack. Immediately, it seems like a terrible idea with way too high a potential of user error from its silly workflow overhead. So &lt;strong&gt;that&lt;/strong&gt; is where we&amp;#8217;ll attack.&lt;/p&gt;
+&lt;p&gt;The goal is then to have the user place binary files in one folder and text files in other folders &amp;#8211; all under the same core project folder. And then simply commit, update and branch as normally, in the knowledge that everyones local drives will not explode with tons of versioned binary data.&lt;/p&gt;
+&lt;p&gt;Our primary concern is keeping &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; and git in sync &amp;#8211; with the proper commits connected. No-one likes &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;, so we&amp;#8217;ll hide that away and put git in the driver seat.&lt;/p&gt;
+&lt;p&gt;Luckily, git operations are also fairly easily customised on a per-repository basis, which is perfect for this case.&lt;/p&gt;
+&lt;p&gt;The idea will then be to have git operations keep track of the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; working copy, making sure that everything there is committed before a dependent git revision is committed, at which point a versioned text file with the corresponding &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; version number, should be added to the commit.&lt;/p&gt;
+&lt;p&gt;This way, &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; becomes a dictionary of collected binary files, into which git adds new versions when committing and fetches copies when updating &amp;#8211; using &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; version numbers as key.&lt;/p&gt;
+&lt;h2&gt;Git Hooks&lt;/h2&gt;
+&lt;p&gt;Our entry point in automating this stuff with git is in the so called &amp;#8220;git hook&amp;#8221;. These are scripts located at &amp;#8220;.git/hooks/&amp;#8221; for any git repository. Per default, this folder is populated with a few demo scripts, each containing an example of what to do in response to that particular git event.&lt;/p&gt;
+&lt;p&gt;For this hack, the two points of interest are:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;The commit process &amp;#8211; cancelling the commit if the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; working copy is not clean, otherwise getting its current version and adding it to a text file in that same commit.&lt;/li&gt;
+	&lt;li&gt;The checkout process &amp;#8211; updating the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; working copy to the version specified in the text file, every time a git checkout has completed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This means that the files we are interested in are:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;(Git clone path)/.git/hooks/pre-commit&lt;/li&gt;
+	&lt;li&gt;(Git clone path)/.git/hooks/post-checkout&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Note that these files are not by default versioned with the rest of your git repository, though I do recommend doing so anyway. For this hack, I chose to address this via a setup script which needs to be run once after first cloning the repository &amp;#8211; as well as after performing any updates to the versioned hook scripts (which I&amp;#8217;d estimate happening just about never).&lt;/p&gt;
+&lt;h2&gt;Solution&lt;/h2&gt;
+&lt;p&gt;My weapon of choice for this sort of hackery is Perl. If you would rather use something else, that is fine too &amp;#8211; as long as your shell can run it, you should be fine.&lt;/p&gt;
+&lt;p&gt;Since we&amp;#8217;re in glorious hack land, I chose to take it further over the top by expanding the text file with the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; version to be a full &lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt;-formatted configuration file, with the option of overriding parts with per-user local configuration.&lt;/p&gt;
+&lt;p&gt;The project structure is as follows:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;.gitignore &amp;#8211; containing ignores for the local user config as well as the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; folder.&lt;/li&gt;
+	&lt;li&gt;&lt;span class=&quot;caps&quot;&gt;VCS&lt;/span&gt;/ &amp;#8211; this is where the core perl scripts are kept, as well as configuration.&lt;/li&gt;
+	&lt;li&gt;Setup.pl &amp;#8211; the run-once script for copying the hooks in etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the linked Git repository, the example configuration has also been set up for a Unity project &amp;#8211; with the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; working copy placed in Assets/&lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;. Though aside from this, nothing here is specific to any technology aside from Git and &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Additional over-the-top-ness:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Place a &lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt; formatted file at &lt;span class=&quot;caps&quot;&gt;VCS&lt;/span&gt;/LocalUserConfiguration.txt to override select values from what is set in the versioned configuration file.&lt;/li&gt;
+	&lt;li&gt;Setup.pl will check for a working copy at the specified &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; path and run a checkout from the specified repository if none is found. So this is really a one-stop-shop kinda thing.&lt;/li&gt;
+	&lt;li&gt;&amp;#8220;autoCommit&amp;#8221; and &amp;#8220;autoAdd&amp;#8221; options for mad driver-less running.
+	&lt;ul&gt;
+		&lt;li&gt;&amp;#8220;autoCommit&amp;#8221; will, if enabled, see the commit script run &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; commit to push any local &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; changes as part of the git commit process.&lt;/li&gt;
+		&lt;li&gt;&amp;#8220;autoAdd&amp;#8221; is for off-your-rocker &amp;#8220;Look, ma! No hands!&amp;#8221; setups, where any unversioned files found in the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; folder are automatically added to &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; as part of the git commit process.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Why no &amp;#8220;ignore unversioned&amp;#8221; flag? In the example configuration, the &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; folder is put inside a Unity Assets folder. This means that contained files are imported as part of the project and project files outside of &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt; can depend on them.&lt;/p&gt;
+&lt;p&gt;If you have no problem risking gun-to-foot related injuries with commits missing dependencies, that&amp;#8217;s just fine. However I will not assist you in the loading of said gun.&lt;/p&gt;
+&lt;p&gt;I hope that you find this stuff interesting as well &amp;#8211; if not useful. You can find everything at the other end of the below github link and I would be very interested in any feedback and discussion (preferably over &lt;a href=&quot;https://twitter.com/angryant&quot;&gt;twitter&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Are you employing a similar combined &lt;span class=&quot;caps&quot;&gt;VCS&lt;/span&gt; setup? Are you in fact one of those who mentioned using the git+SVN combination in particular? Do you have a suggested alternative to this madness?&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/MadMashVersioning&quot;&gt;The below github link&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+				<published>2015-01-02 00:00:00 +0100</published>
+				<link>http://angryant.com/2015/01/02/Mad-Mash-Versioning/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Behave 2.5</title>
 				<description>&lt;p&gt;Welcome to 2015!&lt;/p&gt;
 &lt;p&gt;I hope that you have had a great new years eve and will have a productive year. To assist with that, I would like to present you with version 2.5 of Behave.&lt;/p&gt;

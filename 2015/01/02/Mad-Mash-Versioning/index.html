@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Five years of Unity expertise looking for contracts - </title>
+		<title>AngryAnt - Mad Mash Versioning - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Five years of Unity expertise looking for contracts</div>
+<div id="subtitle">Mad Mash Versioning</div>
 
 	
 		<a href="/">Home</a>
@@ -75,14 +75,63 @@
 
 			</div>
 			<div id="container">
-				<span class="date">14 May 2013</span>
-				<h1 id="Top">Five years of Unity expertise looking for contracts</h1>
+				<span class="date">02 Jan 2015</span>
+				<h1 id="Top">Mad Mash Versioning</h1>
 				
 				<div id="content">
-					<div class="post"><p>On the 28th of June, after four great years at Unity Technologies, I part ways with my friends to go explore for a while &#8211; doing consulting / contract work.</p>
-<p>I have had a great time and seen absolutely crazy growth and things while at Unity. I definitely am leaving with a nice big bag of great memories. However I feel the need to stretch my legs a bit, so off I go.</p>
-<p>So I am available for contracts from July 1st, offering up among other things, my five years of Unity expertise. For more details on the things that I do there is this site and my <a href="http://eej.dk">LinkedIn profile</a>.</p>
-<p>And, well, that&#8217;s pretty much it. Want to play? Please use the handy contact form I set up: <a href="/contracting">Handy contact form</a>.</p></div>
+					<div class="post"><p>Through 2014, I had every once in a while heard people casually mention that they were versioning their projects in a combination of git and <span class="caps">SVN</span>. I didn&#8217;t really take the time to ask for details on it, but it was one of those things, stuck in the back of my mind.</p>
+<p>Filed under &#8220;delightfully mad hacks&#8221;, I finally found some time to look into it over Christmas &#8211; as I was dodging various boring tasks in <a href="/2015/01/01/Behave-2-5/">finalising Behave 2.5</a>.</p>
+<h2>The Excuse</h2>
+<p>Git is lovely for its decentralisation, easy branching and a bunch of other stuff. However where it is not so delightful is in its handling of binary files.</p>
+<p>One alternative <span class="caps">VCS</span> which is pretty good at handling binary files is <span class="caps">SVN</span>. So by putting binary project files in <span class="caps">SVN</span> and text files in git, you should be able to get the best of both worlds, right?</p>
+<p>That is the idea anyway.</p>
+<h2>The Hack</h2>
+<p>Regardless of whether it is a good idea or not, it is an interesting hack. Immediately, it seems like a terrible idea with way too high a potential of user error from its silly workflow overhead. So <strong>that</strong> is where we&#8217;ll attack.</p>
+<p>The goal is then to have the user place binary files in one folder and text files in other folders &#8211; all under the same core project folder. And then simply commit, update and branch as normally, in the knowledge that everyones local drives will not explode with tons of versioned binary data.</p>
+<p>Our primary concern is keeping <span class="caps">SVN</span> and git in sync &#8211; with the proper commits connected. No-one likes <span class="caps">SVN</span>, so we&#8217;ll hide that away and put git in the driver seat.</p>
+<p>Luckily, git operations are also fairly easily customised on a per-repository basis, which is perfect for this case.</p>
+<p>The idea will then be to have git operations keep track of the <span class="caps">SVN</span> working copy, making sure that everything there is committed before a dependent git revision is committed, at which point a versioned text file with the corresponding <span class="caps">SVN</span> version number, should be added to the commit.</p>
+<p>This way, <span class="caps">SVN</span> becomes a dictionary of collected binary files, into which git adds new versions when committing and fetches copies when updating &#8211; using <span class="caps">SVN</span> version numbers as key.</p>
+<h2>Git Hooks</h2>
+<p>Our entry point in automating this stuff with git is in the so called &#8220;git hook&#8221;. These are scripts located at &#8220;.git/hooks/&#8221; for any git repository. Per default, this folder is populated with a few demo scripts, each containing an example of what to do in response to that particular git event.</p>
+<p>For this hack, the two points of interest are:</p>
+<ol>
+	<li>The commit process &#8211; cancelling the commit if the <span class="caps">SVN</span> working copy is not clean, otherwise getting its current version and adding it to a text file in that same commit.</li>
+	<li>The checkout process &#8211; updating the <span class="caps">SVN</span> working copy to the version specified in the text file, every time a git checkout has completed.</li>
+</ol>
+<p>This means that the files we are interested in are:</p>
+<ol>
+	<li>(Git clone path)/.git/hooks/pre-commit</li>
+	<li>(Git clone path)/.git/hooks/post-checkout</li>
+</ol>
+<p>Note that these files are not by default versioned with the rest of your git repository, though I do recommend doing so anyway. For this hack, I chose to address this via a setup script which needs to be run once after first cloning the repository &#8211; as well as after performing any updates to the versioned hook scripts (which I&#8217;d estimate happening just about never).</p>
+<h2>Solution</h2>
+<p>My weapon of choice for this sort of hackery is Perl. If you would rather use something else, that is fine too &#8211; as long as your shell can run it, you should be fine.</p>
+<p>Since we&#8217;re in glorious hack land, I chose to take it further over the top by expanding the text file with the <span class="caps">SVN</span> version to be a full <span class="caps">JSON</span>-formatted configuration file, with the option of overriding parts with per-user local configuration.</p>
+<p>The project structure is as follows:</p>
+<ul>
+	<li>.gitignore &#8211; containing ignores for the local user config as well as the <span class="caps">SVN</span> folder.</li>
+	<li><span class="caps">VCS</span>/ &#8211; this is where the core perl scripts are kept, as well as configuration.</li>
+	<li>Setup.pl &#8211; the run-once script for copying the hooks in etc.</li>
+</ul>
+<p>In the linked Git repository, the example configuration has also been set up for a Unity project &#8211; with the <span class="caps">SVN</span> working copy placed in Assets/<span class="caps">SVN</span>. Though aside from this, nothing here is specific to any technology aside from Git and <span class="caps">SVN</span>.</p>
+<p>Additional over-the-top-ness:</p>
+<ul>
+	<li>Place a <span class="caps">JSON</span> formatted file at <span class="caps">VCS</span>/LocalUserConfiguration.txt to override select values from what is set in the versioned configuration file.</li>
+	<li>Setup.pl will check for a working copy at the specified <span class="caps">SVN</span> path and run a checkout from the specified repository if none is found. So this is really a one-stop-shop kinda thing.</li>
+	<li>&#8220;autoCommit&#8221; and &#8220;autoAdd&#8221; options for mad driver-less running.
+	<ul>
+		<li>&#8220;autoCommit&#8221; will, if enabled, see the commit script run <span class="caps">SVN</span> commit to push any local <span class="caps">SVN</span> changes as part of the git commit process.</li>
+		<li>&#8220;autoAdd&#8221; is for off-your-rocker &#8220;Look, ma! No hands!&#8221; setups, where any unversioned files found in the <span class="caps">SVN</span> folder are automatically added to <span class="caps">SVN</span> as part of the git commit process.</li>
+	</ul></li>
+</ul>
+<p>Why no &#8220;ignore unversioned&#8221; flag? In the example configuration, the <span class="caps">SVN</span> folder is put inside a Unity Assets folder. This means that contained files are imported as part of the project and project files outside of <span class="caps">SVN</span> can depend on them.</p>
+<p>If you have no problem risking gun-to-foot related injuries with commits missing dependencies, that&#8217;s just fine. However I will not assist you in the loading of said gun.</p>
+<p>I hope that you find this stuff interesting as well &#8211; if not useful. You can find everything at the other end of the below github link and I would be very interested in any feedback and discussion (preferably over <a href="https://twitter.com/angryant">twitter</a>).</p>
+<p>Are you employing a similar combined <span class="caps">VCS</span> setup? Are you in fact one of those who mentioned using the git+SVN combination in particular? Do you have a suggested alternative to this madness?</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/MadMashVersioning">The below github link</a></li>
+</ul></div>
 				</div>
 				<div id="feed-container">
 					<div id="feed">
