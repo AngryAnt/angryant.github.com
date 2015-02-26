@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Video: Behave - starting from scratch - </title>
+		<title>AngryAnt - Trusted Gear - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Video: Behave - starting from scratch</div>
+<div id="subtitle">Trusted Gear</div>
 
 	
 		<a href="/">Home</a>
@@ -75,16 +75,115 @@
 
 			</div>
 			<div id="container">
-				<span class="date">29 Sep 2010</span>
-				<h1 id="Top">Video: Behave - starting from scratch</h1>
+				<span class="date">26 Feb 2015</span>
+				<h1 id="Top">Trusted Gear</h1>
 				
 				<div id="content">
-					<div class="post"><p>I just finished uploading a new video for the Behave documentation section. It is a brief general introduction to the Behave authoring environment and shows you how to get up and running with Behave from a blank project.</p>
+					<div class="post"><p>Yay! <span class="caps">GDC</span> is next week! Will I see you there?</p>
+<p>Ahem. Straying a bit from my usual theme here of writing about whatever little snippet or gadget I&#8217;ve come up with, for this post I will in stead share some detail on recent changes to my tool-chain of choice, which I&#8217;m quite happy about.</p>
+<p>Every craftsman has his or her opinion on tooling, but just about everyone share the desire to tune their toolbox. Even if your opinion / taste / whatever does not align with mine, I hope that you find something useful in here.</p>
+<p>If you really had your sights on getting some funky code snippet out of this post, here&#8217;s an unholy perl module for firing off native prompt dialogs on OS X and Windows:</p>
 <ul>
-	<li><a href="/behave/documentation/">The documentation page</a>.</li>
-	<li><a href="/resources/behave/StartingFromScratch.mov">Direct link to the video</a>.
-</ul></li>
-</ul></div>
+	<li><a href="https://gist.github.com/AngryAnt/9732081d1c76dd3de9d3">Unholy perl</a></li>
+</ul>
+<p>And with that out of the way, let&#8217;s get something else sorted: This post will likely come off as an ad for a bunch of different software. Other than mentioning it here, I do not intend to do anything about that.</p>
+<p>Note that I primarily work on OS X and some of the tools mentioned in this post are only available on that platform. You might still find at least inspiration in those areas though &#8211; likely very nice Windows and Linux alternatives exist. I did not look.</p>
+<p>However if you are not on OS X, but on a tight schedule, just skip all sections other than the &#8220;Typing&#8221; section (which is probably where you&#8217;ll find the best stuff anyway).</p>
+<h2>Tracking</h2>
+<p>Everyone has a system for remembering projects and TODOs. If you in stead keep it all in your head, I am glad that you&#8217;re not a very busy person &#8211; if you are busy, I would worry.</p>
+<p>Over time I have tried many different systems for keeping track of it all &#8211; having had it as a focus of mine ever since severe physical stress symptoms reminded me that my methods were entirely inadequate.</p>
+<p>One tool that I kept coming back to and which I have recently re-focused on is <a href="http://www.omnigroup.com/omnifocus/">OmniFocus</a>.</p>
+<p>While OmniFocus is by no means perfect (I have my fair share of open suggestion posts with the developers), it does provide me with the best feature combination I have seen in this type of tool. Important to me are:</p>
+<ul>
+	<li>No restrictions or requirements on nesting/indentation depth of items.
+	<ul>
+		<li>The system has the notion of &#8220;tasks&#8221; existing in &#8220;projects&#8221;, but aside from this I can use folder nesting of projects and nesting of tasks as much as I like &#8211; assigning whatever meaning I want to that.</li>
+	</ul></li>
+	<li>Everything is synchronised painlessly between fully-featured clients on my laptop, my phone, and my tablet. And it remains accessible when offline.</li>
+	<li>Easy, fast, unintrusive task entry.
+	<ul>
+		<li>The mobile clients have an always accessible &#8220;add to inbox&#8221; button and the OS X client a global task-entry shortcut.</li>
+		<li>The shortcut fires up a little window over whatever you are currently working, allowing you to quickly type in what you need to remember to do, hitting enter when you&#8217;re done. Optionally you can add more task details before hitting enter and continuing with whatever you were doing.
+		<ul>
+			<li>This is absolutely perfect when you remember a <span class="caps">TODO</span> unrelated to your current task or someone comes by your desk with a request.</li>
+			<li>My shortcut for task entry is ctrl+alt+space. I do not recall if this is the default.</li>
+		</ul></li>
+		<li>The OS X client also comes with a &#8220;service&#8221; integration, allowing you to easily create new tasks from other applications &#8211; like one based on a file or a snippet of text or perhaps an email.</li>
+	</ul></li>
+	<li>Optional additional classification and data collection.
+	<ul>
+		<li>Putting tasks in projects is your absolutely minimum flow. Even that I suppose is optional, as you could simply put all your tasks in your inbox. On top of this, you can scale it as little or as much as makes sense for your particular case. I use everything from no additionals to everything &#8211; all dependent on the nature of the task.
+		<ul>
+			<li>Aside from putting tasks in optional projects in optional folders, each task can also have an associated context. Different tasks in the same project can have different contexts and contexts can have additional information associated with them &#8211; like a location.</li>
+			<li>Assigning a due date to a task will put it in your Forecast view &#8211; allowing you to easily view what needs to get done today. This view can also show a quick overview of todays calendar and you can get notifications as the due time of a task is reached.</li>
+			<li>Each task can have an associated attachment. Anything from a snippet of text to a file / an email / whatever.</li>
+		</ul></li>
+	</ul></li>
+</ul>
+<p><img src="/resources/posts/2015-02-26-Trusted-Gear/OmniFocus.png" style="clear:both;float:none;" alt="" /></p>
+<p>I use OmniFocus for all project and task tracking. However I do not try to replace my calendar with it. Scheduled events still go in my calendar (I just use iCal) and I also use my calendar to keep track of what I do with my time when on a contract.</p>
+<p>This allows me to easily summarize for client reports when needed and I have a little Automator workflow calculate the total number of hours spent contracting this week &#8211; allowing me to easily balance the hours.</p>
+<h2>Typing</h2>
+<p>Once I am done dreaming up ideas and tasks, like so many others, the majority of my time is spent as a typist &#8211; translating those tasks into computer-friendly gibberish of one kind or another. Most of the time I find myself typing C#.</p>
+<p>For quite a while I would bounce around between different editors for this task.</p>
+<ul>
+	<li>VisualStudio with resharper for maximum efficiency &#8211; at the cost of either rebooting into Windows or running around in the strange parallel universe of virtualisation.</li>
+	<li>MonoDevelop for an approximation of the tools provided by VisualStudio, feeling not quite native anywhere, but very beta.</li>
+	<li><a href="http://www.sublimetext.com">Sublime Text</a> for beautiful, responsive, unintrusive text rendering, with a wonderland of user-configurable keyboard shortcuts and extensions. And absolutely nothing in terms of VS- and MD-like project-wide assistance.</li>
+</ul>
+<p>Then a while ago I added a bookmark to the &#8220;check this out&#8221; pile, for a project called <a href="http://www.omnisharp.net">OmniSharp</a>. The promise was simple:</p>
+<ol>
+	<li>Get full Intellisense-like completion and resharper-like code analysis.</li>
+	<li>Use it in your text editor of choice.</li>
+</ol>
+<p>Ha! Madness.</p>
+<p>That was probably at least a half year ago &#8211; until I finally found some time to put aside my scepticism for a bit and try to set it up with Sublime.</p>
+<p>You know what? It works!</p>
+<p>This is what I currently use of the OmniSharp + Sublime Text feature set:</p>
+<ul>
+	<li>Compile check on save &#8211; with errors, warnings, and resharper-like code suggestions.
+	<ul>
+		<li>Some suggestions I do not agree with and luckily, as with resharper, configuration lets you easily filter those out. Unity also suppresses some warnings when compiling, so I elected to filter those out as well.</li>
+	</ul></li>
+	<li>File auto-format when triggered by shortcut.</li>
+	<li>Intellisense-like auto-complete &#8211; file, project and library-wide.</li>
+	<li>Jump to definition / list reference points.</li>
+	<li>Rename.</li>
+</ul>
+<p>I am probably forgetting something, but suffice to say, I no longer feel the need to switch away from Sublime Text to boost efficiency on an unfamiliar codebase.</p>
+<p><a href="/resources/posts/2015-02-26-Trusted-Gear/Sublime.png"><img src="/resources/posts/2015-02-26-Trusted-Gear/Sublime-Thumb.png" alt="" /></a></p>
+<p>With regards to shortcuts and configuration, there are a bunch of little tweaks you can set up for Sublime, so of-course I have done exactly that. The good part is that Sublime preferences are all <span class="caps">JSON</span> formatted text files, so they are easily shared in a gist:</p>
+<ul>
+	<li><a href="https://gist.github.com/AngryAnt/aab9ff86c2595410d165">Preferences in a gist</a></li>
+</ul>
+<p>For text editing, that produces a lovely fullscreen view like the one on the right (click for full size). Tasty, right?</p>
+<h2>Searching</h2>
+<p>After lolcat searches and menacingly typing at people who are wrong, I probably spend the majority of my browser time doing reference manual lookups. Extensions like <a href="http://safarikeywordsearch.aurlien.net">Safari Keyword Search</a> in combination with embedded search engines or Google site search have somewhat streamlined this task, but it never really worked solidly and of-course required that I be online while working.</p>
+<p>Enter <a href="http://kapeli.com/dash">Dash</a>. I can&#8217;t remember who brought it up on twitter, but that&#8217;s where I came across it and bookmarked it for later study. The idea is quite simple: It provides an offline search engine for docsets of your choosing &#8211; much like man pages.</p>
+<p>You get to specify which docsets to download, associate a search key with each docset (IE &#8220;cpp:&#8221; and &#8220;.net:&#8221;), and specify a global shortcut for launching the search window &#8211; as you would Spotlight on OS X. But wait: There&#8217;s more!</p>
+<p>Downloadable docsets include topic-specific downloads of wiki-fied Stackoverflow questions and answers. And since you can associate multiple docsets with the same search key, these are easily accessed when you search.</p>
+<p><img src="/resources/posts/2015-02-26-Trusted-Gear/Dash.png" style="clear:both;float:none;" alt="" /></p>
+<p>On top of all of this, Dash also comes with an iPad and iPhone client and integration for a bunch of different editors, environments and other tools &#8211; including Sublime Text.</p>
+<p>You can find my Dash integration settings in the Sublime settings linked above. For global launch shortcut I chose ctrl+shift+space &#8211; I do not recall if this is the default.</p>
+<h2>Navigation</h2>
+<p>If you, like me, grow a tad too accustomed to the default Sublime Text shortcut of alt+cmd+left/right for tab switching, I would recommend giving it a go as a global shortcut across applications. Configuring System Preferences &#8211; Keyboard as shown below did the trick for me. I primarily use it in Terminal and Safari.</p>
+<p><img src="/resources/posts/2015-02-26-Trusted-Gear/Global-Tabs.png" style="clear:both;float:none;" alt="" /></p>
+<p>And that is about all I have for now. I hope that this is useful to you and do let me know if something in here is off or if you&#8217;re more curious about something. If you are at <span class="caps">GDC</span> in San Francisco next week, you could even do it in person.</p>
+<ul>
+	<li><a href="http://www.omnigroup.com/omnifocus/">OmniFocus</a></li>
+	<li><a href="http://www.sublimetext.com">Sublime Text</a></li>
+	<li><a href="http://www.omnisharp.net">OmniSharp</a></li>
+	<li><a href="https://gist.github.com/AngryAnt/aab9ff86c2595410d165">Sublime Text and OmniSharp preferences</a></li>
+	<li><a href="http://kapeli.com/dash">Dash</a></li>
+	<li><a href="https://github.com/farcaller/DashDoc">DashDoc &#8211; Dash Sublime integration</a></li>
+</ul>
+
+
+
+
+
+
+</div>
 				</div>
 				<div id="feed-container">
 					<div id="feed">

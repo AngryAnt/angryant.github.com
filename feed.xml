@@ -6,6 +6,117 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>Trusted Gear</title>
+				<description>&lt;p&gt;Yay! &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; is next week! Will I see you there?&lt;/p&gt;
+&lt;p&gt;Ahem. Straying a bit from my usual theme here of writing about whatever little snippet or gadget I&amp;#8217;ve come up with, for this post I will in stead share some detail on recent changes to my tool-chain of choice, which I&amp;#8217;m quite happy about.&lt;/p&gt;
+&lt;p&gt;Every craftsman has his or her opinion on tooling, but just about everyone share the desire to tune their toolbox. Even if your opinion / taste / whatever does not align with mine, I hope that you find something useful in here.&lt;/p&gt;
+&lt;p&gt;If you really had your sights on getting some funky code snippet out of this post, here&amp;#8217;s an unholy perl module for firing off native prompt dialogs on OS X and Windows:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/9732081d1c76dd3de9d3&quot;&gt;Unholy perl&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And with that out of the way, let&amp;#8217;s get something else sorted: This post will likely come off as an ad for a bunch of different software. Other than mentioning it here, I do not intend to do anything about that.&lt;/p&gt;
+&lt;p&gt;Note that I primarily work on OS X and some of the tools mentioned in this post are only available on that platform. You might still find at least inspiration in those areas though &amp;#8211; likely very nice Windows and Linux alternatives exist. I did not look.&lt;/p&gt;
+&lt;p&gt;However if you are not on OS X, but on a tight schedule, just skip all sections other than the &amp;#8220;Typing&amp;#8221; section (which is probably where you&amp;#8217;ll find the best stuff anyway).&lt;/p&gt;
+&lt;h2&gt;Tracking&lt;/h2&gt;
+&lt;p&gt;Everyone has a system for remembering projects and TODOs. If you in stead keep it all in your head, I am glad that you&amp;#8217;re not a very busy person &amp;#8211; if you are busy, I would worry.&lt;/p&gt;
+&lt;p&gt;Over time I have tried many different systems for keeping track of it all &amp;#8211; having had it as a focus of mine ever since severe physical stress symptoms reminded me that my methods were entirely inadequate.&lt;/p&gt;
+&lt;p&gt;One tool that I kept coming back to and which I have recently re-focused on is &lt;a href=&quot;http://www.omnigroup.com/omnifocus/&quot;&gt;OmniFocus&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;While OmniFocus is by no means perfect (I have my fair share of open suggestion posts with the developers), it does provide me with the best feature combination I have seen in this type of tool. Important to me are:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;No restrictions or requirements on nesting/indentation depth of items.
+	&lt;ul&gt;
+		&lt;li&gt;The system has the notion of &amp;#8220;tasks&amp;#8221; existing in &amp;#8220;projects&amp;#8221;, but aside from this I can use folder nesting of projects and nesting of tasks as much as I like &amp;#8211; assigning whatever meaning I want to that.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Everything is synchronised painlessly between fully-featured clients on my laptop, my phone, and my tablet. And it remains accessible when offline.&lt;/li&gt;
+	&lt;li&gt;Easy, fast, unintrusive task entry.
+	&lt;ul&gt;
+		&lt;li&gt;The mobile clients have an always accessible &amp;#8220;add to inbox&amp;#8221; button and the OS X client a global task-entry shortcut.&lt;/li&gt;
+		&lt;li&gt;The shortcut fires up a little window over whatever you are currently working, allowing you to quickly type in what you need to remember to do, hitting enter when you&amp;#8217;re done. Optionally you can add more task details before hitting enter and continuing with whatever you were doing.
+		&lt;ul&gt;
+			&lt;li&gt;This is absolutely perfect when you remember a &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; unrelated to your current task or someone comes by your desk with a request.&lt;/li&gt;
+			&lt;li&gt;My shortcut for task entry is ctrl+alt+space. I do not recall if this is the default.&lt;/li&gt;
+		&lt;/ul&gt;&lt;/li&gt;
+		&lt;li&gt;The OS X client also comes with a &amp;#8220;service&amp;#8221; integration, allowing you to easily create new tasks from other applications &amp;#8211; like one based on a file or a snippet of text or perhaps an email.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Optional additional classification and data collection.
+	&lt;ul&gt;
+		&lt;li&gt;Putting tasks in projects is your absolutely minimum flow. Even that I suppose is optional, as you could simply put all your tasks in your inbox. On top of this, you can scale it as little or as much as makes sense for your particular case. I use everything from no additionals to everything &amp;#8211; all dependent on the nature of the task.
+		&lt;ul&gt;
+			&lt;li&gt;Aside from putting tasks in optional projects in optional folders, each task can also have an associated context. Different tasks in the same project can have different contexts and contexts can have additional information associated with them &amp;#8211; like a location.&lt;/li&gt;
+			&lt;li&gt;Assigning a due date to a task will put it in your Forecast view &amp;#8211; allowing you to easily view what needs to get done today. This view can also show a quick overview of todays calendar and you can get notifications as the due time of a task is reached.&lt;/li&gt;
+			&lt;li&gt;Each task can have an associated attachment. Anything from a snippet of text to a file / an email / whatever.&lt;/li&gt;
+		&lt;/ul&gt;&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/OmniFocus.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;I use OmniFocus for all project and task tracking. However I do not try to replace my calendar with it. Scheduled events still go in my calendar (I just use iCal) and I also use my calendar to keep track of what I do with my time when on a contract.&lt;/p&gt;
+&lt;p&gt;This allows me to easily summarize for client reports when needed and I have a little Automator workflow calculate the total number of hours spent contracting this week &amp;#8211; allowing me to easily balance the hours.&lt;/p&gt;
+&lt;h2&gt;Typing&lt;/h2&gt;
+&lt;p&gt;Once I am done dreaming up ideas and tasks, like so many others, the majority of my time is spent as a typist &amp;#8211; translating those tasks into computer-friendly gibberish of one kind or another. Most of the time I find myself typing C#.&lt;/p&gt;
+&lt;p&gt;For quite a while I would bounce around between different editors for this task.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;VisualStudio with resharper for maximum efficiency &amp;#8211; at the cost of either rebooting into Windows or running around in the strange parallel universe of virtualisation.&lt;/li&gt;
+	&lt;li&gt;MonoDevelop for an approximation of the tools provided by VisualStudio, feeling not quite native anywhere, but very beta.&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.sublimetext.com&quot;&gt;Sublime Text&lt;/a&gt; for beautiful, responsive, unintrusive text rendering, with a wonderland of user-configurable keyboard shortcuts and extensions. And absolutely nothing in terms of VS- and MD-like project-wide assistance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then a while ago I added a bookmark to the &amp;#8220;check this out&amp;#8221; pile, for a project called &lt;a href=&quot;http://www.omnisharp.net&quot;&gt;OmniSharp&lt;/a&gt;. The promise was simple:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Get full Intellisense-like completion and resharper-like code analysis.&lt;/li&gt;
+	&lt;li&gt;Use it in your text editor of choice.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Ha! Madness.&lt;/p&gt;
+&lt;p&gt;That was probably at least a half year ago &amp;#8211; until I finally found some time to put aside my scepticism for a bit and try to set it up with Sublime.&lt;/p&gt;
+&lt;p&gt;You know what? It works!&lt;/p&gt;
+&lt;p&gt;This is what I currently use of the OmniSharp + Sublime Text feature set:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Compile check on save &amp;#8211; with errors, warnings, and resharper-like code suggestions.
+	&lt;ul&gt;
+		&lt;li&gt;Some suggestions I do not agree with and luckily, as with resharper, configuration lets you easily filter those out. Unity also suppresses some warnings when compiling, so I elected to filter those out as well.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;File auto-format when triggered by shortcut.&lt;/li&gt;
+	&lt;li&gt;Intellisense-like auto-complete &amp;#8211; file, project and library-wide.&lt;/li&gt;
+	&lt;li&gt;Jump to definition / list reference points.&lt;/li&gt;
+	&lt;li&gt;Rename.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I am probably forgetting something, but suffice to say, I no longer feel the need to switch away from Sublime Text to boost efficiency on an unfamiliar codebase.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/resources/posts/2015-02-26-Trusted-Gear/Sublime.png&quot;&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Sublime-Thumb.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;With regards to shortcuts and configuration, there are a bunch of little tweaks you can set up for Sublime, so of-course I have done exactly that. The good part is that Sublime preferences are all &lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt; formatted text files, so they are easily shared in a gist:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/aab9ff86c2595410d165&quot;&gt;Preferences in a gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For text editing, that produces a lovely fullscreen view like the one on the right (click for full size). Tasty, right?&lt;/p&gt;
+&lt;h2&gt;Searching&lt;/h2&gt;
+&lt;p&gt;After lolcat searches and menacingly typing at people who are wrong, I probably spend the majority of my browser time doing reference manual lookups. Extensions like &lt;a href=&quot;http://safarikeywordsearch.aurlien.net&quot;&gt;Safari Keyword Search&lt;/a&gt; in combination with embedded search engines or Google site search have somewhat streamlined this task, but it never really worked solidly and of-course required that I be online while working.&lt;/p&gt;
+&lt;p&gt;Enter &lt;a href=&quot;http://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;. I can&amp;#8217;t remember who brought it up on twitter, but that&amp;#8217;s where I came across it and bookmarked it for later study. The idea is quite simple: It provides an offline search engine for docsets of your choosing &amp;#8211; much like man pages.&lt;/p&gt;
+&lt;p&gt;You get to specify which docsets to download, associate a search key with each docset (IE &amp;#8220;cpp:&amp;#8221; and &amp;#8220;.net:&amp;#8221;), and specify a global shortcut for launching the search window &amp;#8211; as you would Spotlight on OS X. But wait: There&amp;#8217;s more!&lt;/p&gt;
+&lt;p&gt;Downloadable docsets include topic-specific downloads of wiki-fied Stackoverflow questions and answers. And since you can associate multiple docsets with the same search key, these are easily accessed when you search.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Dash.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;On top of all of this, Dash also comes with an iPad and iPhone client and integration for a bunch of different editors, environments and other tools &amp;#8211; including Sublime Text.&lt;/p&gt;
+&lt;p&gt;You can find my Dash integration settings in the Sublime settings linked above. For global launch shortcut I chose ctrl+shift+space &amp;#8211; I do not recall if this is the default.&lt;/p&gt;
+&lt;h2&gt;Navigation&lt;/h2&gt;
+&lt;p&gt;If you, like me, grow a tad too accustomed to the default Sublime Text shortcut of alt+cmd+left/right for tab switching, I would recommend giving it a go as a global shortcut across applications. Configuring System Preferences &amp;#8211; Keyboard as shown below did the trick for me. I primarily use it in Terminal and Safari.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Global-Tabs.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And that is about all I have for now. I hope that this is useful to you and do let me know if something in here is off or if you&amp;#8217;re more curious about something. If you are at &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; in San Francisco next week, you could even do it in person.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.omnigroup.com/omnifocus/&quot;&gt;OmniFocus&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.sublimetext.com&quot;&gt;Sublime Text&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.omnisharp.net&quot;&gt;OmniSharp&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/aab9ff86c2595410d165&quot;&gt;Sublime Text and OmniSharp preferences&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/farcaller/DashDoc&quot;&gt;DashDoc &amp;#8211; Dash Sublime integration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+
+</description>
+				<published>2015-02-26 00:00:00 +0100</published>
+				<link>http://angryant.com/2015/02/26/Trusted-Gear/</link>
+			</item>
+		
+			<item>
 				<title>Mad Mash Versioning</title>
 				<description>&lt;p&gt;Through 2014, I had every once in a while heard people casually mention that they were versioning their projects in a combination of git and &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;. I didn&amp;#8217;t really take the time to ask for details on it, but it was one of those things, stuck in the back of my mind.&lt;/p&gt;
 &lt;p&gt;Filed under &amp;#8220;delightfully mad hacks&amp;#8221;, I finally found some time to look into it over Christmas &amp;#8211; as I was dodging various boring tasks in &lt;a href=&quot;/2015/01/01/Behave-2-5/&quot;&gt;finalising Behave 2.5&lt;/a&gt;.&lt;/p&gt;
@@ -1467,82 +1578,6 @@ Pre-release:
 &lt;/pre&gt;</description>
 				<published>2014-02-27 00:00:00 +0100</published>
 				<link>http://angryant.com/2014/02/27/Behave-2-3/</link>
-			</item>
-		
-			<item>
-				<title>Unity and .net assemblies</title>
-				<description>&lt;p&gt;Since I started making middleware for Unity in early 2008, I have been working with Unity and .net assemblies. I have in this time had many opportunities to juggle the two in many different contexts, so I figured a sort of summary of what I learned would make sense.&lt;/p&gt;
-&lt;p&gt;Why not start off by setting a few facts straight, eh?&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Aside from the extension and a header, .net assemblies have little to do with Windows Dynamic Link Libraries.
-	&lt;ul&gt;
-		&lt;li&gt;Windows DLLs contain binary code, usually with a very simple interface, while .net assemblies contain .net bytecode (or &lt;span class=&quot;caps&quot;&gt;CIL&lt;/span&gt;).&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-	&lt;li&gt;Unity pro is not required to use .net assemblies.
-	&lt;ul&gt;
-		&lt;li&gt;Binary plugins require Unity pro (at time of writing) and must be placed in Assets/Plugins. However .net assemblies are just bytecode &amp;#8211; just like what Unity turns your scripts into, so none of these requirements apply.&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-	&lt;li&gt;.net assemblies run on all platforms &amp;#8211; including webplayer.
-	&lt;ul&gt;
-		&lt;li&gt;Again, as we are talking about bytecode which is fed directly to the mono runtime &amp;#8211; like the compiled result of your scripts, the same rules go.&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-	&lt;li&gt;Distributing .net assemblies in stead of script files does not copy protect your code.
-	&lt;ul&gt;
-		&lt;li&gt;Since the mono runtime has to Just In Time compile your assembly to run on the current platform, the bytecode is quite verbose and while some information is lost, generally it is very easy to decompile and read .net assemblies.&lt;/li&gt;
-		&lt;li&gt;Remember that this is true for your script source in most project builds as well, since for most platforms Unity builds your scripts to .net assemblies.&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1&gt;Argh! But my kodes!&lt;/h1&gt;
-&lt;p&gt;I will not get into source protection too much, but generally I would not worry too much about it.&lt;/p&gt;
-&lt;p&gt;Source code in and of itself does not mean that someone can instantly copy and use parts of your work. It takes actual skill and time investment to make use of it, integrated in a different setup from what it was originally designed for. In the end it is my opinion that it would not be worth it compared to doing the same work from scratch.&lt;/p&gt;
-&lt;p&gt;Consider that the entire source of Half Life 2 was very publicly leaked shortly before its originally scheduled release and how we are all now drowning in games based on it.&lt;/p&gt;
-&lt;p&gt;If you have client-side security measures which you would like to protect &amp;#8211; like in-app purchases or other anti-cheat measures, you may indeed want to consider splitting out and encrypting part of this logic as well as applying some measure of source obfuscation.&lt;/p&gt;
-&lt;p&gt;A word of caution: While source-level obfuscation is fine and usually sufficient, assembly-level obfuscation can be risky as it generally relies on bugs in the mono runtime in order to function. Bugs which might get fixed at any time &amp;#8211; at which point you will need to go back and revisit your security efforts.&lt;/p&gt;
-&lt;p&gt;And remember: Encryption and obfuscation is just about making it harder for people to do things you don&amp;#8217;t want them to. In the end this all has to be understood by processors and even binaries are routinely reverse engineered. The best security is gained by not making what you wish to protect available outside of hardware in your control.&lt;/p&gt;
-&lt;p&gt;For more information on protecting sensitive client-side information from tampering, see the Unite Asia 2013 &amp;#8220;Protecting Your Android Content&amp;#8221; talk by Erik Hemming.&lt;/p&gt;
-&lt;p&gt;Note that Unity does not distribute .net assemblies on all platforms. Some platforms do not run the mono &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler because reasons and for those Unity will in stead perform Ahead Of Time compilation on your code while building.&lt;/p&gt;
-&lt;p&gt;&lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compilation basically means that in stead of relying on the &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler to at runtime load your bytecode when relevant and compile it for the specific hardware it is running on, the &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compiler will compile all your assembly to platform-specific binary right up front.&lt;/p&gt;
-&lt;p&gt;This means that your source code assemblies, any assemblies present in your project as well as the Unity engine assemblies are all jumbled into one binary. In most cases this should disincentivise tampering sufficiently.&lt;/p&gt;
-&lt;p&gt;At time of writing, Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; compiling on iOS and the console platforms.&lt;/p&gt;
-&lt;h1&gt;What is the point then?&lt;/h1&gt;
-&lt;p&gt;Now that you know what assemblies are not, you might be wondering why you should be interested in them at all. And rightly so.&lt;/p&gt;
-&lt;p&gt;I think it is always healthy to have some understanding of what goes on in the lower layers of your technology stack, but most Unity developers will not need to know about .net assemblies.&lt;/p&gt;
-&lt;p&gt;However here are some reasons why they are really cool:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;If you are distributing middleware, they allow you to significantly reduce your distribution footprint without compromising your development environment (one assembly vs. a bunch of script files).
-	&lt;ul&gt;
-		&lt;li&gt;Like their Windows cousins, .net assemblies allow embedded resources, which means you can literally put everything you need &amp;#8211; textures, audio, whatever &amp;#8211; inside one file.&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-	&lt;li&gt;Where &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; is available, new assembly can be loaded at runtime.
-	&lt;ul&gt;
-		&lt;li&gt;So what? So live patching baby!&lt;/li&gt;
-	&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Since the &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compiler routinely loads bytecode from disk and compiles and executes it, there is nothing preventing you from having it load bytecode which was not included in your original build.&lt;/p&gt;
-&lt;p&gt;The class System.Reflection.Assembly lets you load in bytecode from a file or a byte array, after which you can use reflection to find and instantiate types, call functions and all that other good stuff on what is contained in the assembly.&lt;/p&gt;
-&lt;p&gt;Remember that since Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; and not &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; on some platforms, this functionality is not available everywhere.&lt;/p&gt;
-&lt;p&gt;For an example of loading in new assembly, see the code-in-asset-bundles example from the &amp;#8220;Unity Hacks&amp;#8221; talk available on the &lt;a href=&quot;/videos&quot;&gt;videos&lt;/a&gt; page (source included).&lt;/p&gt;
-&lt;p&gt;A word of caution: If you plan on employing remote patching, make sure to at least sign your transfers in order to avoid man in the middle injection attacks.&lt;/p&gt;
-&lt;h1&gt;Wohoo! Assemble all of the things!&lt;/h1&gt;
-&lt;p&gt;This is all great, but how do you get started building assemblies for all them things? Well, dear reader, there are different approaches:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;If you are already set up with Visual Studio or Mono Develop, you can simply create a new project for a .net assembly using the project creation wizard. In order to access Unity types, simply add the UnityEngine.dll (and if necessary the UnityEditor.dll) assemblies to the project references and off you go.&lt;/li&gt;
-	&lt;li&gt;Should you be of a different persuasion and if you are not one to shy away from a terminal window, you can use the the gmcs binary as distributed with Unity or the mono &lt;span class=&quot;caps&quot;&gt;SDK&lt;/span&gt; to build your assembly by command-line.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Either of these will produce a .dll file with all of your kodes (and potentially resources). Simply drop it anywhere in your assets folder to gain access to the contained classes. The same compile order rules which apply to scripts, also hold true for assemblies.&lt;/p&gt;
-&lt;p&gt;Any public ScriptableObject or MonoBehaviour derived classes will appear as children of the assembly asset. Simply click the folding widget next to the asset in order to view and be able to drag-drop them.&lt;/p&gt;
-&lt;p&gt;Ah and if you were too lazy to check out the Unity Hacks talk (you really should, it is full of useful snippets), the trick for putting code in asset bundles is to compile the scripts to an assembly rather than letting Unity compile them and then save the assembly in your assets folder with the .bytes extension rather than .dll.&lt;/p&gt;
-&lt;p&gt;This makes Unity import the assembly as a TextAsset which is not addressed by Unitys compiler and can be included in asset bundles. At runtime, the bytes property of the asset reference is then passed to the Assembly constructor as described earlier.&lt;/p&gt;
-&lt;h1&gt;And the catch?&lt;/h1&gt;
-&lt;p&gt;Given that we are reaching the end of this article, that would mean it is high time for some dream bursting. This all sounds very easy and optimal to work with, but of-course it is not that simple.&lt;/p&gt;
-&lt;p&gt;While Unity makes it fairly straight forward to debug your scripts using MonoDevelop, it will by default do absolutely nothing to help you with your assemblies.&lt;/p&gt;
-&lt;p&gt;To help it on its way, you need to first build your assemblies for debug and secondly copy the generated [AssemblyName].mdb file to your assets folder along side the .dll file.&lt;/p&gt;
-&lt;p&gt;If you went ahead and looked for the mdb file right as I had ended the above paragraph, you would stand some chance of not finding it. Should you be on Windows, a pdb file rather than an mdb is generated and it is absolutely useless to the Unity debugging runtime.&lt;/p&gt;
-&lt;p&gt;Should you be stuck with a pdb file, you will need to use the pdb2mdb command-line tool as distributed with the Unity mono runtime or the mono &lt;span class=&quot;caps&quot;&gt;SDK&lt;/span&gt;. However running this command by hand every time you need to debug gets old really fast, so I recommend adding it in as a post-build step on your MonoDevelop or VisualStudio project.&lt;/p&gt;
-&lt;p&gt;For more information on debugging assemblies in Unity and indeed general use of assemblies in Unity, see this excellent article in the Unity documentation: &lt;a href=&quot;http://docs.unity3d.com/Documentation/Manual/UsingDLL.html&quot;&gt;Using Mono DLLs in a Unity Project&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And that is all, folks. I hope you find it useful!&lt;/p&gt;</description>
-				<published>2014-01-03 00:00:00 +0100</published>
-				<link>http://angryant.com/2014/01/03/Unity-and-net-assemblies/</link>
 			</item>
 		
 	</channel>

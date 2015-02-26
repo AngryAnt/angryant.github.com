@@ -7,6 +7,119 @@
 		
 			
 			<item>
+				<title>Trusted Gear</title>
+				<description>&lt;p&gt;Yay! &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; is next week! Will I see you there?&lt;/p&gt;
+&lt;p&gt;Ahem. Straying a bit from my usual theme here of writing about whatever little snippet or gadget I&amp;#8217;ve come up with, for this post I will in stead share some detail on recent changes to my tool-chain of choice, which I&amp;#8217;m quite happy about.&lt;/p&gt;
+&lt;p&gt;Every craftsman has his or her opinion on tooling, but just about everyone share the desire to tune their toolbox. Even if your opinion / taste / whatever does not align with mine, I hope that you find something useful in here.&lt;/p&gt;
+&lt;p&gt;If you really had your sights on getting some funky code snippet out of this post, here&amp;#8217;s an unholy perl module for firing off native prompt dialogs on OS X and Windows:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/9732081d1c76dd3de9d3&quot;&gt;Unholy perl&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And with that out of the way, let&amp;#8217;s get something else sorted: This post will likely come off as an ad for a bunch of different software. Other than mentioning it here, I do not intend to do anything about that.&lt;/p&gt;
+&lt;p&gt;Note that I primarily work on OS X and some of the tools mentioned in this post are only available on that platform. You might still find at least inspiration in those areas though &amp;#8211; likely very nice Windows and Linux alternatives exist. I did not look.&lt;/p&gt;
+&lt;p&gt;However if you are not on OS X, but on a tight schedule, just skip all sections other than the &amp;#8220;Typing&amp;#8221; section (which is probably where you&amp;#8217;ll find the best stuff anyway).&lt;/p&gt;
+&lt;h2&gt;Tracking&lt;/h2&gt;
+&lt;p&gt;Everyone has a system for remembering projects and TODOs. If you in stead keep it all in your head, I am glad that you&amp;#8217;re not a very busy person &amp;#8211; if you are busy, I would worry.&lt;/p&gt;
+&lt;p&gt;Over time I have tried many different systems for keeping track of it all &amp;#8211; having had it as a focus of mine ever since severe physical stress symptoms reminded me that my methods were entirely inadequate.&lt;/p&gt;
+&lt;p&gt;One tool that I kept coming back to and which I have recently re-focused on is &lt;a href=&quot;http://www.omnigroup.com/omnifocus/&quot;&gt;OmniFocus&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;While OmniFocus is by no means perfect (I have my fair share of open suggestion posts with the developers), it does provide me with the best feature combination I have seen in this type of tool. Important to me are:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;No restrictions or requirements on nesting/indentation depth of items.
+	&lt;ul&gt;
+		&lt;li&gt;The system has the notion of &amp;#8220;tasks&amp;#8221; existing in &amp;#8220;projects&amp;#8221;, but aside from this I can use folder nesting of projects and nesting of tasks as much as I like &amp;#8211; assigning whatever meaning I want to that.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Everything is synchronised painlessly between fully-featured clients on my laptop, my phone, and my tablet. And it remains accessible when offline.&lt;/li&gt;
+	&lt;li&gt;Easy, fast, unintrusive task entry.
+	&lt;ul&gt;
+		&lt;li&gt;The mobile clients have an always accessible &amp;#8220;add to inbox&amp;#8221; button and the OS X client a global task-entry shortcut.&lt;/li&gt;
+		&lt;li&gt;The shortcut fires up a little window over whatever you are currently working, allowing you to quickly type in what you need to remember to do, hitting enter when you&amp;#8217;re done. Optionally you can add more task details before hitting enter and continuing with whatever you were doing.
+		&lt;ul&gt;
+			&lt;li&gt;This is absolutely perfect when you remember a &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; unrelated to your current task or someone comes by your desk with a request.&lt;/li&gt;
+			&lt;li&gt;My shortcut for task entry is ctrl+alt+space. I do not recall if this is the default.&lt;/li&gt;
+		&lt;/ul&gt;&lt;/li&gt;
+		&lt;li&gt;The OS X client also comes with a &amp;#8220;service&amp;#8221; integration, allowing you to easily create new tasks from other applications &amp;#8211; like one based on a file or a snippet of text or perhaps an email.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;Optional additional classification and data collection.
+	&lt;ul&gt;
+		&lt;li&gt;Putting tasks in projects is your absolutely minimum flow. Even that I suppose is optional, as you could simply put all your tasks in your inbox. On top of this, you can scale it as little or as much as makes sense for your particular case. I use everything from no additionals to everything &amp;#8211; all dependent on the nature of the task.
+		&lt;ul&gt;
+			&lt;li&gt;Aside from putting tasks in optional projects in optional folders, each task can also have an associated context. Different tasks in the same project can have different contexts and contexts can have additional information associated with them &amp;#8211; like a location.&lt;/li&gt;
+			&lt;li&gt;Assigning a due date to a task will put it in your Forecast view &amp;#8211; allowing you to easily view what needs to get done today. This view can also show a quick overview of todays calendar and you can get notifications as the due time of a task is reached.&lt;/li&gt;
+			&lt;li&gt;Each task can have an associated attachment. Anything from a snippet of text to a file / an email / whatever.&lt;/li&gt;
+		&lt;/ul&gt;&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/OmniFocus.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;I use OmniFocus for all project and task tracking. However I do not try to replace my calendar with it. Scheduled events still go in my calendar (I just use iCal) and I also use my calendar to keep track of what I do with my time when on a contract.&lt;/p&gt;
+&lt;p&gt;This allows me to easily summarize for client reports when needed and I have a little Automator workflow calculate the total number of hours spent contracting this week &amp;#8211; allowing me to easily balance the hours.&lt;/p&gt;
+&lt;h2&gt;Typing&lt;/h2&gt;
+&lt;p&gt;Once I am done dreaming up ideas and tasks, like so many others, the majority of my time is spent as a typist &amp;#8211; translating those tasks into computer-friendly gibberish of one kind or another. Most of the time I find myself typing C#.&lt;/p&gt;
+&lt;p&gt;For quite a while I would bounce around between different editors for this task.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;VisualStudio with resharper for maximum efficiency &amp;#8211; at the cost of either rebooting into Windows or running around in the strange parallel universe of virtualisation.&lt;/li&gt;
+	&lt;li&gt;MonoDevelop for an approximation of the tools provided by VisualStudio, feeling not quite native anywhere, but very beta.&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.sublimetext.com&quot;&gt;Sublime Text&lt;/a&gt; for beautiful, responsive, unintrusive text rendering, with a wonderland of user-configurable keyboard shortcuts and extensions. And absolutely nothing in terms of VS- and MD-like project-wide assistance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then a while ago I added a bookmark to the &amp;#8220;check this out&amp;#8221; pile, for a project called &lt;a href=&quot;http://www.omnisharp.net&quot;&gt;OmniSharp&lt;/a&gt;. The promise was simple:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;Get full Intellisense-like completion and resharper-like code analysis.&lt;/li&gt;
+	&lt;li&gt;Use it in your text editor of choice.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Ha! Madness.&lt;/p&gt;
+&lt;p&gt;That was probably at least a half year ago &amp;#8211; until I finally found some time to put aside my scepticism for a bit and try to set it up with Sublime.&lt;/p&gt;
+&lt;p&gt;You know what? It works!&lt;/p&gt;
+&lt;p&gt;This is what I currently use of the OmniSharp + Sublime Text feature set:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Compile check on save &amp;#8211; with errors, warnings, and resharper-like code suggestions.
+	&lt;ul&gt;
+		&lt;li&gt;Some suggestions I do not agree with and luckily, as with resharper, configuration lets you easily filter those out. Unity also suppresses some warnings when compiling, so I elected to filter those out as well.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;File auto-format when triggered by shortcut.&lt;/li&gt;
+	&lt;li&gt;Intellisense-like auto-complete &amp;#8211; file, project and library-wide.&lt;/li&gt;
+	&lt;li&gt;Jump to definition / list reference points.&lt;/li&gt;
+	&lt;li&gt;Rename.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I am probably forgetting something, but suffice to say, I no longer feel the need to switch away from Sublime Text to boost efficiency on an unfamiliar codebase.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/resources/posts/2015-02-26-Trusted-Gear/Sublime.png&quot;&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Sublime-Thumb.png&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;With regards to shortcuts and configuration, there are a bunch of little tweaks you can set up for Sublime, so of-course I have done exactly that. The good part is that Sublime preferences are all &lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt; formatted text files, so they are easily shared in a gist:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/aab9ff86c2595410d165&quot;&gt;Preferences in a gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For text editing, that produces a lovely fullscreen view like the one on the right (click for full size). Tasty, right?&lt;/p&gt;
+&lt;h2&gt;Searching&lt;/h2&gt;
+&lt;p&gt;After lolcat searches and menacingly typing at people who are wrong, I probably spend the majority of my browser time doing reference manual lookups. Extensions like &lt;a href=&quot;http://safarikeywordsearch.aurlien.net&quot;&gt;Safari Keyword Search&lt;/a&gt; in combination with embedded search engines or Google site search have somewhat streamlined this task, but it never really worked solidly and of-course required that I be online while working.&lt;/p&gt;
+&lt;p&gt;Enter &lt;a href=&quot;http://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;. I can&amp;#8217;t remember who brought it up on twitter, but that&amp;#8217;s where I came across it and bookmarked it for later study. The idea is quite simple: It provides an offline search engine for docsets of your choosing &amp;#8211; much like man pages.&lt;/p&gt;
+&lt;p&gt;You get to specify which docsets to download, associate a search key with each docset (IE &amp;#8220;cpp:&amp;#8221; and &amp;#8220;.net:&amp;#8221;), and specify a global shortcut for launching the search window &amp;#8211; as you would Spotlight on OS X. But wait: There&amp;#8217;s more!&lt;/p&gt;
+&lt;p&gt;Downloadable docsets include topic-specific downloads of wiki-fied Stackoverflow questions and answers. And since you can associate multiple docsets with the same search key, these are easily accessed when you search.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Dash.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;On top of all of this, Dash also comes with an iPad and iPhone client and integration for a bunch of different editors, environments and other tools &amp;#8211; including Sublime Text.&lt;/p&gt;
+&lt;p&gt;You can find my Dash integration settings in the Sublime settings linked above. For global launch shortcut I chose ctrl+shift+space &amp;#8211; I do not recall if this is the default.&lt;/p&gt;
+&lt;h2&gt;Navigation&lt;/h2&gt;
+&lt;p&gt;If you, like me, grow a tad too accustomed to the default Sublime Text shortcut of alt+cmd+left/right for tab switching, I would recommend giving it a go as a global shortcut across applications. Configuring System Preferences &amp;#8211; Keyboard as shown below did the trick for me. I primarily use it in Terminal and Safari.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/resources/posts/2015-02-26-Trusted-Gear/Global-Tabs.png&quot; style=&quot;clear:both;float:none;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And that is about all I have for now. I hope that this is useful to you and do let me know if something in here is off or if you&amp;#8217;re more curious about something. If you are at &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt; in San Francisco next week, you could even do it in person.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.omnigroup.com/omnifocus/&quot;&gt;OmniFocus&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.sublimetext.com&quot;&gt;Sublime Text&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://www.omnisharp.net&quot;&gt;OmniSharp&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/aab9ff86c2595410d165&quot;&gt;Sublime Text and OmniSharp preferences&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;http://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/farcaller/DashDoc&quot;&gt;DashDoc &amp;#8211; Dash Sublime integration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+
+</description>
+				<published>2015-02-26 00:00:00 +0100</published>
+				<link>http://angryant.com/2015/02/26/Trusted-Gear/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Mad Mash Versioning</title>
 				<description>&lt;p&gt;Through 2014, I had every once in a while heard people casually mention that they were versioning their projects in a combination of git and &lt;span class=&quot;caps&quot;&gt;SVN&lt;/span&gt;. I didn&amp;#8217;t really take the time to ask for details on it, but it was one of those things, stuck in the back of my mind.&lt;/p&gt;
 &lt;p&gt;Filed under &amp;#8220;delightfully mad hacks&amp;#8221;, I finally found some time to look into it over Christmas &amp;#8211; as I was dodging various boring tasks in &lt;a href=&quot;/2015/01/01/Behave-2-5/&quot;&gt;finalising Behave 2.5&lt;/a&gt;.&lt;/p&gt;
