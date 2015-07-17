@@ -7,6 +7,34 @@
 		
 			
 			<item>
+				<title>Learn</title>
+				<description>&lt;p&gt;I&amp;#8217;m just about to wrap up a weeks vacation before it&amp;#8217;s back on the horse again &amp;#8211; as I leave for the &lt;a href=&quot;http://nucl.ai&quot;&gt;nucl.ai&lt;/a&gt; conference Sunday morning. If you&amp;#8217;re going, maybe I&amp;#8217;ll see you there? If not, you should go check out the &lt;a href=&quot;http://aigamedev.com/broadcasts/nuclai15-stream/&quot;&gt;live stream&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Basis&lt;/h2&gt;
+&lt;p&gt;Anyway, so in my vacation I built a little project when I could find a bit of time here and there. It was inspired by work on a client project earlier in the year, where we looked at wiring up a neural network for analysis of a noisy sensor.&lt;/p&gt;
+&lt;p&gt;The problem at the time was that although I could find a few C# NN libraries here and there, they were either not really a good fit or had a not-so-open open-source license like &lt;span class=&quot;caps&quot;&gt;GPL&lt;/span&gt; (good thing I don&amp;#8217;t have comments enabled here, eh?).&lt;/p&gt;
+&lt;p&gt;Anyway, that felt a bit silly, so I figured that I&amp;#8217;d at least get the ball rolling on a somewhat sane, &lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt; licensed, alternative. Either that or just have some fun with it until someone would point me at the obvious alternative solution, which I had overlooked in my earlier search.&lt;/p&gt;
+&lt;h2&gt;Project&lt;/h2&gt;
+&lt;p&gt;In its initial shape, the library just lets you construct a layered network, randomize its weigths, train it with a straight forward implementation of back-propagation with adjustable learning rate and momentum, and of-course run it.&lt;/p&gt;
+&lt;p&gt;There is no serialisation interface yet, I&amp;#8217;ll probably want to do a simplification pass over it, and I have a few edge case tests I&amp;#8217;d like to run. However all of that is noted on the project &lt;span class=&quot;caps&quot;&gt;TODO&lt;/span&gt; and shouldn&amp;#8217;t amount to all that much work &amp;#8211; in case you fancy taking a stab at it.&lt;/p&gt;
+&lt;p&gt;I did set up a little Unity project for testing though (the library itself does not depend on anything in Unity). It has a few debug views, a test scenario of the &lt;span class=&quot;caps&quot;&gt;XOR&lt;/span&gt; case, and a curve visualisation of training error. Look, I uploaded several pretty pictures:&lt;/p&gt;
+&lt;p&gt;&lt;iframe src=&quot;https://player.vimeo.com/video/133789555&quot; width=&quot;500&quot; height=&quot;281&quot; frameborder=&quot;0&quot; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;&lt;/p&gt;
+&lt;h2&gt;Access&lt;/h2&gt;
+&lt;p&gt;Feel like giving it a go? As mentioned, the license is &lt;span class=&quot;caps&quot;&gt;MIT&lt;/span&gt;, so you can really do whatever with it. However should you want to contribute, pull requests are most welcome. I don&amp;#8217;t know how much time I can spare on this next to contracts and Behave, but at least it was a fun thing to work-on-while-not-working.&lt;/p&gt;
+&lt;p&gt;Whatever the case, this is where you can find the repositories:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/Learn&quot;&gt;Learn&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/LearnUnityTest&quot;&gt;Unity test project&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</description>
+				<published>2015-07-17 00:00:00 +0200</published>
+				<link>http://angryant.com/2015/07/17/Learn/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Behave 2.6</title>
 				<description>&lt;p&gt;Still plenty of open feature branches on Behave, but now is the time for the next drop. With a little over a week till Unite Europe and shortly thereafter nucl.ai (formerly GameAIconf), I&amp;#8217;m also heading into a bit of a plenty-to-do period. Perhaps we&amp;#8217;ll meet at the conference and have a chat about it?&lt;/p&gt;
 &lt;h2&gt;Contents&lt;/h2&gt;

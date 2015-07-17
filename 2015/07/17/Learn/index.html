@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - First tutorial available - </title>
+		<title>AngryAnt - Learn - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">First tutorial available</div>
+<div id="subtitle">Learn</div>
 
 	
 		<a href="/">Home</a>
@@ -75,11 +75,30 @@
 
 			</div>
 			<div id="container">
-				<span class="date">04 Nov 2008</span>
-				<h1 id="Top">First tutorial available</h1>
+				<span class="date">17 Jul 2015</span>
+				<h1 id="Top">Learn</h1>
 				
 				<div id="content">
-					<div class="post"><p>Check it out in the Tutorials section of the Documentation page.</p></div>
+					<div class="post"><p>I&#8217;m just about to wrap up a weeks vacation before it&#8217;s back on the horse again &#8211; as I leave for the <a href="http://nucl.ai">nucl.ai</a> conference Sunday morning. If you&#8217;re going, maybe I&#8217;ll see you there? If not, you should go check out the <a href="http://aigamedev.com/broadcasts/nuclai15-stream/">live stream</a>.</p>
+<h2>Basis</h2>
+<p>Anyway, so in my vacation I built a little project when I could find a bit of time here and there. It was inspired by work on a client project earlier in the year, where we looked at wiring up a neural network for analysis of a noisy sensor.</p>
+<p>The problem at the time was that although I could find a few C# NN libraries here and there, they were either not really a good fit or had a not-so-open open-source license like <span class="caps">GPL</span> (good thing I don&#8217;t have comments enabled here, eh?).</p>
+<p>Anyway, that felt a bit silly, so I figured that I&#8217;d at least get the ball rolling on a somewhat sane, <span class="caps">MIT</span> licensed, alternative. Either that or just have some fun with it until someone would point me at the obvious alternative solution, which I had overlooked in my earlier search.</p>
+<h2>Project</h2>
+<p>In its initial shape, the library just lets you construct a layered network, randomize its weigths, train it with a straight forward implementation of back-propagation with adjustable learning rate and momentum, and of-course run it.</p>
+<p>There is no serialisation interface yet, I&#8217;ll probably want to do a simplification pass over it, and I have a few edge case tests I&#8217;d like to run. However all of that is noted on the project <span class="caps">TODO</span> and shouldn&#8217;t amount to all that much work &#8211; in case you fancy taking a stab at it.</p>
+<p>I did set up a little Unity project for testing though (the library itself does not depend on anything in Unity). It has a few debug views, a test scenario of the <span class="caps">XOR</span> case, and a curve visualisation of training error. Look, I uploaded several pretty pictures:</p>
+<p><iframe src="https://player.vimeo.com/video/133789555" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></p>
+<h2>Access</h2>
+<p>Feel like giving it a go? As mentioned, the license is <span class="caps">MIT</span>, so you can really do whatever with it. However should you want to contribute, pull requests are most welcome. I don&#8217;t know how much time I can spare on this next to contracts and Behave, but at least it was a fun thing to work-on-while-not-working.</p>
+<p>Whatever the case, this is where you can find the repositories:</p>
+<ul>
+	<li><a href="https://github.com/AngryAnt/Learn">Learn</a></li>
+	<li><a href="https://github.com/AngryAnt/LearnUnityTest">Unity test project</a></li>
+</ul>
+
+
+</div>
 				</div>
 				<div id="feed-container">
 					<div id="feed">
