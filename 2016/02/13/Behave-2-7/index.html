@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Behave 2.6 - </title>
+		<title>AngryAnt - Behave 2.7 - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Behave 2.6</div>
+<div id="subtitle">Behave 2.7</div>
 
 	
 		<a href="/">Home</a>
@@ -75,23 +75,70 @@
 
 			</div>
 			<div id="container">
-				<span class="date">13 Jun 2015</span>
-				<h1 id="Top">Behave 2.6</h1>
+				<span class="date">13 Feb 2016</span>
+				<h1 id="Top">Behave 2.7</h1>
 				
 				<div id="content">
-					<div class="post"><p>Still plenty of open feature branches on Behave, but now is the time for the next drop. With a little over a week till Unite Europe and shortly thereafter nucl.ai (formerly GameAIconf), I&#8217;m also heading into a bit of a plenty-to-do period. Perhaps we&#8217;ll meet at the conference and have a chat about it?</p>
+					<div class="post"><p>The serialisation update is here! Ok maybe that is not the most exciting change for everyone, but I for one am quite happy about having finally shipped it. Aside from making life a lot simpler for anyone vaguely interested in collaborating on Behave libraries across version control systems, this lays the groundwork for a good number of runtime changes I have been wanting to do for a while.</p>
 <h2>Contents</h2>
-<p>With only minor editor tweaks, the 2.6 release of Behave focuses primarily on <span class="caps">API</span> changes and added capabilities. The more exciting of these is probably the addition of action classes, allowing you to implement actions not just as singular event handlers on agent classes, but as standalone classes &#8211; or in the case of Unity, as components.</p>
-<p>The reference documentation has been updated with a &#8220;Composition&#8221; section describing the setup in more detail.</p>
-<p>Do note that in this release, Behave is no longer backwards compatible with Behave 1.x assets.</p>
-<h2>Onwards</h2>
-<p>Unfortunately some planned features are taking a bit longer as they depend on a serialisation system refactor, requiring an extended period of focus. The groundwork for this has been effectuated and given time, should shoulder an effective change leading to interesting new capabilities.</p>
+<p>Aside from just fixing up serialisation, this release focuses on improving editor usability with a good selection of tweaks and features. Some choice examples:</p>
+<ul>
+	<li>Behaviour tree minimap navigation.</li>
+	<li>Subtle indicator of tree origin direction when it is out of canvas view.</li>
+	<li>&#8220;Larger fonts&#8221; toggle for better visibility.</li>
+	<li>Hiding of component- and sidebar, plus a bunch of other canvas navigation tweaks.</li>
+</ul>
+<h2>Onward</h2>
+<p>After clearing this serialisation system obstruction out of the way, the road is now open for a host of planned features. Most of these are aimed at improving runtime flexibility, by increasing the available options for the tools you are already familiar with.</p>
+<p>If you happen to be at this years <span class="caps">GDC</span> in a little months time, perhaps we could meet and exchange ideas on this?</p>
 <ul>
 	<li><a href="http://u3d.as/5hA">Behave 2 for Unity on the asset store</a>.</li>
 	<li><a href="/behave/">Project information</a>.</li>
 </ul>
 <pre>
 Changelist:
+
+
+2.7:
+ - New library serialisation.
+     - Backwards compatible with all 2.x variants.
+     - All other formats are deprecated: text, binary, export/asset.
+         - Exports are auto-upgraded, but please make sure to follow editor instructions when opening asset-type libraries.
+         - Run your upgrades now. Future versions of Behave will not support deprecated serialisation.
+     - Support for pre-2.0 decorators finally dropped.
+     - Faster and less frequent serialisation.
+     - Designed for optimal inter action with version control systems.
+     - Custom inspector for Behave libraries is dropped in Unity 4.
+         - Aside from the visuals, this just means that the Behave window now only can be launched by double-clicking the library or via the Window menu.
+ - Behaviour tree minimap navigation - activate via alt+space.
+ - Float/Clamp toggle for turning off canvas clamping when setting up large new tree structures.
+ - Subtle indicator of tree origin direction when it is out of canvas view.
+ - "Warn on non-mandatory actions and contexts" compiler toggle to support team communications.
+ - "Larger fonts" toggle for better visibility.
+ - Hiding of component- &amp; sidebar.
+ - Similar to reference components, components (and connections) referencing records can now also be double-clicked to navigate there.
+ - Compiler adapted to new Unity distribution structure on OS X with Unity 5.4.
+ - Home screen update.
+ - Improved editor performance - particularly on larger libraries.
+ - Better error handling for establishing debugger connections.
+ - Tidying up and calming antivirus software by using Unity project Temp folder in stead of global temp.
+
+
+2.6.4:
+ - Fixed protobuf compatibility with Unity Windows.NET build targets.
+
+
+2.6.3:
+ - Fixed compiler execution on certain versions of OS X.
+ - Minus one popup in the Windows compilation process.
+
+
+2.6.2:
+ - Fixed Windows compiler issue.
+
+
+2.6.1:
+ - Addressed Unity 5.1 compiler configuration compatibility issue.
 
 
 2.6:
