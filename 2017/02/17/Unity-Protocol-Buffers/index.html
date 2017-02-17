@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>AngryAnt - Second Unity IGDA SIG this evening: Scene construction and AI - </title>
+		<title>AngryAnt - Unity Protocol Buffers - </title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="content-language" content="en" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +31,7 @@
 			<div id="sidebar">
 				<img id="logo" title="Logo" alt="Logo" src="/resources/logo.png">
 <h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a></h1>
-<div id="subtitle">Second Unity IGDA SIG this evening: Scene construction and AI</div>
+<div id="subtitle">Unity Protocol Buffers</div>
 
 	
 		<a href="/">Home</a>
@@ -76,19 +76,70 @@
 
 			</div>
 			<div id="container">
-				<span class="date">17 Mar 2011</span>
-				<h1 id="Top">Second Unity IGDA SIG this evening: Scene construction and AI</h1>
+				<span class="date">17 Feb 2017</span>
+				<h1 id="Top">Unity Protocol Buffers</h1>
 				
 				<div id="content">
-					<div class="post"><p><span class="caps">OHAI</span></p>
-<p>A week has passed and the second of six Unity specific <span class="caps">IGDA</span> SIGs is upon us. Like last time, the event will take place at the IT University, Copenhagen, Denmark at 1800.</p>
-<p>We will meet in the reception and from there move to the auditorium. The originally planned physics bit of todays <span class="caps">SIG</span> has been rescheduled to next thursday, where Jonas Echterhoff will be in town and give the talk. Jonas is the man with the plan of the PhysX integration in Unity, so added awesomenessness!</p>
-<p>This means that today Joe Robins will be talking about scene construction and I will be covering AI in Unity.</p>
-<p>For this thursday we should be lucky and get even more Unity Tech people to participate in the discussion bit of the <span class="caps">SIG</span>. And remember afterwards we&#8217;re doing the bar meet and given it&#8217;s Saint Patricks, we&#8217;re likely to be a good group of people moving from bar to bar.</p>
-<p>The original <span class="caps">IGDA</span> post w. schedule:
-<a href="http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/">http://igda.dk/2011/02/01/unity-sig-unity-special-interest-group-launch/</a></p>
-<p><span class="caps">IGDA</span> post on the rescheduling of the physics talk:
-<a href="http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/">http://igda.dk/2011/03/16/unity-sig-update-on-the-meeting-thursday-173/</a></p></div>
+					<div class="post"><p>Time for another &#8220;ah, crap &#8211; better put <strong>something</strong> up here before heading to <span class="caps">GDC</span>&#8221;-post. And since I did some re-tinkering with the integration of <a href="https://developers.google.com/protocol-buffers/">protobuf</a> in Behave late last year, some sharing on that topic seemed in order.</p>
+<p>So yes, stuff is happening with Behave &#8211; no abandonment has taken place. On the contrary I have been working on several, long-running, feature branches. I&#8217;ll get around to merging some of those in and doing another release. More on that soonish.</p>
+<p>Anywho, last I checked, <a href="https://github.com/mgravell/protobuf-net">protobuf-net</a> was still a more complete solution than the younger <a href="https://github.com/google/protobuf/tree/master/csharp">protobuf for C#</a> one, so I still stick with protobuf-net and can therefore only talk about that here. However it looks like the latter is seeing more rapid development, so I&#8217;ll probably review my choice when next I need to tinker with the integration.</p>
+<p>More interestingly, some of the initial people behind protobuf have since gone and built the new and shiny <a href="https://capnproto.org">Cap&#8217;n Proto</a>. This looks to be even more powerful than its predecessor, but at time of writing it is still not as mature or implementation-rich as protobuf. Critically for the context of this post, there is no C# implementation yet. Cool stuff, though &#8211; worth keeping an eye on.</p>
+<h2>Overview</h2>
+<p>So what is the Protocol Buffers project? Succinctly, it is a compact binary serialisation format with very fast cross-platform and -language implementations. Super useful when you need to quickly move some data between memory and some other location &#8211; a file / a network peer / whatever.</p>
+<p>It was first designed, implemented, and maintained by Google for communications between network peers on their internal network. Since then, it has been implemented in a number of different languages &#8211; including the <a href="https://github.com/mgravell/protobuf-net">protobuf-net</a> implementation, built and maintained by <a href="https://github.com/mgravell">Marc Gravell</a>.</p>
+<p>Serialisation use in Behave has gone through a couple of distinct phases:</p>
+<ol>
+	<li>.net binary serialiser for asset.</li>
+	<li>protobuf-net for asset.</li>
+	<li>protobuf-net for asset and remote debugger protocol.</li>
+	<li><span class="caps">JSON</span> for asset, protobuf-net for remote debugger protocol.</li>
+</ol>
+<p>Additionally I&#8217;ve used protobuf-net for runtime saving or build pipelines on various client projects.</p>
+<p>Aside from speed and compression, protobuf-net vs. the .net binary serialiser was also an escape of the frustrating lack of support for versioning or even simple structural refactors of serialised types. The switch to <span class="caps">JSON</span> for the .behave asset files of-course came when I decided that merge-ability could be a fun thing to support.</p>
+<p>On top of this general migration, I also went through a couple of different protobuf-net integrations &#8211; as my use cases and requirements changed. It just so happens that this gave me full coverage of the three approaches supported by protobuf-net, so no need for extra research before writing this post. Win!</p>
+<h2>Integration</h2>
+<p>For serialisation to work, you need a a serialiser and a schema. Protobuf-net offers a couple of ways for you to provide those:</p>
+<ol>
+	<li>[Attribute] markup with runtime generated serialiser.</li>
+	<li>[Attribute] markup with pre-generated serialiser.</li>
+	<li>.proto file description with pre-generated serialiser.</li>
+</ol>
+<p>I did this list in order of simplicity, which also happens to be the order in which I switched through them in the integration with Behave.</p>
+<p>The first option is very .net esque and protobuf-net is indeed compatible both with its own serialisation attributes and the more general-purpose .net serialisation attributes. However since your interest here is in a Unity context, I&#8217;m sure that you have already spotted the problem with this approach.</p>
+<p>Given that my initial use for protobuf-net was just for asset serialisation (which is editor-time only), I had no problem with the serialisation solution relying on <span class="caps">JIT</span> compilation in order to construct the serialiser at runtime. However as soon as I expanded my use case to include the runtime debugger, relying on <span class="caps">JIT</span> would mean not supporting the debugger on <span class="caps">AOT</span> platforms like iOS and consoles. Further, as Unity continues transitioning to their IL2CPP solution, you&#8217;re looking at a future where most will want to do <span class="caps">AOT</span> on all platforms.</p>
+<p>So when introducing the remote debugger (previous debugger implementation was just 100% in-editor), I started to pre-generate the serialiser. This entails feeding your compiled assembly with [Attribute] markup to the protobuf-net precompile tool, which in turn generates an assembly with the serialiser type. For an example of how I used to do that, here&#8217;s a <a href="https://gist.github.com/AngryAnt/7223d692ec9d2fd12053e5b04f57296a">snippet of perl</a>.</p>
+<h2>Extraction</h2>
+<p>Everything works! Win, right? Well&#8230; as I was expanding debugger support to non-C# targets and doing a general code cleanup, I got increasingly annoyed by having serialisation implementation detail in my general data type code. So I started looking at how protobuf-net supports the standard protobuf .proto format for schema definition.</p>
+<p>As things stand, it takes a bit of work &#8211; specifically <a href="https://github.com/mgravell/protobuf-net/pull/163">this work</a> &#8211; to get going, but once there it is solid. In stead of using the precompile tool, you need to build and run the protogen tool from the protobuf-net repository. If you&#8217;re on Windows, things may just work straight out of the gate, but you may want to see what is in my patch anyway.</p>
+<p>So how does this work? Well, the input is no longer [attribute] marked assemblies, but in stead a .proto definition file. You can find great detail on that in the general <a href="https://developers.google.com/protocol-buffers/">protobuf</a> documentation, but you may want to consult the <a href="https://github.com/mgravell/protobuf-net">protobuf-net</a> docs for implementation specifics/limits. Also, the output is not an assembly, but simply a C# file.</p>
+<p>Keep in mind that protogen relies on the protoc tool from the general Google protobuf tools. I fetched this from homebrew as the &#8220;protobuf&#8221; package.</p>
+<p>Again I have a <a href="https://gist.github.com/AngryAnt/16c548412cdf1dba30140e8cdd97dc64">snippet of perl</a> to illustrate use &#8211; as well as an <a href="https://gist.github.com/AngryAnt/f053be0c4c66fafde17d679c2d09a9c9">example .proto file</a>. In this case the Behave debugger protocol definition.</p>
+<p>Using this approach, I now have a nicely separated codebase and no duplication of schema definition between the C# debugger runtime and others. One trick remains though&#8230;</p>
+<h2>Object pooling</h2>
+<p>A mildly active Behave debugger session involves a lot of messages. I have very little interest in blowing up the garbage collector by constantly instantiating new messages and leaving them to get collected. So how do we integrate an object pool setup with the generated protobuf-net serialiser?</p>
+<p>While not exactly as pretty as I would like, my answer is making use of the partialness of the generated types &#8211; in order to add <a href="https://gist.github.com/AngryAnt/1ed005b443202f6dcebc9649d59ae2d2">a static pool and -constructor</a> to hook it up.</p>
+<p>And that&#8217;s pretty much what I&#8217;ve got. If I missed something or you have related questions, feel free to ping me and I&#8217;ll try to update this post when I can.</p>
+<ul>
+	<li><a href="https://developers.google.com/protocol-buffers/">protobuf</a></li>
+	<li><a href="https://github.com/mgravell/protobuf-net">protobuf-net</a></li>
+	<li><a href="https://github.com/google/protobuf/tree/master/csharp">protobuf for C#</a></li>
+	<li><a href="https://capnproto.org">Cap&#8217;n Proto</a></li>
+	<li><a href="https://github.com/mgravell">Marc Gravell</a></li>
+	<li><a href="https://gist.github.com/AngryAnt/7223d692ec9d2fd12053e5b04f57296a">Precompiler perl</a></li>
+	<li><a href="https://github.com/mgravell/protobuf-net/pull/163">protogen patch</a></li>
+	<li><a href="https://gist.github.com/AngryAnt/16c548412cdf1dba30140e8cdd97dc64">protogen perl</a></li>
+	<li><a href="https://gist.github.com/AngryAnt/f053be0c4c66fafde17d679c2d09a9c9">Protocol.proto</a></li>
+	<li><a href="https://gist.github.com/AngryAnt/1ed005b443202f6dcebc9649d59ae2d2">Object pool integration</a></li>
+</ul>
+
+
+
+
+
+
+
+
+</div>
 				</div>
 				<div id="feed-container">
 					<div id="feed">

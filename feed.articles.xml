@@ -7,6 +7,74 @@
 		
 			
 			<item>
+				<title>Unity Protocol Buffers</title>
+				<description>&lt;p&gt;Time for another &amp;#8220;ah, crap &amp;#8211; better put &lt;strong&gt;something&lt;/strong&gt; up here before heading to &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt;&amp;#8221;-post. And since I did some re-tinkering with the integration of &lt;a href=&quot;https://developers.google.com/protocol-buffers/&quot;&gt;protobuf&lt;/a&gt; in Behave late last year, some sharing on that topic seemed in order.&lt;/p&gt;
+&lt;p&gt;So yes, stuff is happening with Behave &amp;#8211; no abandonment has taken place. On the contrary I have been working on several, long-running, feature branches. I&amp;#8217;ll get around to merging some of those in and doing another release. More on that soonish.&lt;/p&gt;
+&lt;p&gt;Anywho, last I checked, &lt;a href=&quot;https://github.com/mgravell/protobuf-net&quot;&gt;protobuf-net&lt;/a&gt; was still a more complete solution than the younger &lt;a href=&quot;https://github.com/google/protobuf/tree/master/csharp&quot;&gt;protobuf for C#&lt;/a&gt; one, so I still stick with protobuf-net and can therefore only talk about that here. However it looks like the latter is seeing more rapid development, so I&amp;#8217;ll probably review my choice when next I need to tinker with the integration.&lt;/p&gt;
+&lt;p&gt;More interestingly, some of the initial people behind protobuf have since gone and built the new and shiny &lt;a href=&quot;https://capnproto.org&quot;&gt;Cap&amp;#8217;n Proto&lt;/a&gt;. This looks to be even more powerful than its predecessor, but at time of writing it is still not as mature or implementation-rich as protobuf. Critically for the context of this post, there is no C# implementation yet. Cool stuff, though &amp;#8211; worth keeping an eye on.&lt;/p&gt;
+&lt;h2&gt;Overview&lt;/h2&gt;
+&lt;p&gt;So what is the Protocol Buffers project? Succinctly, it is a compact binary serialisation format with very fast cross-platform and -language implementations. Super useful when you need to quickly move some data between memory and some other location &amp;#8211; a file / a network peer / whatever.&lt;/p&gt;
+&lt;p&gt;It was first designed, implemented, and maintained by Google for communications between network peers on their internal network. Since then, it has been implemented in a number of different languages &amp;#8211; including the &lt;a href=&quot;https://github.com/mgravell/protobuf-net&quot;&gt;protobuf-net&lt;/a&gt; implementation, built and maintained by &lt;a href=&quot;https://github.com/mgravell&quot;&gt;Marc Gravell&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Serialisation use in Behave has gone through a couple of distinct phases:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;.net binary serialiser for asset.&lt;/li&gt;
+	&lt;li&gt;protobuf-net for asset.&lt;/li&gt;
+	&lt;li&gt;protobuf-net for asset and remote debugger protocol.&lt;/li&gt;
+	&lt;li&gt;&lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt; for asset, protobuf-net for remote debugger protocol.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Additionally I&amp;#8217;ve used protobuf-net for runtime saving or build pipelines on various client projects.&lt;/p&gt;
+&lt;p&gt;Aside from speed and compression, protobuf-net vs. the .net binary serialiser was also an escape of the frustrating lack of support for versioning or even simple structural refactors of serialised types. The switch to &lt;span class=&quot;caps&quot;&gt;JSON&lt;/span&gt; for the .behave asset files of-course came when I decided that merge-ability could be a fun thing to support.&lt;/p&gt;
+&lt;p&gt;On top of this general migration, I also went through a couple of different protobuf-net integrations &amp;#8211; as my use cases and requirements changed. It just so happens that this gave me full coverage of the three approaches supported by protobuf-net, so no need for extra research before writing this post. Win!&lt;/p&gt;
+&lt;h2&gt;Integration&lt;/h2&gt;
+&lt;p&gt;For serialisation to work, you need a a serialiser and a schema. Protobuf-net offers a couple of ways for you to provide those:&lt;/p&gt;
+&lt;ol&gt;
+	&lt;li&gt;[Attribute] markup with runtime generated serialiser.&lt;/li&gt;
+	&lt;li&gt;[Attribute] markup with pre-generated serialiser.&lt;/li&gt;
+	&lt;li&gt;.proto file description with pre-generated serialiser.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I did this list in order of simplicity, which also happens to be the order in which I switched through them in the integration with Behave.&lt;/p&gt;
+&lt;p&gt;The first option is very .net esque and protobuf-net is indeed compatible both with its own serialisation attributes and the more general-purpose .net serialisation attributes. However since your interest here is in a Unity context, I&amp;#8217;m sure that you have already spotted the problem with this approach.&lt;/p&gt;
+&lt;p&gt;Given that my initial use for protobuf-net was just for asset serialisation (which is editor-time only), I had no problem with the serialisation solution relying on &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; compilation in order to construct the serialiser at runtime. However as soon as I expanded my use case to include the runtime debugger, relying on &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; would mean not supporting the debugger on &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; platforms like iOS and consoles. Further, as Unity continues transitioning to their IL2CPP solution, you&amp;#8217;re looking at a future where most will want to do &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; on all platforms.&lt;/p&gt;
+&lt;p&gt;So when introducing the remote debugger (previous debugger implementation was just 100% in-editor), I started to pre-generate the serialiser. This entails feeding your compiled assembly with [Attribute] markup to the protobuf-net precompile tool, which in turn generates an assembly with the serialiser type. For an example of how I used to do that, here&amp;#8217;s a &lt;a href=&quot;https://gist.github.com/AngryAnt/7223d692ec9d2fd12053e5b04f57296a&quot;&gt;snippet of perl&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Extraction&lt;/h2&gt;
+&lt;p&gt;Everything works! Win, right? Well&amp;#8230; as I was expanding debugger support to non-C# targets and doing a general code cleanup, I got increasingly annoyed by having serialisation implementation detail in my general data type code. So I started looking at how protobuf-net supports the standard protobuf .proto format for schema definition.&lt;/p&gt;
+&lt;p&gt;As things stand, it takes a bit of work &amp;#8211; specifically &lt;a href=&quot;https://github.com/mgravell/protobuf-net/pull/163&quot;&gt;this work&lt;/a&gt; &amp;#8211; to get going, but once there it is solid. In stead of using the precompile tool, you need to build and run the protogen tool from the protobuf-net repository. If you&amp;#8217;re on Windows, things may just work straight out of the gate, but you may want to see what is in my patch anyway.&lt;/p&gt;
+&lt;p&gt;So how does this work? Well, the input is no longer [attribute] marked assemblies, but in stead a .proto definition file. You can find great detail on that in the general &lt;a href=&quot;https://developers.google.com/protocol-buffers/&quot;&gt;protobuf&lt;/a&gt; documentation, but you may want to consult the &lt;a href=&quot;https://github.com/mgravell/protobuf-net&quot;&gt;protobuf-net&lt;/a&gt; docs for implementation specifics/limits. Also, the output is not an assembly, but simply a C# file.&lt;/p&gt;
+&lt;p&gt;Keep in mind that protogen relies on the protoc tool from the general Google protobuf tools. I fetched this from homebrew as the &amp;#8220;protobuf&amp;#8221; package.&lt;/p&gt;
+&lt;p&gt;Again I have a &lt;a href=&quot;https://gist.github.com/AngryAnt/16c548412cdf1dba30140e8cdd97dc64&quot;&gt;snippet of perl&lt;/a&gt; to illustrate use &amp;#8211; as well as an &lt;a href=&quot;https://gist.github.com/AngryAnt/f053be0c4c66fafde17d679c2d09a9c9&quot;&gt;example .proto file&lt;/a&gt;. In this case the Behave debugger protocol definition.&lt;/p&gt;
+&lt;p&gt;Using this approach, I now have a nicely separated codebase and no duplication of schema definition between the C# debugger runtime and others. One trick remains though&amp;#8230;&lt;/p&gt;
+&lt;h2&gt;Object pooling&lt;/h2&gt;
+&lt;p&gt;A mildly active Behave debugger session involves a lot of messages. I have very little interest in blowing up the garbage collector by constantly instantiating new messages and leaving them to get collected. So how do we integrate an object pool setup with the generated protobuf-net serialiser?&lt;/p&gt;
+&lt;p&gt;While not exactly as pretty as I would like, my answer is making use of the partialness of the generated types &amp;#8211; in order to add &lt;a href=&quot;https://gist.github.com/AngryAnt/1ed005b443202f6dcebc9649d59ae2d2&quot;&gt;a static pool and -constructor&lt;/a&gt; to hook it up.&lt;/p&gt;
+&lt;p&gt;And that&amp;#8217;s pretty much what I&amp;#8217;ve got. If I missed something or you have related questions, feel free to ping me and I&amp;#8217;ll try to update this post when I can.&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://developers.google.com/protocol-buffers/&quot;&gt;protobuf&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/mgravell/protobuf-net&quot;&gt;protobuf-net&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/google/protobuf/tree/master/csharp&quot;&gt;protobuf for C#&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://capnproto.org&quot;&gt;Cap&amp;#8217;n Proto&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/mgravell&quot;&gt;Marc Gravell&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/7223d692ec9d2fd12053e5b04f57296a&quot;&gt;Precompiler perl&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://github.com/mgravell/protobuf-net/pull/163&quot;&gt;protogen patch&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/16c548412cdf1dba30140e8cdd97dc64&quot;&gt;protogen perl&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/f053be0c4c66fafde17d679c2d09a9c9&quot;&gt;Protocol.proto&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/1ed005b443202f6dcebc9649d59ae2d2&quot;&gt;Object pool integration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+
+
+
+</description>
+				<published>2017-02-17 00:00:00 +0100</published>
+				<link>http://angryant.com/2017/02/17/Unity-Protocol-Buffers/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Behave 2.7</title>
 				<description>&lt;p&gt;The serialisation update is here! Ok maybe that is not the most exciting change for everyone, but I for one am quite happy about having finally shipped it. Aside from making life a lot simpler for anyone vaguely interested in collaborating on Behave libraries across version control systems, this lays the groundwork for a good number of runtime changes I have been wanting to do for a while.&lt;/p&gt;
 &lt;h2&gt;Contents&lt;/h2&gt;
@@ -216,7 +284,7 @@ Changelist:
      - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
      - Drag connection to occupied input slot to replace.
      - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
-     - Instant flag doesn&#39;t show on nodes connected to parents ignoring the flag.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
      - &quot;Last edited library&quot; now tracked per project.
      - Last selected tree is now also restored between sessions and playmode transitions.
      - A bunch of minor adjustments and improvements.
@@ -637,7 +705,7 @@ Changelist:
      - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
      - Drag connection to occupied input slot to replace.
      - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
-     - Instant flag doesn&#39;t show on nodes connected to parents ignoring the flag.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
      - &quot;Last edited library&quot; now tracked per project.
      - Last selected tree is now also restored between sessions and playmode transitions.
      - A bunch of minor adjustments and improvements.
@@ -1167,7 +1235,7 @@ Changelist:
      - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
      - Drag connection to occupied input slot to replace.
      - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
-     - Instant flag doesn&#39;t show on nodes connected to parents ignoring the flag.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
      - &quot;Last edited library&quot; now tracked per project.
      - Last selected tree is now also restored between sessions and playmode transitions.
      - A bunch of minor adjustments and improvements.
@@ -1483,7 +1551,7 @@ Changelist:
      - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
      - Drag connection to occupied input slot to replace.
      - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
-     - Instant flag doesn&#39;t show on nodes connected to parents ignoring the flag.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
      - &quot;Last edited library&quot; now tracked per project.
      - Last selected tree is now also restored between sessions and playmode transitions.
      - A bunch of minor adjustments and improvements.
@@ -1754,21 +1822,21 @@ Pre-release:
 &lt;p&gt;The base interface for using the extended coroutines is to start them via the new generic version of &lt;code&gt;MonoBehaviour.StartCoroutine&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;For running regular coroutines, the only other difference is that in stead of yielding directly to the return value of &lt;code&gt;StartCoroutine&amp;lt;T&amp;gt;&lt;/code&gt;, you yield to the .Coroutine member of its &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; return value.&lt;/p&gt;
 &lt;p&gt;This is also the reference which gives you access to the result of the coroutine execution.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=Result.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=Result.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Result.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Exception&lt;/h2&gt;
 &lt;p&gt;Since the coroutine calls are executed by the coroutine system and not the callee, normally exceptions just get swallowed up by the coroutine system and logged out.&lt;/p&gt;
 &lt;p&gt;The approach of Devin and Matthew, as implemented here, is to swallow the exception, break coroutine execution and then re-throw the same exception when next the coroutine comes into contact with the caller &amp;#8211; namely when its result is accessed.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=Exception.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=Exception.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Exception.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Stop&lt;/h2&gt;
 &lt;p&gt;In stead of relying on the strange, existing methods of stopping coroutines and the limitations they come with (such as only stopping a coroutine initially started by string parameter or stopping all coroutines on a behaviour), the &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; reference yields another possibility.&lt;/p&gt;
 &lt;p&gt;Since it effectively represents an instance of an executing coroutine, adding a &lt;code&gt;Stop&lt;/code&gt; method to it becomes much more intuitive.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=Stop.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=Stop.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Stop.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -1776,21 +1844,21 @@ Pre-release:
 &lt;p&gt;Requesting that a coroutine stops, requires a line of communication between the caller and coroutine. This is provided in the form of the instance of &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;However in order to effectively pass this, the calling convention on the coroutine is slightly different. Rather than passing the return value of the coroutine to &lt;code&gt;StartCoroutine&amp;lt;T&amp;gt;&lt;/code&gt;, the coroutine is passed as a delegate, taking &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; as its only parameter.&lt;/p&gt;
 &lt;p&gt;The rest of the flow is exactly as with &lt;code&gt;Stop&lt;/code&gt;, except &lt;code&gt;RequestStop&lt;/code&gt; is used by the caller and the coroutine periodically checks &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;.ShouldStop&lt;/code&gt;.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=SoftStop.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=SoftStop.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/SoftStop.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Threading&lt;/h2&gt;
 &lt;p&gt;The interface for threading is really very simple. Two new yield classes have been added &lt;code&gt;WaitForWorkerThread&lt;/code&gt; and &lt;code&gt;WaitForMainThread&lt;/code&gt;. Yielding to an instance of either will do exactly as advertised. Yielding break or the result or throwing an exception will terminate the thread and the coroutine.&lt;/p&gt;
 &lt;p&gt;When yielding &lt;code&gt;WaitForSeconds&lt;/code&gt; on the worker thread, the thread will sleep for the specified amount of seconds. And finally the &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; holds a flag accessor to determine the thread state of the coroutine.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=Threading.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=Threading.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Threading.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Load Balancing&lt;/h2&gt;
 &lt;p&gt;Load balancing could be done in a bunch of different ways and I would encourage you to add your own (I would love to see your ideas as well). So I decided to just do the simplest I could think of.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;WaitIfFrameTime&lt;/code&gt; will yield until the next frame if the current frame has taken longer than the specified amount of time. This way it effectively sets down a max frame time while utilising all the time leading up to that cap.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/.js?file=Load.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/.js?file=Load.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Load.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -2232,7 +2300,7 @@ Changelist:
      - Added both scrollwheel/pad and drag-to-scroll support to all canvas views.
      - Drag connection to occupied input slot to replace.
      - Directly drag-drop trees from the sidebar onto the canvas as reference nodes.
-     - Instant flag doesn&#39;t show on nodes connected to parents ignoring the flag.
+     - Instant flag doesn't show on nodes connected to parents ignoring the flag.
      - &quot;Last edited library&quot; now tracked per project.
      - Last selected tree is now also restored between sessions and playmode transitions.
      - A bunch of minor adjustments and improvements.
@@ -3218,7 +3286,7 @@ Pre-release:
 &lt;p&gt;However, again, the abstraction is loose enough that if you want to, you should be able to add support for more controllers fairly easily. See the end of the &lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/Controllers.cs&quot;&gt;Controllers.cs&lt;/a&gt; script for that.&lt;/p&gt;
 &lt;p&gt;Oh, but I almost forgot the hack: As I am using the standard Unity Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for this, the input manager needs configuring, right? So with no &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; for it, how do you go about doing that for a package?&lt;/p&gt;
 &lt;p&gt;You use the AssetDatabase &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to load ProjectSettings/InputManager.asset and then the ScriptableObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; to modify it.
-&lt;script src=&#39;https://gist.github.com/6151366.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/6151366.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;I hope you find this useful. For more details, these are the Unity Hacks scripts related to this post:&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;&lt;a href=&quot;https://github.com/AngryAnt/UnityHacks/blob/master/Assets/Standard%20Assets/Input/DualControls.cs&quot;&gt;DualControls.cs&lt;/a&gt;&lt;/li&gt;
@@ -3276,7 +3344,7 @@ Pre-release:
 &lt;h1&gt;TouchGestures.cs&lt;/h1&gt;
 &lt;p&gt;The purpose of this component is to facilitate easy handling of common gestures on touch enabled devices. With one instance of the component placed in a scene, you can specify which gestures to track, some key measuring caps with sensible defaults and a list of MonoBehaviours interested in receiving notification when a gesture has been detected.&lt;/p&gt;
 &lt;p&gt;An example of how to handle gesture tracking event can be found in this particular snippet from the presentation Control.cs script from Unity Hacks:
-&lt;script src=&#39;https://gist.github.com/6039082.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/6039082.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;This handler responds to single swipes, checking for strictly left or right swipes, handling them by progressing to the next slide/build step or jumping to the previous slide.&lt;/p&gt;
 &lt;p&gt;Great, so what do the different configuration values mean? First, let&amp;#8217;s take a look at the tracking clamps:&lt;/p&gt;
 &lt;ul&gt;
@@ -3311,7 +3379,7 @@ Pre-release:
 &lt;p&gt;It was a snap to apply, I had no required changes to my general OnGUI structure and the result looked great. This setup also came in handy when I was working with the Oculus Rift &amp;#8211; rendering the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; on a plane, rendered always on top, in front of the Oculus cameras.&lt;/p&gt;
 &lt;p&gt;So what is the idea then? Well it is quite straight forward: OnGUI is invoked multiple times each frame (once per event) &amp;#8211; at least twice &amp;#8211; unless layouting has been disabled on the MonoBehaviour. The last event of the frame is the repaint event. In this, all resolved controls render to the active context. Which fortunately can be set by render textures.&lt;/p&gt;
 &lt;p&gt;The trick therefore becomes:
-&lt;script src=&#39;https://gist.github.com/5984299.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/5984299.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Remember that this is not immediately useful if you need interactive &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; as this would require work to handle input gathered from the regular UnityEngine.Input &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;. Nonetheless it will give you for instance a scrolling screen of text on an in-game monitor.&lt;/p&gt;
 &lt;p&gt;I hope you find it useful!&lt;/p&gt;</description>
 				<published>2013-07-17 00:00:00 +0200</published>
@@ -3345,7 +3413,7 @@ Pre-release:
 &lt;p&gt;Secondly, we need to host a network game pretty much all the time, so that others may join any ongoing session at any time. Of-course you might want to provide an opt-in/out setting for networked play in your game. Just remember that we are only enabling this feature for local network play &amp;#8211; not internet play like Journey did it.&lt;/p&gt;
 &lt;p&gt;For information on how to easily set up this network game, see the talk I did at Unite 12 in Amsterdam: &amp;#8220;Unity, Network Code, and You&amp;#8221; &amp;#8211; the example provided for the built-in networking is quite relevant to the above example. You can find the talk linked from the &lt;a href=&quot;/videos/&quot;&gt;video&lt;/a&gt; section of this site.&lt;/p&gt;
 &lt;p&gt;So with those parts in place, we just need a bit of glue &amp;#8211; namely the broadcasting of games on your local network. This gist deals with just that:
-&lt;script src=&#39;https://gist.github.com/5730611.js?file=Broadcaster.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
+&lt;script src='https://gist.github.com/5730611.js?file=Broadcaster.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_BroadcastTimer == null)
 // Setup broadcast of hosting service
 {
 	m_BroadcastSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);&lt;/p&gt;
@@ -3396,7 +3464,7 @@ Pre-release:
 &lt;p&gt;&lt;strong&gt;kBroadcastGroup&lt;/strong&gt; and &lt;strong&gt;kBroadcastPort&lt;/strong&gt; are effectively shared keys we use to facilitate broadcasting communication between game instances. Broadcasting happens by way of multi-casting &amp;#8211; an IP protocol feature allowing peers to send one package to multiple unidentified receivers. This is why our shared keys are in the form of an IP address and a port, though their value is completely arbitrary &amp;#8211; all that matters is that both broadcaster and receiver use the same keys.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;m_BroadcastTimer&lt;/strong&gt; and &lt;strong&gt;kBroadcastDelay&lt;/strong&gt; control how often &lt;strong&gt;m_BroadcastSocket&lt;/strong&gt; will send out the broadcast message generated by &lt;strong&gt;GetBroadcastBytes&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;This covers the transmission part of the broadcast functionality. The following gist deals with receiving the broadcast message:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/5730611.js?file=Seeker.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_SeekerSocket == null)
+&lt;script src='https://gist.github.com/5730611.js?file=Seeker.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;if (m_SeekerSocket == null)
 {
 	m_SeekerSocket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -3526,7 +3594,7 @@ void ReadBroadcasts ()
 &lt;p&gt;A bit of googling told me that was not an uncommon problem and that apparently it happens mostly after resuming the OS after sleep. Also the solution appears to be restarting the BT radio.&lt;/p&gt;
 &lt;p&gt;So until apple addresses this, I&amp;#8217;ve written myself a little utility apple script for turning the radio off and back on again. It&amp;#8217;s based on &lt;a href=&quot;http://www.frederikseiffert.de/blueutil/&quot;&gt;blueutil&lt;/a&gt; which is available with source if you worry about malware and simply turns off the radio for five seconds before turning it back on.&lt;/p&gt;
 &lt;p&gt;I hope you find it useful.&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3798723.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil off&amp;amp;quot; with administrator privileges
+&lt;script src='https://gist.github.com/3798723.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil off&amp;amp;quot; with administrator privileges
 delay 5
 do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with administrator privileges&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;</description>
 				<published>2012-09-28 00:00:00 +0200</published>
@@ -3755,7 +3823,7 @@ do shell script &amp;amp;quot;sudo /usr/local/bin/blueutil on&amp;amp;quot; with
 &lt;h2&gt;Setup&lt;/h2&gt;
 &lt;p&gt;So first off, if you are on windows, you&amp;#8217;ll be needing a perl install. I usually got for ActivePerl. Not saying it is more awesomerer than anything else out there &amp;#8211; just that I know it and it usually works just fine. If you are on OS X, you&amp;#8217;re in luck, as perl comes preinstalled.&lt;/p&gt;
 &lt;p&gt;Now, let&amp;#8217;s get perl hacking. This is in no way meant as a &amp;#8220;my first perl script&amp;#8221; guide. We&amp;#8217;re just getting introduced to a means to an end &amp;#8211; and it is not going to be pretty. So first off, create a new text file in your favorite text editor and save it as build.pl. Start the file off like so:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-1.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#/usr/local/bin/perl
+&lt;script src='https://gist.github.com/3165387.js?file=build-1.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#/usr/local/bin/perl
 
 use strict;
 use Getopt::Long;
@@ -3771,22 +3839,22 @@ our $assemblyUnityEditor = &amp;amp;quot;/Applications/Unity/Unity.app/Contents/
 &lt;p&gt;In the next few lines of interest, three variables are declared &amp;#8211; pathes to the mono compiler shipped with Unity and the UnityEngine and UnityEditor assemblies. Notice that these are OS X pathes, for a windows setup (or if you installed Unity into a different folder than the default), you&amp;#8217;ll need to correct these.&lt;/p&gt;
 &lt;h2&gt;Debug command-line parameter&lt;/h2&gt;
 &lt;p&gt;Next up, let&amp;#8217;s add support for command-line parameters. &amp;#8220;Why?&amp;#8221; you ask &amp;#8211; because they are going to be awesome for debugging our assembly later. The only command-line parameter we will be supporting for now is &amp;#8220;&amp;#8212;release&amp;#8221;. This will basically let us toggle, when building the assembly, a bunch of logging and other stuff on or off. This is what it looks like:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-2.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $optionRelease = 0;
+&lt;script src='https://gist.github.com/3165387.js?file=build-2.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $optionRelease = 0;
 
 GetOptions (
 	&amp;amp;quot;release&amp;amp;quot; =&amp;amp;gt; \$optionRelease
 );&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;We declare a variable named optionRelease, initialize it to zero and then call GetOptions, telling it to pass data on the use of the &amp;#8220;release&amp;#8221; parameter into our variable. Now, GetOptions has a bunch of functionality, but the way we use it here, it simply assigns one or zero to our variable &amp;#8211; depending on whether the parameter is used or not.&lt;/p&gt;
 &lt;p&gt;Next up, we need to use this variable to affect the parameters we pass to the gmcs compiler. Like so:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-3.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $debugOptions = $optionRelease == 0 ? &amp;amp;quot;-d:DEBUG&amp;amp;quot; : &amp;amp;quot;&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/3165387.js?file=build-3.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;my $debugOptions = $optionRelease == 0 ? &amp;amp;quot;-d:DEBUG&amp;amp;quot; : &amp;amp;quot;&amp;amp;quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;The idea here is that gmcs takes a parameter -d:[name] which instructs it to, during pre-processing, run with the symbol [name] defined. Something we can work with in our code like this:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=AssemblyTest-1.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#if DEBUG
+&lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-1.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#if DEBUG
 	Debug.Log (&amp;amp;quot;I&amp;amp;#39;m only visible in debug builds!&amp;amp;quot;);
 #endif&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;h2&gt;Building two assemblies&lt;/h2&gt;
 &lt;p&gt;Next up, a bit of info. Since Unity 3, we&amp;#8217;ve enforced that scripts and assembly depending on UnityEditor, even if not using that, cannot be included in builds. This means that if you have some editor scripts, you would also like built to assembly, you will need to split these out into a different assembly than the one containing your runtime scripts.&lt;/p&gt;
 &lt;p&gt;Lets&amp;#8217;s assume that is the case for this exercise, that the runtime scripts are located in Source/ and that the editor scripts are located in Source/Editor. So we will have to build two assemblies. That could mean code duplication, which should cause anyone pain, so let&amp;#8217;s be nice and wrap some of the building up in a perl subroutine:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-4.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sub BuildAssembly
+&lt;script src='https://gist.github.com/3165387.js?file=build-4.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sub BuildAssembly
 {
 	our $compiler;
 
@@ -3804,13 +3872,13 @@ GetOptions (
 &lt;p&gt;Let&amp;#8217;s take this subroutine line by line. First off we pull in the global variable &amp;#8220;compiler&amp;#8221;. After this, we populate the variables target, out, arguments and source from subroutine parameters. With these at hand, the fun begins. First off, we print out the name of our build target (MyAwesome.dll) and the command we&amp;#8217;re planning to execute &amp;#8211; marked in fashionable blue.&lt;/p&gt;
 &lt;p&gt;Second we actually do the building &amp;#8211; colouring any compiler output red (no news is good news &amp;#8211; output is bad). If compilation fails, we kill the script &amp;#8211; allowing the user to take action. If all went well, we remember to reset the colouring before returning from the subroutine.&lt;/p&gt;
 &lt;p&gt;So how about some use of this subroutine, eh?&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-5.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Runtime.dll&amp;amp;quot;, &amp;amp;quot;Source/*.cs&amp;amp;quot;, &amp;amp;quot;-d:RUNTIME $debugOptions -r:$assemblyUnityEngine&amp;amp;quot;);
+&lt;script src='https://gist.github.com/3165387.js?file=build-5.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Runtime.dll&amp;amp;quot;, &amp;amp;quot;Source/*.cs&amp;amp;quot;, &amp;amp;quot;-d:RUNTIME $debugOptions -r:$assemblyUnityEngine&amp;amp;quot;);
 BuildAssembly (&amp;amp;quot;library&amp;amp;quot;, &amp;amp;quot;Awesomenessness.Editor.dll&amp;amp;quot;, &amp;amp;quot;Source/Editor/*.cs&amp;amp;quot;, &amp;amp;quot;-d:EDITOR $debugOptions -r:Awesomenessness.Runtime.dll,$assemblyUnityEngine,$assemblyUnityEditor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;As you see, we first build the runtime assembly from Source/*.cs, with the &lt;span class=&quot;caps&quot;&gt;RUNTIME&lt;/span&gt; and optionally the &lt;span class=&quot;caps&quot;&gt;DEBUG&lt;/span&gt; symbol defined. We also make sure to include the UnityEngine assembly in the building, so that you can reference stuff from the UnityEngine namespace.&lt;/p&gt;
 &lt;p&gt;In the second line, we build the editor assembly &amp;#8211; containing all our editor code from Source/Editor/*.cs. This time we define the &lt;span class=&quot;caps&quot;&gt;EDITOR&lt;/span&gt; and optionally the &lt;span class=&quot;caps&quot;&gt;DEBUG&lt;/span&gt; symbol during building. This assembly references not only the UnityEngine assembly, but also the UnityEditor one and the runtime assembly which was just built in the line above.&lt;/p&gt;
 &lt;h2&gt;Distribution&lt;/h2&gt;
 &lt;p&gt;And that&amp;#8217;s about it! As mentioned early in this post, all you need to do in order to include these assemblies in your project is to drag them into your assets folder, but if you&amp;#8217;re very nice, you could just make that copy a part of the build script:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=build-6.pl&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;system (&amp;amp;quot;cp Awesomenessness.Runtime.dll Test\\ project/Assets/Awesomenessness&amp;amp;quot;);
+&lt;script src='https://gist.github.com/3165387.js?file=build-6.pl'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;system (&amp;amp;quot;cp Awesomenessness.Runtime.dll Test\\ project/Assets/Awesomenessness&amp;amp;quot;);
 system (&amp;amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesomenessness/Editor&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Notice that this uses the OS X cp command-line tool. For windows, replace with equivalent.&lt;/p&gt;
 &lt;h2&gt;Limitation: Editor classes in assemblies&lt;/h2&gt;
@@ -3819,7 +3887,7 @@ system (&amp;amp;quot;cp Awesomenessness.Editor.dll Test\\ project/Assets/Awesom
 &lt;h2&gt;Extra trick: Including resources in the assembly&lt;/h2&gt;
 &lt;p&gt;For extra points, you can include resources, such as textures, in your assembly. This has the bonus of limiting the clutter of your distribution even more.&lt;/p&gt;
 &lt;p&gt;Including the resource in your build is as simple as appending the &amp;#8220;-resource:[path]&amp;#8221; parameter to your gmcs build command. This will add the bytes into the assembly manifest &amp;#8211; under the name of the original file. You can fetch these bytes at runtime, using that name. For example, here&amp;#8217;s some utility methods for fetching textures:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=AssemblyTest-2.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public static Stream GetResourceStream (string resourceName, Assembly assembly)
+&lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-2.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public static Stream GetResourceStream (string resourceName, Assembly assembly)
 {
 	if (assembly == null)
 	{
@@ -3867,7 +3935,7 @@ public static Texture2D GetTextureResource (string resourceName)
 	return GetTextureResource (resourceName, null);
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Given that you added &amp;#8220;-resource:path/to/Logo.png&amp;#8221; to your gmcs build command, you will with the above utility methods be able to fetch that into a texture like so:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3165387.js?file=AssemblyTest-3.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;Texture2D logoTexture = GetTextureResource (&amp;amp;quot;Logo.png&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+&lt;script src='https://gist.github.com/3165387.js?file=AssemblyTest-3.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;Texture2D logoTexture = GetTextureResource (&amp;amp;quot;Logo.png&amp;amp;quot;);&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Well, I hope you guys found some of this useful! I&amp;#8217;ll see if I can&amp;#8217;t do a follow-up on how to do this in MonoDevelop.&lt;/p&gt;</description>
 				<published>2011-02-02 00:00:00 +0100</published>
 				<link>http://angryant.com/2011/02/02/assembling-and-assimilating/</link>
@@ -4171,16 +4239,16 @@ Attached to this post you should find three zip files of the content we have gon
 				<description>&lt;p&gt;I like delegates. I also like enums. Furthermore, I happen to be part of a small group of people who actually enjoy the immediate mode &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; system in Unity. And I want you to like it too :)&lt;/p&gt;
 &lt;p&gt;So &amp;#8211; menus. After having observed quite a few very funky approaches, in the &lt;a href=&quot;http://www.unifycommunity.com/wiki/index.php?title=IRC&quot;&gt;&lt;span class=&quot;caps&quot;&gt;IRC&lt;/span&gt;&lt;/a&gt; channel, to building main menu functionality and giving advice in there, I decided to sow together those ideas into a short example.&lt;/p&gt;
 &lt;p&gt;The main idea here is to be able to build and manage a menu system quickly and easily. This line adds a new submenu to the system &amp;#8211; designated MyMenuState and implemented in the OnMyMenuGUI method:
-&lt;script src=&#39;https://gist.github.com/3806175.js?file=NewSubmenu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3806175.js?file=NewSubmenu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_Menus [MenuState.MyMenuState] = OnMyMenuGUI;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Notice that since we&amp;#8217;re using delegates, the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method needn&amp;#8217;t be implemented in the same script and could even  live on an entirely different GameObject. Why is this so clever (besides enums and delegates being cool)? Because managing and switching between menus set up like this is insanely easy. This is the central &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for the menu system:
-&lt;script src=&#39;https://gist.github.com/3806175.js?file=OnGUI.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public void OnGUI ()
+&lt;script src='https://gist.github.com/3806175.js?file=OnGUI.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;public void OnGUI ()
 {
 	m_Menus [m_CurrentState] ();
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And this is &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; code inside a menu &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; method for switching to a different submenu:
-&lt;script src=&#39;https://gist.github.com/3806175.js?file=SwitchMenu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_CurrentState = GUILayout.Button (&amp;amp;quot;Credits&amp;amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3806175.js?file=SwitchMenu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;m_CurrentState = GUILayout.Button (&amp;amp;quot;Credits&amp;amp;quot;) ? MenuState.Credits : m_CurrentState;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;So there. Enough talk. Have some example code:
-&lt;script src=&#39;https://gist.github.com/3806175.js?file=Menu.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806175.js?file=Menu.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;&lt;/p&gt;
 &lt;p&gt;public class Menu : MonoBehaviour
@@ -4295,7 +4363,7 @@ using System.Collections.Generic;&lt;/p&gt;
 &lt;p&gt;In the given example, I&amp;#8217;m taking advantage of the object-mouse event handling that MonoBehaviours on GameObject with colliders on them give for free. You might be in a scenario where raycasting or otherwise resolving selection requests makes more sense, but the basic logic still applies. This example is merely intended to get your from start to goal as fast as possible.&lt;/p&gt;
 &lt;p&gt;First off, we need a selection manager class (cleverly named SelectionManager in my example). This is where we store selection state and via static accessors, we can get and modify the current selection. Seeing as this class is both public and all accessors are static, you can put its source anywhere. In my example I&amp;#8217;ve simply put it right after the MonoBehaviour used for testing it.&lt;/p&gt;
 &lt;p&gt;SelectionManager
-&lt;script src=&#39;https://gist.github.com/3804386.js?file=SelectionManager.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3804386.js?file=SelectionManager.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
 &lt;p&gt;public class SelectionManager
 {
 	private static GameObject s_ActiveSelection;&lt;/p&gt;
@@ -4339,7 +4407,7 @@ using System.Collections.Generic;&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And the promised MonoBehaviour using the SelectionManager class:
-&lt;script src=&#39;https://gist.github.com/3804386.js?file=SelectableObject.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3804386.js?file=SelectableObject.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
 &lt;p&gt;public class SelectableObject : MonoBehaviour
 {
 	public Rect m_SelectionWindowRect = new Rect (10.0f, 10.0f, 300.0f, 100.0f);&lt;/p&gt;
@@ -4370,7 +4438,7 @@ using System.Collections.Generic;&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;And that is all there is to it. By popular demand, I&amp;#8217;m now starting to provide pre-built projects with these tips and tricks posts. Download, unzip, open and play. Requires Unity 2.6.1:
-&lt;a href=&#39;http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip&#39;&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
+&lt;a href='http://eej.dk/angryant/wp-content/uploads/2010/03/SelectableObject.zip'&gt;SelectableObject&lt;/a&gt;&lt;/p&gt;</description>
 				<published>2010-03-10 00:00:00 +0100</published>
 				<link>http://angryant.com/2010/03/10/pick-me-pick-me/</link>
 			</item>
@@ -4380,7 +4448,7 @@ using System.Collections.Generic;&lt;/p&gt;
 			<item>
 				<title>Optimising coroutine yielding in C#</title>
 				<description>&lt;p&gt;When needing to yield a coroutine for a single frame in C#, most people &amp;#8211; including myself usually go about it this way:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804418.js?file=Zero.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private IEnumerator DoFadeAlphaIn ()
+&lt;script src='https://gist.github.com/3804418.js?file=Zero.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private IEnumerator DoFadeAlphaIn ()
 {
 	while (m_Alpha &amp;amp;lt; 1.0f)
 	{
@@ -4392,7 +4460,7 @@ using System.Collections.Generic;&lt;/p&gt;
 &lt;p&gt;However, as Rodrigo recently brought to my attention, this approach ofcourse performs unneeded memory allocation, given that the zero needs boxing and unboxing before its passed to the coroutine system. Using null in stead saves you that work and allocation.&lt;/p&gt;
 &lt;p&gt;This might not seem like a lot at first glance, but if you make this a habit every time you need to yield for a frame, I guarantee you that you&amp;#8217;ll see results in larger scenarios.&lt;/p&gt;
 &lt;p&gt;The more optimal way of yielding for a single frame in C#. Minor difference, but allocation saved &amp;#8211; which is always awesome:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804418.js?file=Null.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private IEnumerator DoFadeAlphaIn ()
+&lt;script src='https://gist.github.com/3804418.js?file=Null.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private IEnumerator DoFadeAlphaIn ()
 {
 	while (m_Alpha &amp;amp;lt; 1.0f)
 	{
@@ -4438,7 +4506,7 @@ using System.Collections.Generic;&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;And now the codes!&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/Assets/WWWAssemblyLoader.cs&lt;/b&gt;
-&lt;script src=&#39;https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806151.js?file=WWWAssemblyLoader.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Reflection;&lt;/p&gt;
 &lt;p&gt;public class WWWAssemblyLoader : MonoBehaviour
@@ -4554,7 +4622,7 @@ using System.Reflection;&lt;/p&gt;
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/Assets/NewBehaviourScript.cs&lt;/b&gt;
-&lt;script src=&#39;https://gist.github.com/3806151.js?file=NewBehaviourScript.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806151.js?file=NewBehaviourScript.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Reflection;&lt;/p&gt;
 &lt;p&gt;public class NewBehaviourScript : MonoBehaviour
@@ -4588,7 +4656,7 @@ using System.Reflection;&lt;/p&gt;
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;/MyAssembly.cs&lt;/b&gt;
-&lt;script src=&#39;https://gist.github.com/3806151.js?file=MyAssembly.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
+&lt;script src='https://gist.github.com/3806151.js?file=MyAssembly.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;&lt;/p&gt;
 &lt;p&gt;public class MyClass
 {
 	public static string myString = &amp;quot;This is my string from my class in my assembly&amp;quot;;&lt;/p&gt;
@@ -4599,7 +4667,7 @@ using System.Reflection;&lt;/p&gt;
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;&lt;b&gt;The assembly compile terminal command&lt;/b&gt;
-&lt;script src=&#39;https://gist.github.com/3806151.js?file=Build.sh&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
+&lt;script src='https://gist.github.com/3806151.js?file=Build.sh'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;mcs -target:library -out:MyAssembly.dll -r:/Applications/Unity/Unity.app/Contents/Frameworks/UnityEngine.dll  MyAssembly.cs&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;</description>
 				<published>2010-01-05 00:00:00 +0100</published>
 				<link>http://angryant.com/2010/01/05/downloading-the-hydra/</link>
 			</item>
@@ -4640,7 +4708,7 @@ using System.Reflection;&lt;/p&gt;
 &lt;p&gt;Not really sure why syntax highlighting is not kicking in&amp;#8230; Will have a look at that later.&lt;/p&gt;
 &lt;p&gt;Codes!&lt;/p&gt;
 &lt;p&gt;CopyInspector.cs
-&lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806123.js?file=CopyInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -4726,7 +4794,7 @@ using System.Reflection;&lt;/p&gt;
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;CopyTransformInspector.cs
-&lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyTransformInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806123.js?file=CopyTransformInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
 &lt;p&gt;[CustomEditor (typeof (Transform))]
@@ -4751,7 +4819,7 @@ public class CopyTransformInspector : CopyInspector
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;CopyYourComponentTypeInspector.cs
-&lt;script src=&#39;https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3806123.js?file=CopyYourComponentTypeInspector.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
 &lt;p&gt;[CustomEditor (typeof (YourComponentType))]
@@ -4772,7 +4840,7 @@ public class CopyYourComponentTypeInspector : CopyInspector{}&lt;/code&gt;&lt;/p
 	&lt;li&gt;Set the layer mask on the component to include the layer from step one.&lt;/li&gt;
 	&lt;li&gt;Tweak, play, repeat.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;script src=&#39;https://gist.github.com/3804429.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804429.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 
 public class Magnetic : MonoBehaviour
@@ -4816,7 +4884,7 @@ public class Magnetic : MonoBehaviour
 				<description>&lt;p&gt;A lot of people have been asking for tips on how to implement drag-drop functionality in Unity &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; scripting, so I decided to put together a reusable script for the purpose.&lt;/p&gt;
 &lt;p&gt;Basically the solution requires that your data class derives from GUIDraggableObject and at some point in its OnGUI method call Drag( Rect ) &amp;#8211; just like &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;.Window handles dragging.&lt;/p&gt;
 &lt;p&gt;Right. Codez. First off the GUIDraggableObject.cs file:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804740.js?file=GUIDraggableObject.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804740.js?file=GUIDraggableObject.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 
 public class GUIDraggableObject
@@ -4871,7 +4939,7 @@ public class GUIDraggableObject
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;An example data class inheriting from GUIDraggableObject &amp;#8211; DataObject.cs:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804740.js?file=DataObject.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804740.js?file=DataObject.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 
 public class DataObject : GUIDraggableObject
@@ -4910,7 +4978,7 @@ public class DataObject : GUIDraggableObject
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;And finally, this script demonstrates how you could have your data manager class use Unity &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt; for data visualisation with drag-drop enabled &amp;#8211; MyMonoBehaviour.cs:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804740.js?file=MyMonoBehaviour.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804740.js?file=MyMonoBehaviour.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -4967,7 +5035,7 @@ public class MyMonoBehaviour : MonoBehaviour
 	}
 }&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
 &lt;p&gt;Ah yea and an example of how you could do the same in an editor window &amp;#8211; MyEditorWindow.cs:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804740.js?file=MyEditorWindow.cs&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804740.js?file=MyEditorWindow.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -5078,7 +5146,7 @@ public class MyEditorWindow : EditorWindow
 				<description>&lt;p&gt;More stuff from the shadowy corners of my hard-drive. Don&amp;#8217;t remember the context, but someone needed to log every single piece of information available on a particular GameObject. I suppose this could be useful for end-user &amp;#8220;This GameObject Just Went Completely &lt;span class=&quot;caps&quot;&gt;FUBAR&lt;/span&gt;&amp;#8221;&amp;#8482; scenarios.&lt;/p&gt;
 &lt;p&gt;Anyway &amp;#8211; it has reflection in it which by definition makes it cool.&lt;/p&gt;
 &lt;p&gt;Le codez:
-&lt;script src=&#39;https://gist.github.com/3804730.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804730.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using System.Reflection;&lt;/p&gt;
 &lt;p&gt;public class Utilities
 {
@@ -5127,7 +5195,7 @@ using System.Reflection;&lt;/p&gt;
 			<item>
 				<title>I bet you can't type an A!</title>
 				<description>&lt;p&gt;Keys got special meaning and shouldn&amp;#8217;t be fed into parts of the &lt;span class=&quot;caps&quot;&gt;GUI&lt;/span&gt;? This handy little snippet takes care of that job:&lt;/p&gt;
-&lt;script src=&#39;https://gist.github.com/3804718.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private string text = &amp;amp;quot;I bet you can&amp;amp;#39;t type an A!&amp;amp;quot;;
+&lt;script src='https://gist.github.com/3804718.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;private string text = &amp;amp;quot;I bet you can&amp;amp;#39;t type an A!&amp;amp;quot;;
 
 
 
@@ -5180,7 +5248,7 @@ void OnGUI()
 	&lt;li&gt;To investigate, click a GameObject name in the list and it will be set as the active selection in the hierarchy.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Codes:
-&lt;script src=&#39;https://gist.github.com/3804708.js?file=&#39;&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
+&lt;script src='https://gist.github.com/3804708.js?file='&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;using UnityEngine;
 using UnityEditor;
 using System.Collections;&lt;/p&gt;
 &lt;p&gt;public class ComponentLister : EditorWindow
