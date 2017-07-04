@@ -84,13 +84,13 @@
 <p>So I would rather share this stuff in post form now than stall for a possible eventuality. I have no idea how frequent I will be able to post, but here is one at least.</p>
 <h2>Challenge</h2>
 <p>Most Unity projects get spread across multiple scenes very quickly. This is advantageous not only for clearly segmented production, but also for tweaking of load times, streaming, and much more.</p>
-<p>An unfortunate side effect of this is increased challenges in referencing objects in a live session, across these scenes. This can be objects baked into specific scenes or specific instances created at runtime.</p>
+<p>An unfortunate side effect of this is an increase of challenges in referencing objects in a live session, across those scenes. Desired targets include objects baked into specific scenes and specific instances created at runtime.</p>
 <p>Common approaches to solving this include dependency injection and directory singletons &#8211; both of which work really great. Unfortunately they both introduce a level of indirection in the Unity serialisation system, making it impossible to track cross-scene dependencies with generic tools. This also usually adds a programming- or finicky book-keeping step to the process of introducing new conceptual instances.</p>
 <p>If we could solve this challenge, we would end up with a clear dependency chain in the serialisation system, which would allow us to fully utilise the tracking and tooling benefits this yields, while greatly reducing the barrier to add new concepts and interact with existing ones.</p>
 <h2>Detour</h2>
 <p>With each scene a serialised island, there is one more (ignoring bundles) serialisation hub which all scenes can access: Assets.</p>
-<p>Both the instance and its consumer can reference the same asset, which we can then use to facilitate a connection between the two. Further, with both referencing the same asset, we now have that dependency information in the serialisation system and adding new conceptual instances is just a matter of creating a new asset and assign it to either end.</p>
-<p>Another bonus is easy listing of all conceptual instances (simply finding all assets of the type), which is easiest demonstrated through the object picker. Should you prefer a drop-down selector to the object picker, that is a fairly straight forward piece of property drawer code &#8211; in which you could even utilise asset folder structure to define drop-down nesting.</p>
+<p>Both the instance and its consumer can reference the same asset, which we can then use to facilitate a connection between the two. Further, with both referencing the same asset, we now have that dependency information in the serialisation system. Also, adding new conceptual instances is just a matter of creating a new asset, assigning it to either end.</p>
+<p>Another bonus is easy listing of all conceptual instances by simply finding all assets of the type. You can demonstrate this via the object picker. Should you prefer a drop-down selector to the object picker, such would be a fairly straight forward piece of property drawer code. You could even utilise asset folder structure to define drop-down nesting.</p>
 <h2>Implementation</h2>
 <p>The base (5.3 tested) implementation of this needs three pieces:</p>
 <ul>
@@ -114,6 +114,7 @@
 <p>A personal favourite variant is more fundamentally different. In stead of facilitating references, the core objects wrap <code>UnityEvents</code> &#8211; turning them into global &#8220;game events&#8221;. This allows you to completely decouple event producers and consumers, while maintaining dependency tracking through the serialisation system.</p>
 <p>The pattern I mostly use such events in start with the producers invoking the event via a serialised <code>UnityEvent</code>. Say you expose a &#8220;fire&#8221; <code>UnityEvent</code> to which you add a particle effect invocation, audio playback, and finally the invocation of the <code>CoreGameEvent</code> &#8220;gunshot&#8221;.</p>
 <p>This &#8220;gunshot&#8221; event would then be referenced by <code>CoreGameEventHandler</code> components which also exposes a &#8220;handle&#8221; <code>UnityEvent</code>. The action list of this event could then include stuff like switching the soundscape, putting NPCs into an alert state, trigger an auto save, and whatever else might be useful.</p>
+<p>Not only do you get decoupling of produces and consumers &#8211; you also get to centralise handling details around the individual consumers as opposed to leaving them all jumbled up at the producer.</p>
 <p>So what do you think? Do you use something similar? What cool variants and tooling do you employ?</p>
 <ul>
 	<li><a href="https://gist.github.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8">Source and examples</a></li>
