@@ -6,6 +6,56 @@
 		<link>http://angryant.com</link>
 		
 			<item>
+				<title>CoreObject</title>
+				<description>&lt;p&gt;I once built a talk with a collection of new hacks. This talk went through a couple of almost-delivered scenarios and with the &lt;a href=&quot;http://GameAINorth.com&quot;&gt;new side projects&lt;/a&gt; I have since accumulated, scheduling gets difficult.&lt;/p&gt;
+&lt;p&gt;So I would rather share this stuff in post form now than stall for a possible eventuality. I have no idea how frequent I will be able to post, but here is one at least.&lt;/p&gt;
+&lt;h2&gt;Challenge&lt;/h2&gt;
+&lt;p&gt;Most Unity projects get spread across multiple scenes very quickly. This is advantageous not only for clearly segmented production, but also for tweaking of load times, streaming, and much more.&lt;/p&gt;
+&lt;p&gt;An unfortunate side effect of this is increased challenges in referencing objects in a live session, across these scenes. This can be objects baked into specific scenes or specific instances created at runtime.&lt;/p&gt;
+&lt;p&gt;Common approaches to solving this include dependency injection and directory singletons &amp;#8211; both of which work really great. Unfortunately they both introduce a level of indirection in the Unity serialisation system, making it impossible to track cross-scene dependencies with generic tools. This also usually adds a programming- or finicky book-keeping step to the process of introducing new conceptual instances.&lt;/p&gt;
+&lt;p&gt;If we could solve this challenge, we would end up with a clear dependency chain in the serialisation system, which would allow us to fully utilise the tracking and tooling benefits this yields, while greatly reducing the barrier to add new concepts and interact with existing ones.&lt;/p&gt;
+&lt;h2&gt;Detour&lt;/h2&gt;
+&lt;p&gt;With each scene a serialised island, there is one more (ignoring bundles) serialisation hub which all scenes can access: Assets.&lt;/p&gt;
+&lt;p&gt;Both the instance and its consumer can reference the same asset, which we can then use to facilitate a connection between the two. Further, with both referencing the same asset, we now have that dependency information in the serialisation system and adding new conceptual instances is just a matter of creating a new asset and assign it to either end.&lt;/p&gt;
+&lt;p&gt;Another bonus is easy listing of all conceptual instances (simply finding all assets of the type), which is easiest demonstrated through the object picker. Should you prefer a drop-down selector to the object picker, that is a fairly straight forward piece of property drawer code &amp;#8211; in which you could even utilise asset folder structure to define drop-down nesting.&lt;/p&gt;
+&lt;h2&gt;Implementation&lt;/h2&gt;
+&lt;p&gt;The base (5.3 tested) implementation of this needs three pieces:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;A &lt;code&gt;ScriptableObject&lt;/code&gt; type representing the conceptual instance as an asset.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreObject.cs&quot;&gt;Example abstract&lt;/a&gt;, &lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreGameObject.cs&quot;&gt;example concrete&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;One &lt;code&gt;MonoBehaviour&lt;/code&gt; registering a source.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreGameObjectInstance.cs&quot;&gt;Example&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;A serialized reference to the &lt;code&gt;ScriptableObject&lt;/code&gt; type or a &lt;code&gt;MonoBehaviour&lt;/code&gt; acting as a gateway to the instance &amp;#8211; similar to a &lt;code&gt;MeshFilter&lt;/code&gt; component.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/Test.cs&quot;&gt;Example&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the given example, the instances being passed around are just &lt;code&gt;GameObjects&lt;/code&gt;. However in a real world scenario you may also want to create &lt;code&gt;CoreObject&amp;lt;T&amp;gt;&lt;/code&gt; derivatives passing references to specific components. Not only does this facilitate quicker access to the components you need &amp;#8211; it also naturally separates &lt;code&gt;CoreObjects&lt;/code&gt; into categories.&lt;/p&gt;
+&lt;p&gt;A corresponding instance component could look a little something like &lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreCharacterInstance.cs&quot;&gt;this&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Variants&lt;/h2&gt;
+&lt;p&gt;While this base functionality has plenty of utility, I have on occasion played around with variants on the concept. For one, the base idea passes a single-source instance producer to multiple consumers, but there is no reason why you could not use this setup to register/unregister to a list of instances in stead.&lt;/p&gt;
+&lt;p&gt;A personal favourite variant is more fundamentally different. In stead of facilitating references, the core objects wrap &lt;code&gt;UnityEvents&lt;/code&gt; &amp;#8211; turning them into global &amp;#8220;game events&amp;#8221;. This allows you to completely decouple event producers and consumers, while maintaining dependency tracking through the serialisation system.&lt;/p&gt;
+&lt;p&gt;The pattern I mostly use such events in start with the producers invoking the event via a serialised &lt;code&gt;UnityEvent&lt;/code&gt;. Say you expose a &amp;#8220;fire&amp;#8221; &lt;code&gt;UnityEvent&lt;/code&gt; to which you add a particle effect invocation, audio playback, and finally the invocation of the &lt;code&gt;CoreGameEvent&lt;/code&gt; &amp;#8220;gunshot&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;This &amp;#8220;gunshot&amp;#8221; event would then be referenced by &lt;code&gt;CoreGameEventHandler&lt;/code&gt; components which also exposes a &amp;#8220;handle&amp;#8221; &lt;code&gt;UnityEvent&lt;/code&gt;. The action list of this event could then include stuff like switching the soundscape, putting NPCs into an alert state, trigger an auto save, and whatever else might be useful.&lt;/p&gt;
+&lt;p&gt;So what do you think? Do you use something similar? What cool variants and tooling do you employ?&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8&quot;&gt;Source and examples&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+</description>
+				<published>2017-07-04 00:00:00 +0200</published>
+				<link>http://angryant.com/2017/07/04/CoreObject/</link>
+			</item>
+		
+			<item>
 				<title>Unity Protocol Buffers</title>
 				<description>&lt;p&gt;Time for another &amp;#8220;ah, crap &amp;#8211; better put &lt;strong&gt;something&lt;/strong&gt; up here before heading to &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt;&amp;#8221;-post. And since I did some re-tinkering with the integration of &lt;a href=&quot;https://developers.google.com/protocol-buffers/&quot;&gt;protobuf&lt;/a&gt; in Behave late last year, some sharing on that topic seemed in order.&lt;/p&gt;
 &lt;p&gt;So yes, stuff is happening with Behave &amp;#8211; no abandonment has taken place. On the contrary I have been working on several, long-running, feature branches. I&amp;#8217;ll get around to merging some of those in and doing another release. More on that soonish.&lt;/p&gt;
@@ -1852,117 +1902,6 @@ Pre-release:
 &lt;/ul&gt;</description>
 				<published>2014-06-20 00:00:00 +0200</published>
 				<link>http://angryant.com/2014/06/20/Co-very-routine/</link>
-			</item>
-		
-			<item>
-				<title>Construct</title>
-				<description>&lt;p&gt;&lt;strong&gt;Updated&lt;/strong&gt; April 28th: Added illustrations.&lt;/p&gt;
-&lt;p&gt;A while ago I &lt;a href=&quot;http://angryant.com/2010/01/05/downloading-the-hydra/&quot;&gt;published a post&lt;/a&gt; referencing &lt;a href=&quot;http://www.imdb.com/title/tt0244244/&quot;&gt;Hollywoods take on programming anno 2001&lt;/a&gt;. It covered how to load additional code into a Unity build at runtime, which can be quite useful for patching, modding and similar post-publishing changes to your build, involving logic changes.&lt;/p&gt;
-&lt;p&gt;The post was pretty brief, just covering the raw basics of the technique and not dealing with any of the challenges in integrating it with a more complete patching solution.&lt;/p&gt;
-&lt;p&gt;Luckily I have recently had a chance to return to working with it and implementing it fully on a project. This post will cover the challenges met and my solutions to them.&lt;/p&gt;
-&lt;p&gt;Unlike the original post, this one is not exactly brief, so, uh, hang on to something?&lt;/p&gt;
-&lt;h1&gt;Overview&lt;/h1&gt;
-&lt;p&gt;The basic method of integrating new code in an existing Unity runtime is as follows:&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;Build the patch code to a .net assembly.&lt;/li&gt;
-	&lt;li&gt;Load the byte stream of that assembly to an array at runtime.&lt;/li&gt;
-	&lt;li&gt;Create a System.Reflection.Assembly instance from the bytes.&lt;/li&gt;
-	&lt;li&gt;Instantiate classes, attach components and call methods via reflection.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/1-Assembly.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Assembly process&quot; alt=&quot;Assembly process&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;This works really well for simple logic expansions. However if you want to couple the logic update with content such as prefabs and scenes using new components defined in this new assembly, you are out of luck.&lt;/p&gt;
-&lt;p&gt;New content can be loaded into Unity runtimes via asset bundles (these require Unity pro at time of writing). However in order to build these asset bundles as well as loading them afterwards, Unity needs to know all the components used in the contained scenes and prefabs.&lt;/p&gt;
-&lt;p&gt;Unfortunately this is not possible as that would require the presence of our new MonoBehaviours in the shipped build, which we are obviously not very interested in, given that we are working on a post-shipping patch.&lt;/p&gt;
-&lt;p&gt;The challenge is therefore to somehow construct asset bundles which can be built and loaded without the Unity editor or runtime knowing about all the MonoBehaviours used in the bundles.&lt;/p&gt;
-&lt;p&gt;Fun, right?&lt;/p&gt;
-&lt;h1&gt;Approach&lt;/h1&gt;
-&lt;p&gt;Right, getting this one sorted will take a few lines to explain, but let&amp;#8217;s just jump straight into it. The solution I went with goes a little something like this:&lt;/p&gt;
-&lt;ol&gt;
-	&lt;li&gt;Compile bundle scripts to an assembly, from which components are attached in bundle scenes and on bundle prefabs.&lt;/li&gt;
-	&lt;li&gt;Before bundle build, pack each of these components into a container component, holding the data and type of the original, replacing it as attached on the same Game Object.&lt;/li&gt;
-	&lt;li&gt;When loading the bundle, load the new assembly and then run an unpack step for each container component on each prefab, restoring the original data and references to a newly instantiated component of the correct type, on the same GameObject.&lt;/li&gt;
-	&lt;li&gt;When scenes from the bundle are loaded, the same unpacking process runs for each container component in there.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;While this does sound very straight forward, there are of-course a few gotchas in there. So let us jump in a bit deeper.&lt;/p&gt;
-&lt;h2&gt;Workflow&lt;/h2&gt;
-&lt;p&gt;The goal here is to make sure that the programmers, level designers and artists working on new bundles get to maintain as much of their familiar Unity workflow as possible.&lt;/p&gt;
-&lt;p&gt;So whatever building and packing solution we set up, the following must still be supported at the very least:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Assets are imported and used in prefabs and scenes as per usual.&lt;/li&gt;
-	&lt;li&gt;Scripts are auto-compiled when saved and can be drag-dropped onto Game Objects.&lt;/li&gt;
-	&lt;li&gt;Variables and references can easily be tweaked on new bundle components via the inspector.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;At first, these workflow requirements do seem to conflict with our technical requirements, given that all code unique to the bundle &lt;em&gt;must&lt;/em&gt; be built into a separate assembly loaded at runtime, rather than be part of the main script compile.&lt;/p&gt;
-&lt;p&gt;However where there&amp;#8217;s a will there&amp;#8217;s a way and a tall piles of hacks make for interesting realities.&lt;/p&gt;
-&lt;p&gt;In the &lt;a href=&quot;http://angryant.com/videos/&quot;&gt;Unity Hacks talk&lt;/a&gt; I demonstrate how to use an asset post processor to compile java files into a jar plugin automatically. The first step to keeping our workflow without breaking the technical requirements is to copy this, but for C# (and/or JS) files compiled into a .net assembly.&lt;/p&gt;
-&lt;p&gt;Rather than spending time going into detail on how you would do that, I point you to the beforementioned talk (and its available example code) as well as the gmcs compiler shipped with the Unity editor. You should be able to construct the flow just fine from that.&lt;/p&gt;
-&lt;p&gt;One important note is that the folder from which your asset post processor picks up your scripts should be somewhere in Assets/WebplayerTemplates, as Unity by default will not compile scripts located there into the main project assembly (this is set up to avoid website js getting mixed up for templates).&lt;/p&gt;
-&lt;p&gt;I chose a location looking something like this: Assets/WebplayerTemplates/Bundles/MyFirstBundle.&lt;/p&gt;
-&lt;p&gt;The asset post processor building the assembly should then drop it in a folder like Assets/Bundles/MyFirstBundle and make a duplicate of it, with the .txt extension.&lt;/p&gt;
-&lt;p&gt;The original will be from where you can drag components and the copy will be the one built into the bundle, since it is now imported as a TextAsset and can therefore be included, unlike the original assembly.&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/2-Workflow.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Workflow&quot; alt=&quot;Workflow&quot; /&gt;&lt;/center&gt;
-&lt;p&gt;At this point you can start work on the contents of the bundle, saving scenes, prefabs and other assets unique to the bundle into the same folder as the assembly and text file &amp;#8211; subfolders under that would work fine as well.&lt;/p&gt;
-&lt;p&gt;It is important to note that attaching behaviours from the assembly, as well as behaviours defined in the core project to scene objects and prefabs in the bundle is just fine. However prefabs, scenes and scripts outside of the bundle should never reference behaviours or assets from the bundle directly.&lt;/p&gt;
-&lt;h2&gt;Building&lt;/h2&gt;
-&lt;h3&gt;Core&lt;/h3&gt;
-&lt;p&gt;It is worth spending a little bit of time writing an automated build step of the core project, which deletes all the bundle folders before running the actual build. That way you can, after testing, be pretty sure that nothing in the core project inadvertently referenced the contents of a bundle directly.&lt;/p&gt;
-&lt;p&gt;Should you feel like wanting a bit earlier warning on something like that, I would recommend spending a bit of time writing an extension checking for such references as scenes are saved and prefabs imported.&lt;/p&gt;
-&lt;h3&gt;Bundle&lt;/h3&gt;
-&lt;p&gt;The folder created earlier in under Assets/WebPlayerTemplates is only used for storing scripts and building them into assemblies. So at the point of building the assembly, all that matters is the contents of the folder with the resulting assembly, its .txt duplicate and any other assets placed in there.&lt;/p&gt;
-&lt;p&gt;Before running the actual bundle build process, we first (as outlined in the Approach) need to pack and remove all instances of MonoBehaviours defined in the bundle assembly.&lt;/p&gt;
-&lt;p&gt;First, run through each prefab and scene in the bundle folder and consider each instance of these behaviours.&lt;/p&gt;
-&lt;p&gt;For each, attach to the same Game Object an instance of your container component type, defined in the core project &amp;#8211; I am calling it BundledBehaviour in this post.&lt;/p&gt;
-&lt;h3&gt;Packing&lt;/h3&gt;
-&lt;p&gt;Store the full type name of the original in the BundledBehavior (we will need it to re-instantiate the original when unpacking) and add the two as a pair to a list.&lt;/p&gt;
-&lt;p&gt;Next, all serialised fields on the original must be stored in the BundledBehaviour. Iterating over that is a breeze with the SerialisedObject &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;Value types can just be straight up serialised to a byte array and chucked onto the BundledBehaviour. For my implementation I chose to use protobuf-net for that, but you can really use whatever meets your fancy.&lt;/p&gt;
-&lt;p&gt;Once the value types are dealt with, we should move on to the next behaviour in the list, before handling reference types in a second pass. The reason for this will become apparent when we start dealing with inter-component referencing.&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/3-Building.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Building and packing&quot; alt=&quot;Building and packing&quot; /&gt;&lt;/center&gt;
-&lt;h3&gt;References&lt;/h3&gt;
-&lt;p&gt;Bam. Done. Wasn&amp;#8217;t that quick? On to the second pass&amp;#8230;&lt;/p&gt;
-&lt;p&gt;Reference types get a bit trickier than value types. For each serialised reference, we need to add to a list on the BundledBehaviour an instance of a class pairing the field name and the reference. In the context of this post I will refer to that container class as ReferenceField.&lt;/p&gt;
-&lt;p&gt;At this point we unfortunately need to start distinguishing between asset type references, like textures and audio clips, and component type references. Where storing component references in a field of type Component works just fine, unfortunately asset references need to be stored on a field of their exact type.&lt;/p&gt;
-&lt;p&gt;I forget the exact reason for the Unity serialisation system working like this, but for the purpose of this post, how about we just file that under &amp;#8220;the law of the land&amp;#8221; and move on?&lt;/p&gt;
-&lt;p&gt;The result is that the ReferenceField type will need to have a &amp;#8220;field name&amp;#8221; string field, a &amp;#8220;component reference&amp;#8221; Component field and then an &amp;#8220;X reference&amp;#8221; X field for each asset type X.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/4-Data.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Data storage&quot; alt=&quot;Data storage&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;Annoying to deal with, but remember that these are just references, so after having written that list once, the slight overhead and dealing with it in general &amp;#8211; through that wonderful interface you decided to put on it, will carry a minimum of pain.&lt;/p&gt;
-&lt;p&gt;When storing component references, do remember to first check if the reference is contained in that list of MonoBehaviour &amp;#8594; BundledBehaviour pairs built earlier. If so, store the a reference to the BundledBehaviour in stead.&lt;/p&gt;
-&lt;h3&gt;Finalise&lt;/h3&gt;
-&lt;p&gt;Now that all components instances from the bundle assembly have had a BundledBehaviour instance created, containing the type name, value type field data and reference type field references, we can safely go ahead and destroy all the original behaviours.&lt;/p&gt;
-&lt;p&gt;Great! Finally before building the actual bundle, a neat trick is to create a little asset bundle manifest &amp;#8211; basically a custom asset type which will be set as the main asset of the bundle, referencing assets we need handy.&lt;/p&gt;
-&lt;p&gt;Again, since there is plenty of documentation on how to do that in the &lt;a href=&quot;http://angryant.com/videos/&quot;&gt;Unity Hacks talk&lt;/a&gt;, I would direct you there rather than explain it here.&lt;/p&gt;
-&lt;p&gt;The bundle manifest should reference the TextAsset of the bundle assembly (since we need to load that before doing anything else) as well as all the prefabs being built into the assembly.&lt;/p&gt;
-&lt;p&gt;Once that is set up, all there is left to do is to initiate the asset bundle build process, specifying the bundle manifest as the main asset, rejoicing that this crazy cabal of hacks somehow worked.&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/6-Manifest.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Bundle manifest&quot; alt=&quot;Bundle manifest&quot; /&gt;&lt;/center&gt;
-&lt;h2&gt;Loading&lt;/h2&gt;
-&lt;p&gt;So now we have an asset bundle which we need to somehow magically turn into a whole new self-contained game runtime or whatever it was we put in there.&lt;/p&gt;
-&lt;p&gt;First up, via bundle manifest &amp;#8211; accessible as the main asset of the bundle, the bytes of the assembly need to be passed to a System.Reflection.Assembly constructor.&lt;/p&gt;
-&lt;p&gt;With that done, all the behaviours defined in the assembly are available for attaching.&lt;/p&gt;
-&lt;p&gt;Next, all prefabs should be unpacked first. For each BundledBehaviour attached, run an Unpack function.&lt;/p&gt;
-&lt;h3&gt;Unpacking&lt;/h3&gt;
-&lt;p&gt;By passing the type name stored on the BundledBehaviour to a GetType call, we can get a reference to the original type, which we can pass to AddComponent, creating a new instance of the original. Store this pairing between BundledBehaviour and new instance in a list &amp;#8211; just like during the packing process.&lt;/p&gt;
-&lt;p&gt;Once available deserialise the simple fields, as stored in byte form on the BundledBehaviour, onto the new instance.&lt;/p&gt;
-&lt;p&gt;For each asset reference in the list of ReferenceFields, copy over the reference to the correct field on the new instance.&lt;/p&gt;
-&lt;p&gt;As with the packing process, dealing with reference type fields should be pushed to a second pass &amp;#8211; once all instances of the original types are available.&lt;/p&gt;
-&lt;center&gt;&lt;img src=&quot;/resources/posts/2014-04-25-Construct/5-Unpack.png&quot; style=&quot;float:none;clear:both;&quot; title=&quot;Loading and unpacking&quot; alt=&quot;Loading and unpacking&quot; /&gt;&lt;/center&gt;
-&lt;h3&gt;References&lt;/h3&gt;
-&lt;p&gt;We can now pass over all BundledBehaviour previously treated and copy all references stored in the list of ReferenceFields to the members with the proper names &amp;#8211; as specified in the same.&lt;/p&gt;
-&lt;p&gt;When copying over a reference, check first if it is one of our BundledBehaviour instances and if so, copy over the new instance it is paired with in stead.&lt;/p&gt;
-&lt;p&gt;With all original data and references restored, all instances of BundledBehaviour on the prefabs can now be destroyed.&lt;/p&gt;
-&lt;h3&gt;Scenes&lt;/h3&gt;
-&lt;p&gt;Scenes can now be loaded normally from the bundle, since all prefabs have now been properly unpacked. BundledBehaviour should in its Awake handler start the same unpacking process used on the prefabs, so that loading a scene automatically unpacks it.&lt;/p&gt;
-&lt;p&gt;Violá! New inter-depended content and logic is now live in your runtime!&lt;/p&gt;
-&lt;h1&gt;Recommendations and Limitations&lt;/h1&gt;
-&lt;p&gt;Seeing as the BundledBehaviours are using Awake, that basically rules out behaviours depending on one-another during Awake. Not to worry though, you still have OnEnable and Start for initialisation. Just keep it in mind.&lt;/p&gt;
-&lt;p&gt;Depending on your use case for this, you might end up with an interesting web of different versions of bundles loaded on any given client machine. I would therefore recommend not spending time and resources on building a dependency tree between bundles and in stead strictly forbid one bundle using components defined in another. Additionally it would be a good idea to designate one namespace per bundle.&lt;/p&gt;
-&lt;p&gt;As mentioned in the original post, this whole trick depends on the mono &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt; runtime being available. That means no fun for you if you are targeting iOS or the consoles &amp;#8211; at time of writing, those are the platforms on which Unity employs &lt;span class=&quot;caps&quot;&gt;AOT&lt;/span&gt; rather than &lt;span class=&quot;caps&quot;&gt;JIT&lt;/span&gt;.&lt;/p&gt;
-&lt;h1&gt;Security&lt;/h1&gt;
-&lt;p&gt;Before we run out and celebrate our great fortune, a word on security: Since a likely application for this technique is to load self-contained bundles over the internet, remember that a third party could potentially insert themselves mid-stream and modify the contents of your transmission.&lt;/p&gt;
-&lt;p&gt;If we were just transmitting textures and meshes, that should be just fine, but in this instance we are transmitting executable code which we intend to run in our application.&lt;/p&gt;
-&lt;p&gt;So it would probably be a good idea to somehow guard against someone inserting malicious code in there. At the very least you should employ some public key signing of the bundles &amp;#8211; optimally doing the whole transfer on a secured connection (whatever that means these days).&lt;/p&gt;
-&lt;p&gt;And that is about it. A fair bit of text, but I hope you found some use in this postmortem-ish post. I had fun writing it at least :)&lt;/p&gt;</description>
-				<published>2014-04-25 00:00:00 +0200</published>
-				<link>http://angryant.com/2014/04/25/Construct/</link>
 			</item>
 		
 	</channel>

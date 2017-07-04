@@ -7,6 +7,58 @@
 		
 			
 			<item>
+				<title>CoreObject</title>
+				<description>&lt;p&gt;I once built a talk with a collection of new hacks. This talk went through a couple of almost-delivered scenarios and with the &lt;a href=&quot;http://GameAINorth.com&quot;&gt;new side projects&lt;/a&gt; I have since accumulated, scheduling gets difficult.&lt;/p&gt;
+&lt;p&gt;So I would rather share this stuff in post form now than stall for a possible eventuality. I have no idea how frequent I will be able to post, but here is one at least.&lt;/p&gt;
+&lt;h2&gt;Challenge&lt;/h2&gt;
+&lt;p&gt;Most Unity projects get spread across multiple scenes very quickly. This is advantageous not only for clearly segmented production, but also for tweaking of load times, streaming, and much more.&lt;/p&gt;
+&lt;p&gt;An unfortunate side effect of this is increased challenges in referencing objects in a live session, across these scenes. This can be objects baked into specific scenes or specific instances created at runtime.&lt;/p&gt;
+&lt;p&gt;Common approaches to solving this include dependency injection and directory singletons &amp;#8211; both of which work really great. Unfortunately they both introduce a level of indirection in the Unity serialisation system, making it impossible to track cross-scene dependencies with generic tools. This also usually adds a programming- or finicky book-keeping step to the process of introducing new conceptual instances.&lt;/p&gt;
+&lt;p&gt;If we could solve this challenge, we would end up with a clear dependency chain in the serialisation system, which would allow us to fully utilise the tracking and tooling benefits this yields, while greatly reducing the barrier to add new concepts and interact with existing ones.&lt;/p&gt;
+&lt;h2&gt;Detour&lt;/h2&gt;
+&lt;p&gt;With each scene a serialised island, there is one more (ignoring bundles) serialisation hub which all scenes can access: Assets.&lt;/p&gt;
+&lt;p&gt;Both the instance and its consumer can reference the same asset, which we can then use to facilitate a connection between the two. Further, with both referencing the same asset, we now have that dependency information in the serialisation system and adding new conceptual instances is just a matter of creating a new asset and assign it to either end.&lt;/p&gt;
+&lt;p&gt;Another bonus is easy listing of all conceptual instances (simply finding all assets of the type), which is easiest demonstrated through the object picker. Should you prefer a drop-down selector to the object picker, that is a fairly straight forward piece of property drawer code &amp;#8211; in which you could even utilise asset folder structure to define drop-down nesting.&lt;/p&gt;
+&lt;h2&gt;Implementation&lt;/h2&gt;
+&lt;p&gt;The base (5.3 tested) implementation of this needs three pieces:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;A &lt;code&gt;ScriptableObject&lt;/code&gt; type representing the conceptual instance as an asset.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreObject.cs&quot;&gt;Example abstract&lt;/a&gt;, &lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreGameObject.cs&quot;&gt;example concrete&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;One &lt;code&gt;MonoBehaviour&lt;/code&gt; registering a source.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreGameObjectInstance.cs&quot;&gt;Example&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+	&lt;li&gt;A serialized reference to the &lt;code&gt;ScriptableObject&lt;/code&gt; type or a &lt;code&gt;MonoBehaviour&lt;/code&gt; acting as a gateway to the instance &amp;#8211; similar to a &lt;code&gt;MeshFilter&lt;/code&gt; component.
+	&lt;ul&gt;
+		&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/Test.cs&quot;&gt;Example&lt;/a&gt;.&lt;/li&gt;
+	&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the given example, the instances being passed around are just &lt;code&gt;GameObjects&lt;/code&gt;. However in a real world scenario you may also want to create &lt;code&gt;CoreObject&amp;lt;T&amp;gt;&lt;/code&gt; derivatives passing references to specific components. Not only does this facilitate quicker access to the components you need &amp;#8211; it also naturally separates &lt;code&gt;CoreObjects&lt;/code&gt; into categories.&lt;/p&gt;
+&lt;p&gt;A corresponding instance component could look a little something like &lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8/raw/CoreCharacterInstance.cs&quot;&gt;this&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Variants&lt;/h2&gt;
+&lt;p&gt;While this base functionality has plenty of utility, I have on occasion played around with variants on the concept. For one, the base idea passes a single-source instance producer to multiple consumers, but there is no reason why you could not use this setup to register/unregister to a list of instances in stead.&lt;/p&gt;
+&lt;p&gt;A personal favourite variant is more fundamentally different. In stead of facilitating references, the core objects wrap &lt;code&gt;UnityEvents&lt;/code&gt; &amp;#8211; turning them into global &amp;#8220;game events&amp;#8221;. This allows you to completely decouple event producers and consumers, while maintaining dependency tracking through the serialisation system.&lt;/p&gt;
+&lt;p&gt;The pattern I mostly use such events in start with the producers invoking the event via a serialised &lt;code&gt;UnityEvent&lt;/code&gt;. Say you expose a &amp;#8220;fire&amp;#8221; &lt;code&gt;UnityEvent&lt;/code&gt; to which you add a particle effect invocation, audio playback, and finally the invocation of the &lt;code&gt;CoreGameEvent&lt;/code&gt; &amp;#8220;gunshot&amp;#8221;.&lt;/p&gt;
+&lt;p&gt;This &amp;#8220;gunshot&amp;#8221; event would then be referenced by &lt;code&gt;CoreGameEventHandler&lt;/code&gt; components which also exposes a &amp;#8220;handle&amp;#8221; &lt;code&gt;UnityEvent&lt;/code&gt;. The action list of this event could then include stuff like switching the soundscape, putting NPCs into an alert state, trigger an auto save, and whatever else might be useful.&lt;/p&gt;
+&lt;p&gt;So what do you think? Do you use something similar? What cool variants and tooling do you employ?&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/65b1289fe0af88c6e5fce7f3001bd0c8&quot;&gt;Source and examples&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+</description>
+				<published>2017-07-04 00:00:00 +0200</published>
+				<link>http://angryant.com/2017/07/04/CoreObject/</link>
+			</item>
+			
+		
+			
+			<item>
 				<title>Unity Protocol Buffers</title>
 				<description>&lt;p&gt;Time for another &amp;#8220;ah, crap &amp;#8211; better put &lt;strong&gt;something&lt;/strong&gt; up here before heading to &lt;span class=&quot;caps&quot;&gt;GDC&lt;/span&gt;&amp;#8221;-post. And since I did some re-tinkering with the integration of &lt;a href=&quot;https://developers.google.com/protocol-buffers/&quot;&gt;protobuf&lt;/a&gt; in Behave late last year, some sharing on that topic seemed in order.&lt;/p&gt;
 &lt;p&gt;So yes, stuff is happening with Behave &amp;#8211; no abandonment has taken place. On the contrary I have been working on several, long-running, feature branches. I&amp;#8217;ll get around to merging some of those in and doing another release. More on that soonish.&lt;/p&gt;
