@@ -39,7 +39,7 @@ body, p
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 10pt;
 	line-height: 150%;
-	color: #888;
+	color: black;/*#888;*/
 }
 p
 {

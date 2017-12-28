@@ -1,4 +1,4 @@
-@media only screen and (min-width: 850px)
+/*@media only screen and (min-width: 850px)
 {
 	#site
 	{
@@ -89,11 +89,11 @@
 	{
 		padding-top: 12pt;
 	}
-}
+}*/
 
 
-@media only screen and (max-width: 850px)
-{
+/*@media only screen and (max-width: 850px)
+{*/
 	#site
 	{
 		width: 600px;
@@ -137,17 +137,17 @@
 		width: 600px;
 		padding-top: 70px;
 	}
-	#external
+	/*#external
 	{
 		position: absolute;
 		top: 40px;
 		width: 600px;
-	}
+	}*/
 	#sidebar #external a
 	{
-		float: right;
+		float: none;
 		margin-left: 10pt;
-		margin-right: 0pt;
+		margin-right: 10pt;
 	}
 	#sidebar .comment
 	{
@@ -160,13 +160,15 @@
 	}
 	#sidebar #logo
 	{
-		position: absolute;
+		height: 20pt;
+		padding-left: 10pt
+		/*position: absolute;
 		top: 60px;
 		padding-left: 575px;
 		width: 20px;
 		height: 20px;
 		opacity: 0.5;
-		filter:alpha(opacity=50);
+		filter:alpha(opacity=50);*/
 	}
 	#feed-container
 	{
@@ -182,7 +184,7 @@
 	{
 		float: right;
 	}
-}
+/*}*/
 
 @media only screen and (max-width: 650px)
 {
@@ -193,6 +195,22 @@
 		top: 260px;
 		width: 630px;
 	}
+}
+
+#pokemon
+{
+	text-align: center;
+}
+
+#pokemon img
+{
+	float:none;
+	clear:none;
+	height:20pt;
+	max-width:70pt;
+	object-fit:contain;
+	padding: 10pt;
+	padding-top: 0pt;
 }
 
 .post
@@ -274,6 +292,7 @@ html, body
 	margin-top: -340px;
 	width: 600px;
 	height: 340px;
+	text-align: center;
 }
 
 #sidebar #availability

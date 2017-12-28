@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 	<channel>
-		<title>AngryAnt.com/feed</title>
-		<description>Random scribblings at random intervals</description>
+		<title></title>
+		<description></description>
 		<link>http://angryant.com</link>
+		
+			<item>
+				<title>A Change of Gears</title>
+				<description>&lt;p&gt;Having completed my latest contract, working splendidly with Charles and Nicholas over at &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt;, we decided to extend our combined reach and potential by joining forces.&lt;/p&gt;
+&lt;p&gt;I got into contracting in the first place in order to find a new team. This year I had made it my mission to end that search and as it turned out, the team was much closer than expected.&lt;/p&gt;
+&lt;p&gt;What this means:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;Contracting continues, now through &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt;. If you have a job that needs doing, give us a shout.&lt;/li&gt;
+	&lt;li&gt;We enter into final production on &lt;a href=&quot;http://playstaticsky.com&quot;&gt;Static Sky&lt;/a&gt;, preparing a 2018 launch.&lt;/li&gt;
+	&lt;li&gt;As &lt;a href=&quot;http://playstaticsky.com&quot;&gt;Static Sky&lt;/a&gt; ramps down, we spin up new and exciting production &amp;#8211; stay tuned for more updates on that.&lt;/li&gt;
+	&lt;li&gt;I pick up the slack on the feed here as we launch a series of technical blog posts from &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt;.&lt;/li&gt;
+	&lt;li&gt;Both &lt;a href=&quot;/behave&quot;&gt;Behave&lt;/a&gt; development and &lt;a href=&quot;http://GameAINorth.com&quot;&gt;Game AI North&lt;/a&gt; organisation continue unaffected.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I am very excited about this change as it allows us all to be more productive, while maintaining a more stable work environment. I look forward to share more in 2018.&lt;/p&gt;
+
+
+</description>
+				<published>2017-12-28 00:00:00 +0100</published>
+				<link>http://angryant.com/2017/12/28/A-Change-of-Gears/</link>
+			</item>
 		
 			<item>
 				<title>CoreObject</title>
@@ -1813,96 +1833,6 @@ Pre-release:
 &lt;/pre&gt;</description>
 				<published>2014-11-28 00:00:00 +0100</published>
 				<link>http://angryant.com/2014/11/28/Behave-2-4/</link>
-			</item>
-		
-			<item>
-				<title>Co-very-routine</title>
-				<description>&lt;p&gt;I really like coroutines. Like with most things, they should be applied in well-considered quantities, but when applied they can really expand what you can achieve in just a few lines of code. Particularly in our frame-bound world.&lt;/p&gt;
-&lt;p&gt;However there has always been this little subset of extra things, which I would have liked to have seen supported by Unity coroutines out of the box.&lt;/p&gt;
-&lt;p&gt;&amp;#8220;Hang on, weren&amp;#8217;t you just there?&amp;#8221;&lt;/p&gt;
-&lt;p&gt;Yep. I was and terrible as the excuse might be, there was always something that seemed shinier or more on fire.&lt;/p&gt;
-&lt;p&gt;Then at &lt;a href=&quot;http://unity3d.com/unite&quot;&gt;Unite 13&lt;/a&gt;, Devin and Matthew of &lt;a href=&quot;http://twistedoakstudios.com/&quot;&gt;Twisted Oak Studios&lt;/a&gt; did an excellent &lt;a href=&quot;https://www.youtube.com/watch?v=ciDD6Wl-Evk&quot;&gt;talk about extending coroutines&lt;/a&gt; by using extension methods to insert a proxy layer between coroutines and the Unity coroutine-system. Unfortunately I didn&amp;#8217;t catch the talk live (I don&amp;#8217;t see many talks at conferences), but shortly after I could catch it on YouTube. Technology, yay!&lt;/p&gt;
-&lt;p&gt;In any case that really ended my supply of excuses, other than work.&lt;/p&gt;
-&lt;p&gt;Devin and Matthew had specifically implemented the setup to allow coroutines to provide a return value, provide a nicer stopping mechanism, as well as provide a useful way of handling exceptions thrown during the execution of coroutines. This provided an excellent platform to work off and did tick three items off my wishlist, but didn&amp;#8217;t quite deliver the whole package.&lt;/p&gt;
-&lt;p&gt;It is an interesting talk and if you have the time, you should give it a look.&lt;/p&gt;
-&lt;h1&gt;The Whole Package&lt;/h1&gt;
-&lt;p&gt;So I slacked off doing work for a bit and somewhere in Q2 2014 got started writing my own implementation of extended coroutines, with the extra bits and bops on my list.&lt;/p&gt;
-&lt;p&gt;This here is the list:&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;Coroutines providing return values (yay! free!)&lt;/li&gt;
-	&lt;li&gt;Handle exceptions thrown during coroutine execution (yay! free!)&lt;/li&gt;
-	&lt;li&gt;Useful stopping behaviour (yay! free!)&lt;/li&gt;
-	&lt;li&gt;Built-in soft stop.&lt;/li&gt;
-	&lt;li&gt;Better built-in communication between caller and coroutine.&lt;/li&gt;
-	&lt;li&gt;Easier way of intermixing threading and coroutines.&lt;/li&gt;
-	&lt;li&gt;Built-in simple load balancing.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Soft Stop&lt;/h2&gt;
-&lt;p&gt;Straight up stopping a coroutine is fine, but dependent on what it was doing while being stopped, it might leave a mess behind. The idea with a soft stop mechanism is that in stead of directly stopping the coroutine, the external controller in stead requests that the coroutine stops.&lt;/p&gt;
-&lt;p&gt;This allows the coroutine to monitor the state of the requested stop flag at appropriate points in its execution and terminate with the necessary cleanup in response.&lt;/p&gt;
-&lt;h2&gt;Caller &amp;#8211; Coroutine Communications&lt;/h2&gt;
-&lt;p&gt;But why stop the communications at just requesting a nice stop? What if the work produced by the coroutine could have relevance throughout its execution?&lt;/p&gt;
-&lt;p&gt;By making the result of the coroutine accessible before the completion of the coroutine, we gain the capability of not just reading it early on, but also contributing to its building from outside of the coroutine.&lt;/p&gt;
-&lt;h2&gt;Threading&lt;/h2&gt;
-&lt;p&gt;Sufficiently intense tasks, working on data types not tied to the UnityEngine, &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt; can benefit from threading. Unfortunately, most of the time things aren&amp;#8217;t that cleanly cut out, and only part of the task is suitable for threading.&lt;/p&gt;
-&lt;p&gt;At that point the alternatives are to either forget about partially threading the task or to bridge the two types of concurrency system. Since the latter rarely turns out very pretty, the former is often chosen.&lt;/p&gt;
-&lt;p&gt;Building threading right into the coroutine system makes the choice easy.&lt;/p&gt;
-&lt;h2&gt;Simple Load Balancing&lt;/h2&gt;
-&lt;p&gt;Finally, heavy tasks which for one reason or another cannot be threaded (perhaps the very nature of the task requires dealing with the UnityEngine &lt;span class=&quot;caps&quot;&gt;API&lt;/span&gt;), can in stead be frame sliced inside a coroutine.&lt;/p&gt;
-&lt;p&gt;However the logic for doing so can be more or less pretty and writing boilerplate is boring. Clearly this would be great to also have built into the base coroutine system.&lt;/p&gt;
-&lt;h1&gt;Usage&lt;/h1&gt;
-&lt;p&gt;So that is the full wish list implemented. Now let&amp;#8217;s take a look at some quick example snippets.&lt;/p&gt;
-&lt;h2&gt;Result&lt;/h2&gt;
-&lt;p&gt;The base interface for using the extended coroutines is to start them via the new generic version of &lt;code&gt;MonoBehaviour.StartCoroutine&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;For running regular coroutines, the only other difference is that in stead of yielding directly to the return value of &lt;code&gt;StartCoroutine&amp;lt;T&amp;gt;&lt;/code&gt;, you yield to the .Coroutine member of its &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; return value.&lt;/p&gt;
-&lt;p&gt;This is also the reference which gives you access to the result of the coroutine execution.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=Result.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Result.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Exception&lt;/h2&gt;
-&lt;p&gt;Since the coroutine calls are executed by the coroutine system and not the callee, normally exceptions just get swallowed up by the coroutine system and logged out.&lt;/p&gt;
-&lt;p&gt;The approach of Devin and Matthew, as implemented here, is to swallow the exception, break coroutine execution and then re-throw the same exception when next the coroutine comes into contact with the caller &amp;#8211; namely when its result is accessed.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=Exception.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Exception.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Stop&lt;/h2&gt;
-&lt;p&gt;In stead of relying on the strange, existing methods of stopping coroutines and the limitations they come with (such as only stopping a coroutine initially started by string parameter or stopping all coroutines on a behaviour), the &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; reference yields another possibility.&lt;/p&gt;
-&lt;p&gt;Since it effectively represents an instance of an executing coroutine, adding a &lt;code&gt;Stop&lt;/code&gt; method to it becomes much more intuitive.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=Stop.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Stop.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Soft Stop&lt;/h2&gt;
-&lt;p&gt;Requesting that a coroutine stops, requires a line of communication between the caller and coroutine. This is provided in the form of the instance of &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;However in order to effectively pass this, the calling convention on the coroutine is slightly different. Rather than passing the return value of the coroutine to &lt;code&gt;StartCoroutine&amp;lt;T&amp;gt;&lt;/code&gt;, the coroutine is passed as a delegate, taking &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; as its only parameter.&lt;/p&gt;
-&lt;p&gt;The rest of the flow is exactly as with &lt;code&gt;Stop&lt;/code&gt;, except &lt;code&gt;RequestStop&lt;/code&gt; is used by the caller and the coroutine periodically checks &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;.ShouldStop&lt;/code&gt;.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=SoftStop.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/SoftStop.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Threading&lt;/h2&gt;
-&lt;p&gt;The interface for threading is really very simple. Two new yield classes have been added &lt;code&gt;WaitForWorkerThread&lt;/code&gt; and &lt;code&gt;WaitForMainThread&lt;/code&gt;. Yielding to an instance of either will do exactly as advertised. Yielding break or the result or throwing an exception will terminate the thread and the coroutine.&lt;/p&gt;
-&lt;p&gt;When yielding &lt;code&gt;WaitForSeconds&lt;/code&gt; on the worker thread, the thread will sleep for the specified amount of seconds. And finally the &lt;code&gt;CoroutineData&amp;lt;T&amp;gt;&lt;/code&gt; holds a flag accessor to determine the thread state of the coroutine.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=Threading.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Threading.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Load Balancing&lt;/h2&gt;
-&lt;p&gt;Load balancing could be done in a bunch of different ways and I would encourage you to add your own (I would love to see your ideas as well). So I decided to just do the simplest I could think of.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;WaitIfFrameTime&lt;/code&gt; will yield until the next frame if the current frame has taken longer than the specified amount of time. This way it effectively sets down a max frame time while utilising all the time leading up to that cap.&lt;/p&gt;
-&lt;script src='https://gist.github.com/.js?file=Load.cs'&gt;&lt;/script&gt;&lt;div&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.githubusercontent.com/AngryAnt/a9cada6093e7d47bea1c/raw/Load.cs&quot;&gt;Example&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1&gt;Fin&lt;/h1&gt;
-&lt;p&gt;And that is it! I hope you find some use of these extensions to the extensions and do let me know if you come up with some cool further extensions.&lt;/p&gt;
-&lt;ul&gt;
-	&lt;li&gt;&lt;a href=&quot;https://gist.github.com/AngryAnt/a9cada6093e7d47bea1c&quot;&gt;Source and examples&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-				<published>2014-06-20 00:00:00 +0200</published>
-				<link>http://angryant.com/2014/06/20/Co-very-routine/</link>
 			</item>
 		
 	</channel>
