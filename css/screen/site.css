@@ -213,6 +213,12 @@
 	padding-top: 0pt;
 }
 
+#pokemon .narrow
+{
+	padding: 0pt;
+	padding-bottom: 10pt;
+}
+
 .post
 {
 	position: relative;
