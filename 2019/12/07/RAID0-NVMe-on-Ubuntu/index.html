@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - RAID0 NVMe on Ubuntu</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/screen/base.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/screen/site.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print/base.css" type="text/css" media="print" />
+<!-- No more Google Analytics, because no -->
+
+
+		<link rel="author" href="https://plus.google.com/+EmilJohansen" />
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a><img id="logo" title="Logo" alt="Logo" src="/resources/logo.png"></h1>
+
+			</div>
+			<div id="container">
+				<span class="date">07 Dec 2019</span>
+				<h1 id="Top">RAID0 NVMe on Ubuntu</h1>
+				
+				<div id="content">
+					<div class="post"><p>A bit of an odd topic after a period of silence, but it’s something that annoyed me greatly recently and so I wanted to spare others that experience. Meanwhile, what has been keeping the updates? <a href="http://framebunker.com">framebunker</a> and <a href="http://playstaticsky.com">StaticSky</a> have! In case you missed it, I started (slowly) brushing off and open-sourcing some of our work there (yes, I’ll do what I can to move through my “to open source” list faster): <a href="https://github.com/framebunker/Utilities">https://github.com/framebunker/Utilities</a></p>
+
+<p><em>Update January 2020</em>:
+Found &amp; updated the link to the blog post which mentioned the appropriate sectors to clear on SSDs for md. Also one of the people who assisted in the Keybase team, David Hauken, wrote <a href="https://david.hauken.us/posts/2019/11/ubuntu-desktop-raid0-roll-out-with-optional-luks-disk-encryption/">a post on this topic</a>.</p>
+
+<h2 id="challenge">Challenge</h2>
+
+<p>So anyway, I set up a new computer at home - the age of my 2013 laptop showing. On that I wanted to run Ubuntu off a full-disk encrypted drive. However a core point of the build is speed and full-disk encryption (via LUKS) does not necessarily go hand in hand with that.</p>
+
+<p>To offset that, I decided to go for a configuration with two PCIe4 NVMe sticks running in RAID0 (well cooled). Simple enough in principle, but then you hit the community coverage on the topic of “RAID0 is dangerous! Remember to back up your things and don’t pour water on your hardware”. It would appear that an Ubuntu (or event Linux) configuration like this is not super common.</p>
+
+<p>Luckily there were enough bits and pieces out there to, in combination with invaluable assistance from the people of the <code class="highlighter-rouge">sysadmins_unite</code> Keybase team, string together a solution.</p>
+
+<h2 id="process">Process</h2>
+
+<p>If, like me, you are migrating an existing install to this setup then first make a backup of that install. I just used rsync - making sure that all file flags etc. were left intact in the copy. In creating the RAID0 across the two NVMe sticks any data already present on either will of-course be lost.</p>
+
+<p>Next, burn the Ubuntu installer onto a bootable medium. This approach probably work on a ton of other configurations, but given that I have only used it with Ubuntu 18.04, I am going to describe them in that known-to-work context.</p>
+
+<p>Boot into your installer and fire up a terminal. In these steps it is assumed that the two NVMe sticks mount at <code class="highlighter-rouge">/dev/nvme0n1</code> and <code class="highlighter-rouge">/dev/nvme1n1</code>. If that is not the case in your setup, replace in the correct name where used. On my setup I was able to verify the mount points both in this installer terminal and in the Asus BIOS.</p>
+
+<p>The first step is to install the <code class="highlighter-rouge">mdadm</code> tool - for creation and management of md RAID configurations. Note that critical to this particular usecase is the clearing of superblocks and overwriting of first one gigabyte of data. Most guides I came across would instruct clearing data at the end of the target drives, but one (<del>I unfortunately lost the link - sorry about that</del> never mind - <a href="https://exastuff.blogspot.com/2018/06/software-raid-with-nvme-devices.html">found it</a> in an old window of research tabs) pointed me to the first gigabyte. As I understand it, this is specific to how md operates on SSD or at least NVMe.</p>
+
+<p>Configuring your RAID:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install mdadm
+sudo mdadm --zero-superblock /dev/nvme0n1
+sudo mdadm --zero-superblock /dev/nvme1n1
+sudo dd if=/dev/zero of=/dev/nvme0n1 bs=1M count=1000
+sudo dd if=/dev/zero of=/dev/nvme1n1 bs=1M count=1000
+sudo mdadm --create --verbose --level=0 --raid-devices=2 /dev/md0 /dev/nvme0n1 /dev/nvme1n1
+</code></pre></div></div>
+
+<p>With your raid up and running in your installer session, I really hope you did not forget to copy data you really wanted off those sticks. Anyway, the next step is to run the Ubuntu installer, opting to do “something else” when typical vs. not-quite-typical install configuration is chosen. This takes you to a screen where you get to specify which drives and partitions are get used for what in your fancy new install. Necessary config:</p>
+<ul>
+  <li>Format your new <code class="highlighter-rouge">/dev/md0</code> drive. For me that was formatting to LUKS and then adding an ext4 partition to that. You could also format directly to ext4 if you do not want the encryption, but in that case you might want to do that outside of the installer - for optimum performance. See the later section for specifics on that.</li>
+  <li>Specify that the installer use your final ext4 partition as root <code class="highlighter-rouge">/</code>.</li>
+  <li>Use a different drive and partition for EFI and <code class="highlighter-rouge">/boot</code>. This is critical as your bios will not know how to assemble the md RAID and boot from it - you need <code class="highlighter-rouge">/boot</code> to handle that. There were some very creative suggestions in <code class="highlighter-rouge">sysadmins_unite</code> on where one might put <code class="highlighter-rouge">/boot</code>, but I simply have a SATA drive in my rig used for more rough work and first tier backup. I just set up <code class="highlighter-rouge">/boot</code> and EFI partitions there.</li>
+</ul>
+
+<p>That’s it - configure the rest of the installer as you like and run it to completion. When it does complete and prompt you to restart, don’t do that. The RAID still only really exists within this installer session so if you reboot now, you might as well start over.</p>
+
+<p>The Ubuntu installer will have your new install partition mounted at <code class="highlighter-rouge">/target</code>. You need to make some edits to it in order to have it properly mount and run off your RAID from boot. If you closed the terminal from before, open up a new one and run this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount /dev/[partition used for /boot] /target/boot
+sudo mount --bind /dev /target/dev
+sudo mount --bind /sys /target/sys
+sudo mount --bind /proc /target/proc
+sudo cp /etc/resolv.conf /target/etc/
+sudo gedit /target/etc/default/grub
+</code></pre></div></div>
+
+<p>In gedit you need to update the value of <code class="highlighter-rouge">GRUB_CMDLINE_LINUX</code> to <code class="highlighter-rouge">"domdadm"</code>, save, and close the editor.</p>
+
+<p>Finally you need to add <code class="highlighter-rouge">mdadm</code> to your new install, which will also apply your grub change along with its own to the boot setup, after which we are good to reboot and test the install:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo chroot /target
+apt-get install mdadm
+exit
+sudo reboot now
+</code></pre></div></div>
+
+<p>If you just wanted a fresh install, then this is the “profit!” step. Otherwise, restore your previous install onto your new root partition and update it to support your new boot setup by rebooting into the installer again and running this in a terminal:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install mdadm
+sudo mdadm -A -s
+sudo mkdir /target
+sudo mount /dev/md0 /target
+sudo mount --bind /dev /target/dev
+sudo mount --bind /sys /target/sys
+sudo mount --bind /proc /target/proc
+sudo cp /etc/resolv.conf /target/etc/
+sudo chroot /target
+apt-get install mdadm
+exit
+sudo reboot now
+</code></pre></div></div>
+
+<p>And <em>that</em> is your “profit!” step.</p>
+
+<h2 id="ext4">ext4</h2>
+
+<p>If you just want to run ext4 as fast as possible directly on your RAID drive, you might want to manually work out the configuration of that partition to optimally work with the underlying RAID configuration. Key here is specifying the correct stride and stripe-width:</p>
+<ul>
+  <li>Chunk = 512 (output by or set via mdadm)</li>
+  <li>Block = 4 (ext4 dictated)</li>
+  <li>Devices = 2</li>
+  <li>Stride = 512 / 4 = 128</li>
+  <li>Stripe width = 2 * 128 = 256</li>
+  <li>Resulting in the formatting command <code class="highlighter-rouge">sudo mkfs.ext4 -v -L nvmeRAID -m 1 -b 4096 -E stride=128,stripe-width=256 /dev/md0</code>.</li>
+</ul>
+
+<h2 id="wrapup">Wrapup</h2>
+
+<p>I hope this works out for you. It definitely took me more research, trial, and error than I would have liked to arrive at a functional approach. At this point I have been running the resulting setup for a month or two without the hint of an issue.</p>
+</div>
+				</div>
+				<div id="feed-container">
+					<div id="feed">
+						
+							<a href="/2021/12/30/New-Gear/" class="titleSmall">New Gear</a><br />
+						
+							<a href="/2020/12/29/Unity-iOS-TeamCity-AppCenter/" class="titleSmall">Unity, iOS, TeamCity, AppCenter</a><br />
+						
+							<a href="/2019/12/07/RAID0-NVMe-on-Ubuntu/" class="titleSmall">RAID0 NVMe on Ubuntu</a><br />
+						
+							<a href="/2017/12/28/A-Change-of-Gears/" class="titleSmall">A Change of Gears</a><br />
+						
+							<a href="/2017/07/04/CoreObject/" class="titleSmall">CoreObject</a><br />
+						
+							<a href="/2017/02/17/Unity-Protocol-Buffers/" class="titleSmall">Unity Protocol Buffers</a><br />
+						
+							<a href="/2016/02/13/Behave-2-7/" class="titleSmall">Behave 2.7</a><br />
+						
+							<a href="/2015/07/17/Learn/" class="titleSmall">Learn</a><br />
+						
+							<a href="/2015/06/13/Behave-2-6/" class="titleSmall">Behave 2.6</a><br />
+						
+							<a href="/2015/02/26/Trusted-Gear/" class="titleSmall">Trusted Gear</a><br />
+						
+							<a href="/2015/01/02/Mad-Mash-Versioning/" class="titleSmall">Mad Mash Versioning</a><br />
+						
+							<a href="/2015/01/01/Behave-2-5/" class="titleSmall">Behave 2.5</a><br />
+						
+							<a href="/2014/11/28/Behave-2-4/" class="titleSmall">Behave 2.4</a><br />
+						
+							<a href="/2014/06/20/Co-very-routine/" class="titleSmall">Co-very-routine</a><br />
+						
+							<a href="/2014/04/25/Construct/" class="titleSmall">Construct</a><br />
+						
+							<a href="/2014/03/25/The-Engine-Wars-Numbers/" class="titleSmall">The Engine Wars: Numbers</a><br />
+						
+							<a href="/2014/03/13/GDC-14-The-Quest-For-Fun/" class="titleSmall">GDC 14: The Quest For Fun</a><br />
+						
+							<a href="/2014/03/07/Moving-in-Unity/" class="titleSmall">Moving in Unity</a><br />
+						
+							<a href="/2014/02/27/Behave-2-3/" class="titleSmall">Behave 2.3</a><br />
+						
+							<a href="/2014/01/03/Unity-and-net-assemblies/" class="titleSmall">Unity and .net assemblies</a><br />
+						
+							<a href="/2013/12/23/Behave-2-2/" class="titleSmall">Behave 2.2</a><br />
+						
+							<a href="/2013/10/11/ReView/" class="titleSmall">ReView</a><br />
+						
+							<a href="/2013/10/06/Behave-2-1/" class="titleSmall">Behave 2.1</a><br />
+						
+							<a href="/2013/08/25/Behave-2-0/" class="titleSmall">Behave 2.0</a><br />
+						
+							<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a><br />
+						
+							<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a><br />
+						
+							<a href="/2013/07/19/Unity-Hacks-Touch-gestures/" class="titleSmall">Unity Hacks: Touch gestures</a><br />
+						
+							<a href="/2013/07/17/OnRenderTextureGUI/" class="titleSmall">OnRenderTextureGUI</a><br />
+						
+							<a href="/2013/07/05/Unite-13-video-Unity-Hacks-available/" class="titleSmall">Unite 13 video "Unity Hacks" available</a><br />
+						
+							<a href="/2013/06/07/The-implicit-local-network-interface/" class="titleSmall">The implicit local network interface</a><br />
+						
+							<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a><br />
+						
+							<a href="/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/" class="titleSmall">Five years of Unity expertise looking for contracts</a><br />
+						
+							<a href="/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/" class="titleSmall">Automagic Unity Android Java gadget OF DOOM!</a><br />
+						
+							<a href="/2012/10/03/Invading-Planet-from-your-couch/" class="titleSmall">Invading Planet from your couch</a><br />
+						
+							<a href="/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/" class="titleSmall">Mountain Lion and laggy bluetooth and duct-tape</a><br />
+						
+							<a href="/2012/09/23/Unite-12-video-and-new-videos-section-available/" class="titleSmall">Unite 12 video and new videos section available</a><br />
+						
+							<a href="/2012/08/28/Asia-Bootcamp-videos-now-available/" class="titleSmall">Asia Bootcamp videos now available</a><br />
+						
+							<a href="/2012/05/17/path-is-now-mit-licensed/" class="titleSmall">Path is now MIT licensed</a><br />
+						
+							<a href="/2011/11/30/behave-1-4-released/" class="titleSmall">Behave 1.4 released</a><br />
+						
+							<a href="/2011/10/09/so-ive-been-a-bit-busy-lately/" class="titleSmall">So I've been a bit busy lately</a><br />
+						
+							<a href="/2011/04/28/behave-1-3-released/" class="titleSmall">Behave 1.3 released</a><br />
+						
+							<a href="/2011/04/23/igda-unity-sig-slides/" class="titleSmall">IGDA Unity SIG slides</a><br />
+						
+							<a href="/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/" class="titleSmall">Second Unity IGDA SIG this evening: Scene construction and AI</a><br />
+						
+							<a href="/2011/03/10/first-igda-unity-sig-this-evening/" class="titleSmall">First IGDA Unity SIG this evening</a><br />
+						
+							<a href="/2011/03/03/alternative-licensing-available/" class="titleSmall">Alternative licensing available</a><br />
+						
+							<a href="/2011/02/15/pathfinding-in-two-line/" class="titleSmall">Pathfinding in two lines</a><br />
+						
+							<a href="/2011/02/15/path-2-released/" class="titleSmall">Path 2 released</a><br />
+						
+							<a href="/2011/02/02/assembling-and-assimilating/" class="titleSmall">Assembling and assimilating</a><br />
+						
+							<a href="/2011/01/29/path-2-intro-screencast/" class="titleSmall">Path 2 intro screencast</a><br />
+						
+							<a href="/2011/01/29/path-2-beta-release-for-ggj/" class="titleSmall">Path 2 beta release for GGJ</a><br />
+						
+							<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a><br />
+						
+							<a href="/2011/01/09/expanding-beta/" class="titleSmall">Expanding beta</a><br />
+						
+							<a href="/2010/11/28/behave-aigamedev-master-class-public-stream/" class="titleSmall">Behave AIgameDev master class public stream</a><br />
+						
+							<a href="/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/" class="titleSmall">Behave master class on open AIgameDev stream tomorrow</a><br />
+						
+							<a href="/2010/10/29/interview-with-aigamedev/" class="titleSmall">Interview with AIGameDev</a><br />
+						
+							<a href="/2010/10/24/new-video-from-tree-to-code/" class="titleSmall">New video: From tree to code</a><br />
+						
+							<a href="/2010/10/23/issue-tracking-on-github-behave-release-project/" class="titleSmall">Issue tracking on github Behave release project</a><br />
+						
+							<a href="/2010/10/22/it-university-copenhagen-unity-course-completed/" class="titleSmall">IT University Copenhagen Unity course completed</a><br />
+						
+							<a href="/2010/10/21/it-university-copenhagen-unity-course-files-thursday/" class="titleSmall">IT University Copenhagen Unity course files Thursday</a><br />
+						
+							<a href="/2010/10/20/cph-it-university-unity-course-files/" class="titleSmall">CPH IT University Unity course files</a><br />
+						
+							<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a><br />
+						
+							<a href="/2010/09/29/video-behave-starting-from-scratch/" class="titleSmall">Video: Behave - starting from scratch</a><br />
+						
+							<a href="/2010/09/29/behave-runtime-documentation-updated/" class="titleSmall">Behave runtime documentation updated</a><br />
+						
+							<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a><br />
+						
+							<a href="/2010/03/19/faff-cleanup-sketch/" class="titleSmall">FAFF cleanup: Sketch</a><br />
+						
+							<a href="/2010/03/15/building-a-menu-of-delegates-and-enums/" class="titleSmall">Building a menu of delegates and enums</a><br />
+						
+							<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a><br />
+						
+							<a href="/2010/01/14/optimising-coroutine-yielding-in-c/" class="titleSmall">Optimising coroutine yielding in C#</a><br />
+						
+							<a href="/2010/01/05/downloading-the-hydra/" class="titleSmall">Downloading the hydra</a><br />
+						
+							<a href="/2009/11/15/new-license-of-path-gpl/" class="titleSmall">New license of Path: GPL</a><br />
+						
+							<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a><br />
+						
+							<a href="/2009/10/04/magnetic/" class="titleSmall">Magnetic</a><br />
+						
+							<a href="/2009/09/18/gui-drag-drop/" class="titleSmall">GUI drag-drop</a><br />
+						
+							<a href="/2009/09/17/logging-an-entire-gameobject/" class="titleSmall">Logging an entire GameObject</a><br />
+						
+							<a href="/2009/09/07/i-bet-you-cant-type-an-a/" class="titleSmall">I bet you can't type an A!</a><br />
+						
+							<a href="/2009/08/31/where-did-that-component-go/" class="titleSmall">Where did that component go?</a><br />
+						
+							<a href="/2009/08/19/unitysteer/" class="titleSmall">UnitySteer</a><br />
+						
+							<a href="/2009/05/18/new-and-improved-behave-10-released/" class="titleSmall">New and improved: Behave 1.0 released</a><br />
+						
+							<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a><br />
+						
+							<a href="/2009/03/20/behave-03b-hotfix/" class="titleSmall">Behave 0.3b hotfix</a><br />
+						
+							<a href="/2009/03/19/path-tutorial-video-available/" class="titleSmall">Path tutorial video available</a><br />
+						
+							<a href="/2009/03/18/path-10-launched/" class="titleSmall">Path 1.0 launched!</a><br />
+						
+							<a href="/2008/12/17/community-tutorial-2/" class="titleSmall">Continued community tutorials</a><br />
+						
+							<a href="/2008/11/30/community-tutorial/" class="titleSmall">Community tutorial</a><br />
+						
+							<a href="/2008/11/28/new-tutorial/" class="titleSmall">New tutorial</a><br />
+						
+							<a href="/2008/11/04/first-tutorial-available/" class="titleSmall">First tutorial available</a><br />
+						
+							<a href="/2008/11/02/behave-03b/" class="titleSmall">Behave 0.3b</a><br />
+						
+							<a href="/2008/10/25/unite-08-open-mic-session/" class="titleSmall">unite '08 open-mic session</a><br />
+						
+							<a href="/2008/09/24/behave-02b/" class="titleSmall">Behave 0.2b</a><br />
+						
+							<a href="/2008/09/09/behave-01b/" class="titleSmall">Behave 0.1b</a><br />
+						
+							<a href="/2008/09/08/behave-pre-release/" class="titleSmall">Behave pre-release</a><br />
+						
+							<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a><br />
+						
+							<a href="/2008/04/12/path-beta-02b/" class="titleSmall">Path beta 0.2b</a><br />
+						
+							<a href="/2008/04/05/path-beta-01b/" class="titleSmall">Path beta 0.1b</a><br />
+						
+							<a href="/2008/03/30/path-pre-release/" class="titleSmall">Path pre-release</a><br />
+						
+					</div>
+				</div>
+				<div id="footer">
+	<div id="sidebar">
+		<div id="external">
+			<a href="/feed.xml">RSS</a>
+			<a href="/feed.articles.xml">Full RSS</a>
+			<a href="https://gist.github.com/AngryAnt">Gist</a>
+			<a href="https://mastodon.eej.dk">Mastodon</a>
+			<a href="https://twitter.com/AngryAnt">Twitter</a>
+			<a href="http://eej.dk">LinkedIn</a>
+			<a href="http://lanyrd.eej.dk">Lanyrd</a>
+			<a href="http://connect.eej.dk">Unity Connect</a>
+		</div>
+	</div>
+	<p class="footnote" style="margin-top: 50px; margin-bottom: 10px; clear: both;">Copyright &#169; AngryAnt&trade; <script>document.write ((new Date ()).getFullYear ());</script>. All public github gists are public domain. Client portfolio:</p>
+	<div id="pokemon">
+	<p><a href="http://www.google.com"><img src="/resources/clients/google.png" title="Google" alt="Google" /></a>
+		<a href="http://www.autodesk.com"><img src="/resources/clients/autodesk.png" title="Autodesk" alt="Autodesk" /></a>
+		<a href="http://www.oculusvr.com"><img src="/resources/clients/oculus.jpg" title="Oculus" alt="Oculus" /></a>
+		<a href="http://www.unity3d.com"><img src="/resources/clients/unity.png" title="Unity" alt="Unity" /></a>
+		<a href="http://github.com"><img src="/resources/clients/github.png" title="GitHub" alt="GitHub" /></a>
+		<a href="http://www.oriblindforest.com"><img src="/resources/clients/moonstudios.png" title="Moon Studios" alt="Moon Studios" /></a>
+		<a href="http://www.rovio.com"><img src="/resources/clients/rovio.png" title="Rovio" alt="Rovio" /></a>
+		<a href="http://dice.se"><img src="/resources/clients/dice.png" title="DICE" alt="DICE" /></a>
+		<a href="http://starbreeze.com"><img src="/resources/clients/starbreeze.png" title="Starbreeze" alt="Starbreeze" class="narrow" /></a>
+		<a href="http://framebunker.com"><img src="/resources/clients/framebunker.png" title="framebunker" alt="framebunker" /></a>
+		<a href="http://hugogames.com"><img src="/resources/clients/hugo.png" title="Hugo Games" alt="Hugo Games" class="narrow" /></a>
+		<a href="http://kythera.ai"><img src="/resources/clients/kythera.png" title="Kythera" alt="Kythera" /></a>
+		<a href="http://rokoko.co"><img src="/resources/clients/rokoko.png" title="RoKoKo" alt="RoKoKo" class="narrow" /></a>
+		<a href="http://www.fullcontrol.dk"><img src="/resources/clients/fullcontrol.png" title="Full Control" alt="Full Control" /></a>
+		<a href="http://fundayfactory.com"><img src="/resources/clients/fundayfactory.png" title="Funday Factory" alt="Funday Factory" class="narrow" /></a>
+		<a href="http://toughguystudios.com"><img src="/resources/clients/toughguy.png" title="Tough Guy Studios" alt="Tough Guy Studios" /></a>
+		<a href="http://lucus.dk"><img src="/resources/clients/lucus.png" title="Lucus" alt="Lucus" /></a>
+		<a href="http://atchik.com"><img src="/resources/clients/atchik.png" title="Atchik" alt="Atchik" /></a>
+		<a href="http://www.tp.edu.sg"><img src="/resources/clients/Temasek.png" title="Temasek Polytechnic" alt="Temasek Polytechnic" /></a>
+		<a href="http://dadiu.dk"><img src="/resources/clients/dadiu.jpg" title="DADIU" alt="DADIU" /></a></p>
+	</div>
+	<!--<div id="pokemon">
+		!/resources/clients/google.png(Google)!:http://www.google.com
+		!/resources/clients/autodesk.png(Autodesk)!:http://www.autodesk.com
+		!/resources/clients/oculus.jpg(Oculus)!:http://www.oculusvr.com
+		!/resources/clients/unity.png(Unity)!:http://www.unity3d.com
+		!/resources/clients/github.png(GitHub)!:http://github.com
+		!/resources/clients/moonstudios.png(Moon Studios)!:http://www.oriblindforest.com
+		!/resources/clients/rovio.png(Rovio)!:http://www.rovio.com
+		!/resources/clients/dice.png(DICE)!:http://dice.se
+		!/resources/clients/starbreeze.png(Starbreeze)!:http://starbreeze.com
+		!/resources/clients/framebunker.png(framebunker)!:http://framebunker.com
+		!/resources/clients/hugo.png(Hugo Games)!:http://hugogames.com
+		!/resources/clients/kythera.png(Kythera)!:http://kythera.ai
+		!/resources/clients/rokoko.png(RoKoKo)!:http://rokoko.co
+		!/resources/clients/fullcontrol.png(Full Control)!:http://www.fullcontrol.dk
+		!/resources/clients/fundayfactory.png(Funday Factory)!:http://fundayfactory.com
+		!/resources/clients/toughguy.png(Tough Guy Studios)!:http://toughguystudios.com
+		!/resources/clients/lucus.png(Lucus)!:http://lucus.dk
+		!/resources/clients/atchik.png(Atchik)!:http://atchik.com
+		!/resources/clients/Temasek.png(Temasek Polytechnic)!:http://www.tp.edu.sg
+		!/resources/clients/dadiu.jpg(DADIU)!:http://dadiu.dk
+	</div>-->
+</div>
+
+			</div>
+		</div>
+		
+
+	</body>
+</html>

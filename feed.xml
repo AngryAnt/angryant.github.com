@@ -3,7 +3,352 @@
 	<channel>
 		<title></title>
 		<description></description>
-		<link>http://angryant.com</link>
+		<link>http://www.angryant.com</link>
+		
+			<item>
+				<title>New Gear</title>
+				<description>&lt;p&gt;In 2015 I did a review of my &lt;a href=&quot;https://www.angryant.com/2015/02/26/Trusted-Gear/&quot;&gt;active toolbox&lt;/a&gt;. As obviously a lot has changed since then, particularly with pandemic-mode operations, I figured an update would be appropriate.&lt;/p&gt;
+
+&lt;p&gt;I had hoped to have done a post on a new build agent setup we are working on, but unfortunately JetBrains support are still having some trouble replicating problems we are experiencing with Linux-based TeamCity Unity build agents. You will just have to look forward to that - hopefully not too far into the new year.&lt;/p&gt;
+
+&lt;p&gt;A central theme in the current toolbox is self-hosting and flexibility in general. Third party provided services are great until you get near the edge of intended use cases - which usually works well, but holds the capacity to (hopefully only) slightly frustrate every project flow you go through. We first dipped our toes in self-hosting some services pre-pandemic but since moving to be fully distributed we went all in - to the point of currently only relying on external services for text chat, email, and mobile build distribution.&lt;/p&gt;
+
+&lt;p&gt;That said, I will strive to keep the format of the earlier post - focusing primarily on local machine tools. So as mentioned the update here is flexibility and obviously a use case change as well, given the steep drop in need for working on the go.&lt;/p&gt;
+
+&lt;h2 id=&quot;platform&quot;&gt;Platform&lt;/h2&gt;
+&lt;p&gt;The 2013 MacBook Pro got retired - initially in favour of a company workstation at the office and a personal one at home, for once pieced together from parts matching &lt;em&gt;my&lt;/em&gt; needs rather than the sales considerations of a manufacturer of prebuilts. Moving our operations fully distributed, resulting in the company workstation moving in with me, the personal workstation then got converted into a server - replacing the basic Synology box which had previously been sufficient for the limited services we self-hosted when sitting multiple non-family-members in offices were a thing.&lt;/p&gt;
+
+&lt;p&gt;This change of hardware platform obviously meant a move away from macOS - marking the first change in the toolbox. Prior to retiring the laptop I had started dual booting &lt;a href=&quot;https://ubuntu.com/download/desktop&quot;&gt;Ubuntu&lt;/a&gt; on it in order to gauge how far the Linux desktop experience had moved since last I had a look at it. A clear goal in general was an increase in flexibility - not just limited to hardware choice, so if given an actually modern and fully functional desktop experience I was definitely going to prefer Linux over Windows. At the end of my trial run I was satisfied with the experience and had gradually moved to cross-platform software on the macOS installation as well - in order to reduce the number of new things I would need to deal with when jumping completely.&lt;/p&gt;
+
+&lt;p&gt;After landing well on the new platform and properly acclimating I did move around a bit before settling on my current setup, but as a migration point &lt;a href=&quot;https://ubuntu.com/download/desktop&quot;&gt;Ubuntu&lt;/a&gt; (with the default &lt;a href=&quot;https://www.gnome.org/&quot;&gt;GNOME&lt;/a&gt; desktop environment) was excellent. For anyone doing the research today I would recommend trying out &lt;a href=&quot;https://zorin.com/os/&quot;&gt;Zorin OS&lt;/a&gt; as the migration point in stead - regardless of where you consider migrating from.&lt;/p&gt;
+
+&lt;p&gt;I prefer to not use headspace for more tools than necessary, so I opted to use Ubuntu server for our self-hosted efforts - in order to work with the same underlying tooling available in the terminal application of my desktop. The before-mentioned moving around did eventually see me leave Ubuntu for both use cases - in favour of &lt;a href=&quot;https://nixos.org/&quot;&gt;NixOS&lt;/a&gt; as the underlying system, with &lt;a href=&quot;https://kde.org/plasma-desktop/&quot;&gt;Plasma&lt;/a&gt; as the desktop environment on my workstation. Note that while &lt;a href=&quot;https://kde.org/plasma-desktop/&quot;&gt;Plasma&lt;/a&gt; may initially look to be “the Windows experience but on top of Linux”, the primary selling point of the environment is accessible customisation. If I were to describe my current setup in more familiar terms, it would probably be: a macOS-like header bar &amp;amp; launcher, no dock, window auto-tiling, and a functionality-focused high-contrast if dark colour scheme. You can basically adjust it to your hearts content, making it an optimal fit for your particular flow - which is what drew me to it.&lt;/p&gt;
+
+&lt;p&gt;I would not recommend &lt;a href=&quot;https://nixos.org/&quot;&gt;NixOS&lt;/a&gt; as a migration entry point, but long term the paradigm shift is well worth it to me. The advantages are numerous, but personally I am mostly drawn by the declarative OS configuration enabling a single text file to describe a complete system and all of its settings. The flexibility on Linux is great, but just like any other system there are a ton of different locations to review &amp;amp; configure the full experience (Window settings panels meme: Engage!). Having a single file I can use to quickly review what a system is and to modify it is absolutely excellent. It is no animated semi-transparent GUI of smooth loveliness, but I’ll take it.&lt;/p&gt;
+
+&lt;p&gt;For control over hardware resources, service segregation, and advanced tools management I have opted to run a hypervisor on both server and workstation. Aside from massive cloud servers and game consoles, hypervisors are great for configuring and running a number of personal virtual machines on the same hardware - in particular when you have clearly segmented services and goals to work with. From a security standpoint network segregation in this environment is not as solid as with individual machines, given that virtual machine escape exploits are a thing. However neither my private nor our company threat model includes threat actors with the necessary budget and given that the alternative is third party services susceptible to the very same attacks, this configuration is entirely acceptable. This setup means that my day to day desktop experience is actually a virtual machine. Though with a dedicated graphics card and plenty of resources &amp;amp; CPU priority associated that distinction is entirely unnoticeable. In addition to this primary VM, the workstation runs a router for the different VMs, CI agents for the different projects, and other tools like distributed bake &amp;amp; generative services, devkit tools with picky environment requirements, and that sort of thing.&lt;/p&gt;
+
+&lt;p&gt;As an aside, I also ended up running &lt;a href=&quot;https://nixos.org/&quot;&gt;NixOS&lt;/a&gt; on my tablet - though here I opted for &lt;a href=&quot;https://www.gnome.org/&quot;&gt;GNOME&lt;/a&gt; rather than &lt;a href=&quot;https://kde.org/plasma-desktop/&quot;&gt;Plasma&lt;/a&gt; as the desktop experience. While explicitly not designed for touch devices, I find it the better experience of the two on such hardware. In addition to buttery smooth regular reading of books &amp;amp; comics + browsing + media activities, the gaming experience on the tablet is great - using Steam in-home streaming to run games from a VM on the server running an attached dedicated graphics card, with controls either via touch or the excellent Steam Controller. This on a minimum-spec dual-core device with four gigabytes of memory.&lt;/p&gt;
+
+&lt;h2 id=&quot;tracking&quot;&gt;Tracking&lt;/h2&gt;
+&lt;p&gt;OmniGroup only develop their software for the fruit company ecosystem, which meant I would of-course have to find an alternative to OmniFocus. Given the difficulty in finding a suitable project &amp;amp; TODO tracking solution described in the last toolbox post, this was by far the toughest workflow change.&lt;/p&gt;
+
+&lt;p&gt;Thankfully our self-hosting journey overlapped nicely with the local toolbox change here as I found an excellent combination of user experience and flexibility in the &lt;a href=&quot;https://www.jetbrains.com/youtrack/&quot;&gt;YouTrack&lt;/a&gt; solution we were already using for company project tracking. While a fully hosted version is available as well, we had already opted for self-hosted in order to more easily run some custom integration with the rest of our flow. The resulting setup is one install for the company, one for the family, and optionally one per project if it involves tightly integrated external parties.&lt;/p&gt;
+
+&lt;p&gt;The underlying data structures can have a whole lot of fields associated with each task/entry - making it a full Jira-like complex beast if that is what you want - or a simple TODO app if that is more your target. Combined with a mobile app and a very flexible system of searches/queries bookmarked or exposed in lists, dashboards, reports, and agile boards, I have found that I can easily tailor an experience to anything from a complex project through small efforts to grocery shopping without slamming into too many walls or facing highly “enterprisey” experiences for very simple use cases.&lt;/p&gt;
+
+&lt;p&gt;For flow integration we use the official &lt;a href=&quot;https://www.nuget.org/packages/YouTrackSharp/&quot;&gt;.net API&lt;/a&gt; - as we as much as possible strive to standardise all our code- &amp;amp; data base to C# and markdown respectively. The experience here has been great as well. We have primarily used the API to update other systems based on changes in tasks, but our wishlist does currently include more bidirectional integration which should be fully supported by the API.&lt;/p&gt;
+
+&lt;p&gt;My calendar is still a central part of my day to day flow - essentially feeding tasks from the tracker through a planning phase and into the calendar. Continuing to use the iCloud calendar setup either through the web app or integrated with a local client is an option, but for forward-looking flexibility and a more stable experience I have opted for a self-hosted solution here as well. A couple of options are available here but probably of most broad appeal would be the CalDav service built into &lt;a href=&quot;https://nextcloud.com/&quot;&gt;Nextcloud&lt;/a&gt;. So long as the service runs https, you can add the account to iOS just fine and on the desktop I have worked with a couple of different options until finally settling on the very lovely, but still-pre-release &lt;a href=&quot;https://apps.kde.org/kalendar/&quot;&gt;Kalendar&lt;/a&gt; project.&lt;/p&gt;
+
+&lt;h2 id=&quot;typing&quot;&gt;Typing&lt;/h2&gt;
+&lt;p&gt;Since the last toolbox update the life of this typist has improved significantly. While &lt;a href=&quot;https://www.sublimetext.com/&quot;&gt;Sublime Text&lt;/a&gt; is still great and a very important part of my toolbox, OmniSharp unfortunately did not last as a stable experience. Thankfully &lt;a href=&quot;https://www.jetbrains.com/rider/&quot;&gt;Rider&lt;/a&gt; picked up that slack and then some, offering a rock solid IDE with an extensive suite of tools and of-course neat integration with the other JetBrains products in our arsenal. As a tool for .net and Unity development, &lt;a href=&quot;https://www.jetbrains.com/rider/&quot;&gt;Rider&lt;/a&gt; has been a no-brainer for a while. Praise aside, particularly for our IL patching workflows I am not really satisfied with the assembly/IL browsing functionality of &lt;a href=&quot;https://www.jetbrains.com/rider/&quot;&gt;Rider&lt;/a&gt; when it comes to external assemblies rather than the assembled result of a loaded project. For this need I am still a very happy camper with the &lt;a href=&quot;https://github.com/icsharpcode/AvaloniaILSpy&quot;&gt;Avalonia ILSpy&lt;/a&gt; project.&lt;/p&gt;
+
+&lt;p&gt;Worth noting when speaking of &lt;a href=&quot;https://www.sublimetext.com/&quot;&gt;Sublime Text&lt;/a&gt; is &lt;a href=&quot;https://www.sublimemerge.com/&quot;&gt;Sublime Merge&lt;/a&gt; - another newcomer since last update. While &lt;a href=&quot;https://git-fork.com/&quot;&gt;Fork&lt;/a&gt; is still excellent and would be my first recommendation to anyone, &lt;a href=&quot;https://www.sublimemerge.com/&quot;&gt;Sublime Merge&lt;/a&gt; offers better platform support and an interface striking just the right balance for me between simplification and utility.&lt;/p&gt;
+
+&lt;p&gt;Given that we standardise on markdown as much as possible, expanding the toolbox with a dedicated markdown editor only made sense. While it offers a lot more than just that, [Obsidian][obsidian] is my pick for markdown editing. At time of writing the WYSIWYG editor is very freshly released, but none the less it is my daily driver for the purpose.&lt;/p&gt;
+
+&lt;h2 id=&quot;searching&quot;&gt;Searching&lt;/h2&gt;
+&lt;p&gt;Developed specifically for the fruit company ecosystem, &lt;a href=&quot;https://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt; is another previously mentioned tool in need of replacement. Thankfully the developer is very open to clients on other platforms having great access to the largely-community-supplied documentation packages. The consequence is a healthy selection of alternatives, of which I went for &lt;a href=&quot;https://zealdocs.org/&quot;&gt;Zeal&lt;/a&gt;. Available on Linux, macOS, and Windows, this offline documentation viewer is just as excellent a tool to me as &lt;a href=&quot;https://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt; was on macOS.&lt;/p&gt;
+
+&lt;p&gt;I honestly did not really have much use of the editor integration of &lt;a href=&quot;https://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt; in the past, so only having the global shortcut + search tags for accessing &lt;a href=&quot;https://zealdocs.org/&quot;&gt;Zeal&lt;/a&gt; was not a real change for me. Integration may be available, but given the base I was operating on I just did not go looking for it. Thankfully more alternatives are available and perhaps even a fully editor embedded client - in case that is more relevant to you.&lt;/p&gt;
+
+&lt;h2 id=&quot;navigation&quot;&gt;Navigation&lt;/h2&gt;
+&lt;p&gt;Before the platform &amp;amp; services shift mentioned throughout this write-up, I decided to complete my workstation ergonomics by looking at peripherals which for some inexplicable reason I had ignored through years of paying attention to desk, lighting, seating, and monitors. Perhaps the reason is that this aspect of ergonomics has an odd air of fringe vs. the other aspects.&lt;/p&gt;
+
+&lt;p&gt;Previously I had been using a flat wireless keyboard with short key travel and a nicely large wireless touchpad. There are a ton of options and semi-religious opinions in this area, but after a while I settled on a vertical wireless mouse (a regular mouse where your hand orientation ends up more vertical than regular horizontal) and a mechanical split keyboard. I found the &lt;a href=&quot;https://www.ergodox.io/&quot;&gt;ErgoDox&lt;/a&gt; open source design very compelling and the number of available options based on it equally so. Aside from being split, the layout is also column stagger rather than the default row stagger - resulting in a more natural primary vertical movement of your fingers rather than constant sideways switching.&lt;/p&gt;
+
+&lt;p&gt;Once I had the board in hand I realised the further room for ergonomic optimisation. Since the available boards implementing the &lt;a href=&quot;https://www.ergodox.io/&quot;&gt;ErgoDox&lt;/a&gt; design are fully customise-able via the &lt;a href=&quot;https://qmk.fm/&quot;&gt;QMK&lt;/a&gt; project, you can use visual editors to redefine key functions as you like or even dive fully into the C-based firmware and write your own custom layout &amp;amp; -functionality there. I used this opportunity to further reduce finger stretch by removing use of some keys entirely and moving other functionality to layers (while not accurate, if you think if the shift key as changing the keyboard layout to a layer of capital letters and different symbols, you have the general idea) - including a numpad and pre-baked shortcut keys like the &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt; key you double-tap to &lt;code class=&quot;highlighter-rouge&quot;&gt;cut&lt;/code&gt; or the word left/right keys positioned just above the left/right arrow keys - which again are flanked by the line start/end keys.&lt;/p&gt;
+
+&lt;p&gt;Combining these ergonomic layout optimisations with baked shortcut keys and function keys mapped in &lt;a href=&quot;https://kde.org/plasma-desktop/&quot;&gt;Plasma&lt;/a&gt; to different functionality in different applications (like the macOS shortcut mapping demonstrated in the last toolbox post), my work environment took a significantly step forward on ergonomics, functionality, and sheer accessible speed.&lt;/p&gt;
+
+&lt;p&gt;As a bonus, the &lt;a href=&quot;https://www.ergodox.io/&quot;&gt;ErgoDox&lt;/a&gt; board I opted for came with per-key LED lighting. As I understand it you are supposed to utilise this for fancy animated effects, providing a clear speed &amp;amp; precision boost when gaming - and while I could certainly use both, I opted instead for using it to highlight key functions in the active layer - like a clear inverted T-shape for the arrow keys or a grid for the numpad etc.&lt;/p&gt;
+
+&lt;h2 id=&quot;wrap&quot;&gt;Wrap&lt;/h2&gt;
+&lt;p&gt;And that is about it. All these years later I do not have any current conference plans, but my toolbox certainly keeps adapting to my current needs. Overall I feel much more efficient and flexible in my day to day and am happy to have a feeling of being able to do much more with my local and extended environment - to adapt to personal and company needs on any given effort. I hope that this update has helped inspire you - if nothing else then to review &lt;em&gt;your&lt;/em&gt; current toolbox - perhaps to see if anything in there could stand a revisit compared to available alternatives today.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.angryant.com/2015/02/26/Trusted-Gear/&quot;&gt;“Trusted Gear” post&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ubuntu.com/download/desktop&quot;&gt;Ubuntu desktop&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://zorin.com/os/&quot;&gt;Zorin OS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://nixos.org/&quot;&gt;NixOS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kde.org/plasma-desktop/&quot;&gt;Plasma&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.jetbrains.com/youtrack/&quot;&gt;YouTrack&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.nuget.org/packages/YouTrackSharp/&quot;&gt;YouTrackSharp&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://nextcloud.com/&quot;&gt;Nextcloud&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://apps.kde.org/kalendar/&quot;&gt;Kalendar&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.jetbrains.com/rider/&quot;&gt;Rider&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.sublimetext.com/&quot;&gt;Sublime Text&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/icsharpcode/AvaloniaILSpy&quot;&gt;Avalonia ILSpy&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.sublimemerge.com/&quot;&gt;Sublime Merge&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://git-fork.com/&quot;&gt;Fork&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://zealdocs.org/&quot;&gt;Zeal&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ergodox.io/&quot;&gt;ErgoDox&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qmk.fm/&quot;&gt;QMK&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+				<published>2021-12-30 00:00:00 +0100</published>
+				<link>http://www.angryant.com/2021/12/30/New-Gear/</link>
+			</item>
+		
+			<item>
+				<title>Unity, iOS, TeamCity, AppCenter</title>
+				<description>&lt;p&gt;You can take the developer out of the tools company, but weaning the developer of tool making is another thing entirely. As per usual, at &lt;a href=&quot;https://framebunker.com&quot;&gt;framebunker&lt;/a&gt; we remain focused on applying tools development where sensible to increase the efficiency multiplier on all efforts involved in development. This of-course includes a continuous integration setup, where we find another JetBrains solution to fitting our needs very nicely: TeamCity.&lt;/p&gt;
+
+&lt;p&gt;Aside from being able to rely on prior experience, we enjoy the flexibility afforded by the solution, suite of available plugins, and direct integration with other parts of our setup. The party trick? Integration in Rider allows not just running of build configurations based on what is already checked in to some branch, but also based on your current local state - for “hey, check this out!” and similar scenarios. Is this offered by other CI setups? Don’t know - probably? Is it cool? Very yes.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-inaudible-x-factor&quot;&gt;The [inaudible] X factor&lt;/h2&gt;
+
+&lt;p&gt;While we find ourselves working in many different environments from time to time, we seem to gravitate towards Unity and iOS. When you add continuous integration to the mix, that means dealing with the Xcode cli for building and signing something actually useful in distribution. And this is where I wrote my TODO on writing this post. If you take a look around the wider interwebs for clues on how this interface works, you will come across a broad range of advice on how such a feat is achieved. All different, most fully correct at time of writing.&lt;/p&gt;
+
+&lt;p&gt;Historically things have changed in this area at least every couple of years which seems to pretty much coincide, with some padding, with how often I need to work with it. So every time I need to set something up, the environment has changed. Obviously underlying technology changes quite naturally over time, but in most cases that does not lead to people also radically changing the interface for said technology - desktop operating systems deal in windows, icons, and cursors, most cars have four wheels and a steering wheel, etc. - even if the technology underlying both has changed quite a bit over the years. Not so in this case. Exaggeration? Probably, but not by a whole lot.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+
+&lt;p&gt;Anyway, this is not the prime topic of the post - just part of its inspiration. I wanted to describe the whole flow outlined in the title of this post and provide some insight at each step. Hopefully you will find useful bits here and there even if the whole flow is not relevant to your needs - just as I picked up bits and pieces from other posts as well as the very helpful AppCenter support department (comparatively not a lot of community material out there, given how young the product is).&lt;/p&gt;
+
+&lt;p&gt;Overall the flow goes like this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;An iOS title is being developed in Unity. For us this means version 2019.4 - the latest LTS release at time of writing.&lt;/li&gt;
+  &lt;li&gt;Collaboration happens via git - pushed to and pulled from a local server. Specifics are largely irrelevant to this flow, but in our case we use &lt;a href=&quot;https://gitea.io/&quot;&gt;Gitea&lt;/a&gt; - including its support for git-lfs. Providing related support is an instance of the Unity cache server.&lt;/li&gt;
+  &lt;li&gt;TeamCity is connected to the relevant project repositories and some build configurations are set to trigger as soon as fresh commits are detected. Among other things this provides us with up to date builds of the project available for download via the web interface.&lt;/li&gt;
+  &lt;li&gt;For iOS builds that is not necessarily all that useful (aside from verifying that things build and pass tests) as you need to run an install flow in order to get on-device testing. Further, everyone relevant for distribution of test builds do not necessarily have access to our build server. So we rely on &lt;a href=&quot;https://appcenter.ms&quot;&gt;AppCenter&lt;/a&gt; (formerly Hockey App - at least this portion of it) to handle distribution of builds.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All of the above runs in Docker containers on our service network - with the exception of the macOS and Windows build agents which run in VMs on developer machines (enjoying that lovely trend of high core count desktop &lt;a href=&quot;https://www.amd.com/en/products/ryzen-threadripper&quot;&gt;CPUs&lt;/a&gt;). In either case configurations easily transfered to other infrastructure - for example when dealing with client projects.&lt;/p&gt;
+
+&lt;p&gt;And why not do that? All of the above is definitely available for “free” or a minor fee, running on infrastructure maintained by someone else. Mostly flexibility. Running on someone else’s computer is great when you first start it up and everything lines up perfectly with your needs at the time. Reality, that is at least ours, unfortunately rarely remains on static spec - at which point maybe you can upgrade to a different plan or migrate to a different service, but more likely you end up just sucking it up and compromising your needs in order to not rock the service boat. Without spending time on depressing detail we have similarly had bad and potentially disastrous experiences with service operator support quality. Suffice to say I have no plans to again invite a session well past midnight of jumping VPN exit nodes to circumvent overzealous protection schemes while frantically laboring to salvage our data out of the fire of “computer says no”.&lt;/p&gt;
+
+&lt;h2 id=&quot;unity-to-ios&quot;&gt;Unity to iOS&lt;/h2&gt;
+
+&lt;p&gt;Building Unity projects on a CI setup means running the editor via command-line interface - loading the appropriate project in the right import target mode, cache server connected, invoking the appropriate editor script function you write to initiate the build you want, and finally routing output properly back to the CI system. Not a ton of work, but since a “runner” plugin for Unity projects already exists for TeamCity, we decided to not reinvent that particular wheel - relying on this plugin hopefully seeing some support. Our experience with it has unfortunately not been super smooth, so we may revisit that decision in the future.&lt;/p&gt;
+
+&lt;p&gt;A couple of things to keep in mind:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;“Build and run” is what you would usually click in the Unity editor UI in order to end up with Xcode building a nice iOS app for you. Not so when going via Unity build pipeline API. In stead the flow is:
+    &lt;ul&gt;
+      &lt;li&gt;Build (not run) - this produces an Xcode project for you.&lt;/li&gt;
+      &lt;li&gt;Optional modification of the generated Xcode project - utech has &lt;a href=&quot;https://docs.unity3d.com/ScriptReference/iOS.Xcode.PBXProject.html&quot;&gt;a library&lt;/a&gt; available for this.&lt;/li&gt;
+      &lt;li&gt;Instruct Xcode to build the generated (and possibly further modified) Xcode project via command-line interface.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;While the build function in your editor script must be static, the class implementing it cannot be. Similarly you should avoid nesting it further than one level in namespacing. Failing any of these will lead to Unity not being able to invoke the function via its command-line parameter.&lt;/li&gt;
+  &lt;li&gt;Builds must take place inside one call stack originating in the function invoked via command-line - so being reliant on processes which need to be requested via Unity API before then being collected via an EditorApplication.update invocation or similar, issuing the final build call, is a no-go. This may well be a result of how the TeamCity plugin structures the actual command-line invocation of Unity, which is part of why we have a review of that plugin scheduled.&lt;/li&gt;
+  &lt;li&gt;Over a number of Unity updates we have unfortunately seen a loss of some build-related functionality. Our solution has been to patch out these regressions directly in the UnityEditor assemblies, but that may not be an option for everyone. I hope to be sharing that setup and such patches in the not too distant future, but we’re not in a position where work on that front pays the bills - so no timeline promises. Build-relevant issues at time of writing (LTS 2019.4):
+    &lt;ul&gt;
+      &lt;li&gt;Preprocessing scenes is no longer possible - only postprocessing is.
+        &lt;ul&gt;
+          &lt;li&gt;Our patch bypasses the scene postprocess setup entirely and invokes our own, with the same sort of attribute markup, as appropriate. Internally it relies on a callback injected before Unity runs its scene processing - thus facilitating preprocessing. I am not aware of a non-patching alternative.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;As promising as it was, the quite new compile pipeline API invokes its events before the produced assemblies are actually moved into place on disk. As a result, any further work on said assemblies is at best not possible (no assemblies there) or at worst defeated (assemblies are modified, only to immediately be overwritten with newly generated copies). Bypassing this issue is further complicated by IL2CPP which makes timing even more critical (no longer a matter of “late enough”, but also “before IL2CPP”).
+        &lt;ul&gt;
+          &lt;li&gt;Our patch relies on the compiler pipeline API as a source of “what has been built” (usually “everything”, so gains vs. just assuming “all of the assemblies” are minimal), but otherwise completely bypasses it. For playmode patching we just respond to domain unload and for builds a new callback is injected at a point just prior to IL2CPP invocation, when updated assemblies are known to have been written to disk. I am not aware of a non-patching alternative - particularly when IL2CPP is in play.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Aside from patching the Unity editor with these things (and other non-build-related stuff), we really enjoy the advantages of build-time changes to project assemblies afforded us by this post-processing flow. More than just code generation (like generating an enum based on Unity layer names), being able to modify, expand, and contextualise the actual code flow based the complete project - not just based on code structure, but actual usage as dictated by asset data - is quite exhilarating. Anyway, that’s an aside - not really build related. As stated - more on this in a later post (tm).&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We implement the invocation of our Unity build script as one of two build steps (using the Unity plugin) of our TeamCity iOS build configuration. The other is the invocation of the Xcode CLI for building, signing, and packaging the Unity-generated project. This step is configured as the Command Line runner type, with the following “custom script”:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;xcodebuild archive &lt;span class=&quot;nt&quot;&gt;-project&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;output-path/Unity-iPhone.xcodeproj&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-scheme&lt;/span&gt; Unity-iPhone &lt;span class=&quot;nt&quot;&gt;-archivePath&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;output-path/name.xcarchive&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;At time of writing that is really it! If you have worked with the Xcode CLI before or trawled the interwebs in search of this one line, you know how much other work has previously been involved. Fingers crossed that the above remains supported - if not static - for years to come. This of-course assumes that your build agent has already been configured to properly build and sign iOS applications when you invoke manually from the Unity editor UI.&lt;/p&gt;
+
+&lt;p&gt;The result of this step is an xcarchive - almost what we need for distribution.&lt;/p&gt;
+
+&lt;h2 id=&quot;ios-to-appcenter&quot;&gt;iOS to AppCenter&lt;/h2&gt;
+
+&lt;p&gt;Whether you need to iterate with on-device builds or are sharing progress with the team or external groups, you will eventually need to distribute your build. Signing configuration of-course has to be configured via Xcode and associated online services and I am sure it is possible to automate distribution that way as well - ultimately via TestFlight on the client side. However since that route is currently not mandated, we prefer to keep our multi-platform flow joined for as long as possible - hence AppCenter (or, originally HockeyApp - business will business).&lt;/p&gt;
+
+&lt;p&gt;Signing configuration aside, this is our only external service dependency. Given the subject matter, I am inclined to give this one a pass - especially as it means not needing to maintain an additional externally accessible network when distributing to external groups, and the much more manageable hit we would sustain should the service fail us. That said, I am certainly curious about self-hosted options.&lt;/p&gt;
+
+&lt;p&gt;While our iOS build configuration in TeamCity is set to trigger when new changes are detected, distribution is either a manual or scheduled step (“gimme NAO” vs nightly builds). Dependent on the project, several distribution configurations exist - one for each group “team”/”testers”/”this partner”/”that partner” as well as “me”. We rely on the TeamCity build configuration template and parameters features to avoid too much duplication between related, but specialised configurations. In the case of the AppCenter ones a template defines the parameters which it then uses in its “command line” build step, while inherited configurations define different values of those parameters (or use the default). For example, the “me” configuration defines the &lt;code class=&quot;highlighter-rouge&quot;&gt;AppCenterGroup&lt;/code&gt; parameter as &lt;code class=&quot;highlighter-rouge&quot;&gt;Direct-CI-%teamcity.build.triggeredBy.username%&lt;/code&gt;, which the template uses in the “custom script” of its “command line” runner:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;COMMAND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'appcenter'&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;COMMAND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$APPCENTER_CLI_INSTALL_PATH$COMMAND&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+zip &lt;span class=&quot;nt&quot;&gt;-ry&lt;/span&gt; Project.%env.BUILD_NUMBER%.zip Payload
+&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;Project.%env.BUILD_NUMBER%.zip Payload/Project.%env.BUILD_NUMBER%.ipa
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Starting upload now&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$COMMAND&lt;/span&gt; distribute release &lt;span class=&quot;nt&quot;&gt;--file&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;%system.teamcity.build.workingDir%/Payload/Project.%env.BUILD_NUMBER%.ipa&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--app&lt;/span&gt; %AppCenterApp% &lt;span class=&quot;nt&quot;&gt;--group&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;%AppCenterGroup%&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--token&lt;/span&gt; %AppCenterToken%
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;These configurations are based on the output of the earlier described iOS build configurations. As such they rely on a snapshot dependency from there, with the rule: &lt;code class=&quot;highlighter-rouge&quot;&gt;Project.iOS.*.xcarchive.zip!Products/Applications/**=&amp;gt;Payload/&lt;/code&gt;. This instructs TeamCity to collect the zip of the previously generated xarchive and from it copy out the contents of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Products/Applications&lt;/code&gt; subfolder - into a local &lt;code class=&quot;highlighter-rouge&quot;&gt;Payload&lt;/code&gt; folder. A couple of things to be aware of both in this and how it gets used in the above script:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The choice of the “Payload” folder name is convention. A valid ipa file is a zip archive with the application contained in a subfolder by this name.&lt;/li&gt;
+  &lt;li&gt;Moving the zip file into the Payload folder after compression is not related to the upload process at all. In stead, I simply make use of the fact that I have the build configuration artifact dependency configured to “Clean destination paths before downloading artifacts”. So by moving the archive in there I make sure that the build agent clears it along with the uncompressed app when next it runs this configuration. Note that this does not conflict with having the build configuration use the ipa as its artifact.&lt;/li&gt;
+  &lt;li&gt;Note that while the earlier script example was cross-platform (aside from Xcode being macOS-only), this is a shell script written for Linux or macOS. Initially I had this be a batch script run on our Windows build agent, but since we wanted the distribution step to always be available (as opposed to whenever a developer machine with a Windows build agent was online) and the Windows environment ironically wasn’t ideal for running this tool, I moved it to an Ubuntu-based Docker [container][&lt;a href=&quot;https://github.com/AngryAnt/teamcity-appcenter-agent-docker&quot;&gt;teamcity-appcenter-agent-docker&lt;/a&gt; which could run along with TeamCity and our other services.&lt;/li&gt;
+  &lt;li&gt;While &lt;code class=&quot;highlighter-rouge&quot;&gt;zip&lt;/code&gt; is the program you want for zip compression under Ubuntu, on the Windows 10 command-line, you need to use &lt;code class=&quot;highlighter-rouge&quot;&gt;tar&lt;/code&gt; - which conversely does not produce zip archives on Ubuntu.&lt;/li&gt;
+  &lt;li&gt;appcenter-cli does not provide any status output - hence the &lt;code class=&quot;highlighter-rouge&quot;&gt;echo&lt;/code&gt; command. A &lt;code class=&quot;highlighter-rouge&quot;&gt;--debug&lt;/code&gt; flag is available, but turning it on only outputs the REST data sent and received - no additional error information or status reporting results.&lt;/li&gt;
+  &lt;li&gt;Not all AppCenter tokens are created equal. Make sure to use &lt;code class=&quot;highlighter-rouge&quot;&gt;appcenter-cli&lt;/code&gt; to create the token eventually supplied to its distribute invocation - tokens created via the web UI are not valid for this use.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;build-agent-setup&quot;&gt;Build agent setup&lt;/h3&gt;
+
+&lt;p&gt;As mentioned, while the TeamCity server itself runs in a Docker instance, the build agents performing the brunt of the actual build-related tasks generally run as VMs on developer machines - with the above exception. This gives us much more free hands to configure the build environments for the tasks needing performed - aside from setting up and running the build agent software itself.&lt;/p&gt;
+
+&lt;p&gt;For the AppCenter build agent that means installing &lt;a href=&quot;https://nodejs.org/download/release/v10.23.0/&quot;&gt;nodejs&lt;/a&gt; and the &lt;a href=&quot;https://github.com/Microsoft/appcenter-cli&quot;&gt;appcenter-cli&lt;/a&gt; tool. A couple of notes on that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;While the appcenter-cli documentation does mention that it requires nodejs 10, that is not a &lt;em&gt;minimum&lt;/em&gt; spec, but an &lt;em&gt;absolute&lt;/em&gt;. Installing latest nodejs and hoping for the best will, at time of writing, only lead to long debugging sessions.&lt;/li&gt;
+  &lt;li&gt;When setting up a Windows-based build agent for AppCenter use, you will want to not just install the appcenter-cli node package as a global package, but first modify the nodejs “prefix” from the default location somewhere in the current user path to something global (I go for &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\nodejs&lt;/code&gt;) - ensuring build agent accessibility regardless of its user mode now or later.&lt;/li&gt;
+  &lt;li&gt;You may have noticed the &lt;code class=&quot;highlighter-rouge&quot;&gt;APPCENTER_CLI_INSTALL_PATH&lt;/code&gt; variable used in the distribution script. This is just an environment variable set on the build agent - not something specific to TeamCity like the configuration parameters. Not only does this facilitate easy adaptation to different build agents offering the same capability - it is also usable as an agent requirement defined in the TeamCity build configuration. &lt;code class=&quot;highlighter-rouge&quot;&gt;APPCENTER_CLI_INSTALL_PATH&lt;/code&gt; points to where appcenter-cli is installed, so any agent with that environment variable set should be able to run build configurations dependent on that tool.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For other agents (or the same - if you do not want to run appcenter-cli on unique agents), we just need a licensed Unity install of the appropriate version, the TeamCity agent software, and a Java runtime to run it. macOS agents with iOS-build capability will also need Xcode and its cli installed. Notes:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The TeamCity install provides the agent software - just navigating to the agents overview in the web UI provides an install link. Once the agent is up and running (having been authorized by an administrator via the web UI), the TeamCity install takes care of keeping the agent software up to date.&lt;/li&gt;
+  &lt;li&gt;While Windows agents get a nice little UI installer, the macOS ones are a bit more manual. Minimal steps to get things going at time of writing are as follows (just pasted from our wiki):
+    &lt;ol&gt;
+      &lt;li&gt;Unzip &lt;code class=&quot;highlighter-rouge&quot;&gt;buildAgent.zip&lt;/code&gt; file to &lt;code class=&quot;highlighter-rouge&quot;&gt;~/buildAgent&lt;/code&gt;.&lt;/li&gt;
+      &lt;li&gt;Configure &lt;code class=&quot;highlighter-rouge&quot;&gt;~/buildAgent/conf/buildAgent.properties&lt;/code&gt;:
+        &lt;ul&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;serverUrl=http\://[DNS-or-IP]\:[PORT]&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;name=[MachineName]-macOS(optionally function and number)&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;workDir=[full user folder path]/buildAgent/work&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tempDir=[full user folder path]/buildAgent/temp&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;systemDir=[full user folder path]/buildAgent/system&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;env.TEAMCITY_JRE=[full user folder path]/buildAgent/jre&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ownPort=9090&lt;/code&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Create the folder &lt;code class=&quot;highlighter-rouge&quot;&gt;~/buildAgent/logs&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;Load the agent for initial connect and auto-upgrade from the server &lt;code class=&quot;highlighter-rouge&quot;&gt;sh buildAgent/bin/mac.launchd.sh load&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;(Administrator authenticates the agent via the web UI)&lt;/li&gt;
+      &lt;li&gt;Copy &lt;code class=&quot;highlighter-rouge&quot;&gt;~/buildAgent/bin/jetbrains.teamcity.BuildAgent.plist&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;~/Library/LaunchAgents/&lt;/code&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Further / more up to date details are available in &lt;a href=&quot;https://www.jetbrains.com/help/teamcity/setting-up-and-running-additional-build-agents.html#Installing+Additional+Build+Agents&quot;&gt;this&lt;/a&gt; section of the TeamCity documentation.&lt;/li&gt;
+  &lt;li&gt;The days of Java being easily available on macOS are unfortunately gone. Disregard the java install flow suggested by macOS / Xcode and in stead install / fix Homebrew, using it to install the necessary Java version (at time of writing Java 8):&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;adoptopenjdk8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If opting to run appcenter-cli in a QUEMU/KVM based VM, do note that its upload process seems especially susceptible to problems in the default VM driver for the NIC. Making sure that this is set as &lt;code class=&quot;highlighter-rouge&quot;&gt;virtio&lt;/code&gt; in stead eliminated some hefty delays when we were still running in a full VM-based agent.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;wrap-and-future&quot;&gt;Wrap and future&lt;/h2&gt;
+
+&lt;p&gt;In general we are pretty happy with this setup. Iteration speed is really snappy, it serves all our needs, and the full flexibility facilitates some pretty cool options. Services are backed up off-premises on the same schedule as everything else and support delays &amp;amp; limitations are zero. Obviously establishing things took a bit more doing than signing up for some services and connecting them, but that cost is nowhere near a place where I would consider trading in all the upsides we have found.&lt;/p&gt;
+
+&lt;p&gt;Aside from that review of the Unity TeamCity plugin, we are not likely to be doing a ton of tinkering with this part of our service setup in the immediate future, but one opportunity I did come across while setting up the AppCenter flow was managing distribution group composition via the cli. If so inclined, it might be interesting to have an infrequently run configuration use this to synchronise distribution groups with the Xcode signing groups - especially in a scenario where large groups of recipients are managed and frequently modified. Not currently relevant for us, but it seemed like an interesting project.&lt;/p&gt;
+
+&lt;p&gt;Anyway, that’s about it. I hope you found something useful in this overview and best of luck in whatever it is you do.&lt;/p&gt;
+
+</description>
+				<published>2020-12-29 00:00:00 +0100</published>
+				<link>http://www.angryant.com/2020/12/29/Unity-iOS-TeamCity-AppCenter/</link>
+			</item>
+		
+			<item>
+				<title>RAID0 NVMe on Ubuntu</title>
+				<description>&lt;p&gt;A bit of an odd topic after a period of silence, but it’s something that annoyed me greatly recently and so I wanted to spare others that experience. Meanwhile, what has been keeping the updates? &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt; and &lt;a href=&quot;http://playstaticsky.com&quot;&gt;StaticSky&lt;/a&gt; have! In case you missed it, I started (slowly) brushing off and open-sourcing some of our work there (yes, I’ll do what I can to move through my “to open source” list faster): &lt;a href=&quot;https://github.com/framebunker/Utilities&quot;&gt;https://github.com/framebunker/Utilities&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Update January 2020&lt;/em&gt;:
+Found &amp;amp; updated the link to the blog post which mentioned the appropriate sectors to clear on SSDs for md. Also one of the people who assisted in the Keybase team, David Hauken, wrote &lt;a href=&quot;https://david.hauken.us/posts/2019/11/ubuntu-desktop-raid0-roll-out-with-optional-luks-disk-encryption/&quot;&gt;a post on this topic&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;challenge&quot;&gt;Challenge&lt;/h2&gt;
+
+&lt;p&gt;So anyway, I set up a new computer at home - the age of my 2013 laptop showing. On that I wanted to run Ubuntu off a full-disk encrypted drive. However a core point of the build is speed and full-disk encryption (via LUKS) does not necessarily go hand in hand with that.&lt;/p&gt;
+
+&lt;p&gt;To offset that, I decided to go for a configuration with two PCIe4 NVMe sticks running in RAID0 (well cooled). Simple enough in principle, but then you hit the community coverage on the topic of “RAID0 is dangerous! Remember to back up your things and don’t pour water on your hardware”. It would appear that an Ubuntu (or event Linux) configuration like this is not super common.&lt;/p&gt;
+
+&lt;p&gt;Luckily there were enough bits and pieces out there to, in combination with invaluable assistance from the people of the &lt;code class=&quot;highlighter-rouge&quot;&gt;sysadmins_unite&lt;/code&gt; Keybase team, string together a solution.&lt;/p&gt;
+
+&lt;h2 id=&quot;process&quot;&gt;Process&lt;/h2&gt;
+
+&lt;p&gt;If, like me, you are migrating an existing install to this setup then first make a backup of that install. I just used rsync - making sure that all file flags etc. were left intact in the copy. In creating the RAID0 across the two NVMe sticks any data already present on either will of-course be lost.&lt;/p&gt;
+
+&lt;p&gt;Next, burn the Ubuntu installer onto a bootable medium. This approach probably work on a ton of other configurations, but given that I have only used it with Ubuntu 18.04, I am going to describe them in that known-to-work context.&lt;/p&gt;
+
+&lt;p&gt;Boot into your installer and fire up a terminal. In these steps it is assumed that the two NVMe sticks mount at &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/nvme0n1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/nvme1n1&lt;/code&gt;. If that is not the case in your setup, replace in the correct name where used. On my setup I was able to verify the mount points both in this installer terminal and in the Asus BIOS.&lt;/p&gt;
+
+&lt;p&gt;The first step is to install the &lt;code class=&quot;highlighter-rouge&quot;&gt;mdadm&lt;/code&gt; tool - for creation and management of md RAID configurations. Note that critical to this particular usecase is the clearing of superblocks and overwriting of first one gigabyte of data. Most guides I came across would instruct clearing data at the end of the target drives, but one (&lt;del&gt;I unfortunately lost the link - sorry about that&lt;/del&gt; never mind - &lt;a href=&quot;https://exastuff.blogspot.com/2018/06/software-raid-with-nvme-devices.html&quot;&gt;found it&lt;/a&gt; in an old window of research tabs) pointed me to the first gigabyte. As I understand it, this is specific to how md operates on SSD or at least NVMe.&lt;/p&gt;
+
+&lt;p&gt;Configuring your RAID:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt-get install mdadm
+sudo mdadm --zero-superblock /dev/nvme0n1
+sudo mdadm --zero-superblock /dev/nvme1n1
+sudo dd if=/dev/zero of=/dev/nvme0n1 bs=1M count=1000
+sudo dd if=/dev/zero of=/dev/nvme1n1 bs=1M count=1000
+sudo mdadm --create --verbose --level=0 --raid-devices=2 /dev/md0 /dev/nvme0n1 /dev/nvme1n1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With your raid up and running in your installer session, I really hope you did not forget to copy data you really wanted off those sticks. Anyway, the next step is to run the Ubuntu installer, opting to do “something else” when typical vs. not-quite-typical install configuration is chosen. This takes you to a screen where you get to specify which drives and partitions are get used for what in your fancy new install. Necessary config:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Format your new &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/md0&lt;/code&gt; drive. For me that was formatting to LUKS and then adding an ext4 partition to that. You could also format directly to ext4 if you do not want the encryption, but in that case you might want to do that outside of the installer - for optimum performance. See the later section for specifics on that.&lt;/li&gt;
+  &lt;li&gt;Specify that the installer use your final ext4 partition as root &lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Use a different drive and partition for EFI and &lt;code class=&quot;highlighter-rouge&quot;&gt;/boot&lt;/code&gt;. This is critical as your bios will not know how to assemble the md RAID and boot from it - you need &lt;code class=&quot;highlighter-rouge&quot;&gt;/boot&lt;/code&gt; to handle that. There were some very creative suggestions in &lt;code class=&quot;highlighter-rouge&quot;&gt;sysadmins_unite&lt;/code&gt; on where one might put &lt;code class=&quot;highlighter-rouge&quot;&gt;/boot&lt;/code&gt;, but I simply have a SATA drive in my rig used for more rough work and first tier backup. I just set up &lt;code class=&quot;highlighter-rouge&quot;&gt;/boot&lt;/code&gt; and EFI partitions there.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;That’s it - configure the rest of the installer as you like and run it to completion. When it does complete and prompt you to restart, don’t do that. The RAID still only really exists within this installer session so if you reboot now, you might as well start over.&lt;/p&gt;
+
+&lt;p&gt;The Ubuntu installer will have your new install partition mounted at &lt;code class=&quot;highlighter-rouge&quot;&gt;/target&lt;/code&gt;. You need to make some edits to it in order to have it properly mount and run off your RAID from boot. If you closed the terminal from before, open up a new one and run this:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo mount /dev/[partition used for /boot] /target/boot
+sudo mount --bind /dev /target/dev
+sudo mount --bind /sys /target/sys
+sudo mount --bind /proc /target/proc
+sudo cp /etc/resolv.conf /target/etc/
+sudo gedit /target/etc/default/grub
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In gedit you need to update the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;GRUB_CMDLINE_LINUX&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;domdadm&quot;&lt;/code&gt;, save, and close the editor.&lt;/p&gt;
+
+&lt;p&gt;Finally you need to add &lt;code class=&quot;highlighter-rouge&quot;&gt;mdadm&lt;/code&gt; to your new install, which will also apply your grub change along with its own to the boot setup, after which we are good to reboot and test the install:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo chroot /target
+apt-get install mdadm
+exit
+sudo reboot now
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you just wanted a fresh install, then this is the “profit!” step. Otherwise, restore your previous install onto your new root partition and update it to support your new boot setup by rebooting into the installer again and running this in a terminal:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt-get install mdadm
+sudo mdadm -A -s
+sudo mkdir /target
+sudo mount /dev/md0 /target
+sudo mount --bind /dev /target/dev
+sudo mount --bind /sys /target/sys
+sudo mount --bind /proc /target/proc
+sudo cp /etc/resolv.conf /target/etc/
+sudo chroot /target
+apt-get install mdadm
+exit
+sudo reboot now
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And &lt;em&gt;that&lt;/em&gt; is your “profit!” step.&lt;/p&gt;
+
+&lt;h2 id=&quot;ext4&quot;&gt;ext4&lt;/h2&gt;
+
+&lt;p&gt;If you just want to run ext4 as fast as possible directly on your RAID drive, you might want to manually work out the configuration of that partition to optimally work with the underlying RAID configuration. Key here is specifying the correct stride and stripe-width:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Chunk = 512 (output by or set via mdadm)&lt;/li&gt;
+  &lt;li&gt;Block = 4 (ext4 dictated)&lt;/li&gt;
+  &lt;li&gt;Devices = 2&lt;/li&gt;
+  &lt;li&gt;Stride = 512 / 4 = 128&lt;/li&gt;
+  &lt;li&gt;Stripe width = 2 * 128 = 256&lt;/li&gt;
+  &lt;li&gt;Resulting in the formatting command &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo mkfs.ext4 -v -L nvmeRAID -m 1 -b 4096 -E stride=128,stripe-width=256 /dev/md0&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;wrapup&quot;&gt;Wrapup&lt;/h2&gt;
+
+&lt;p&gt;I hope this works out for you. It definitely took me more research, trial, and error than I would have liked to arrive at a functional approach. At this point I have been running the resulting setup for a month or two without the hint of an issue.&lt;/p&gt;
+</description>
+				<published>2019-12-07 00:00:00 +0100</published>
+				<link>http://www.angryant.com/2019/12/07/RAID0-NVMe-on-Ubuntu/</link>
+			</item>
 		
 			<item>
 				<title>A Change of Gears</title>
@@ -12,7 +357,7 @@
 &lt;p&gt;What this means:&lt;/p&gt;
 &lt;ul&gt;
 	&lt;li&gt;Contracting continues, now through &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt;. If you have a job that needs doing, &lt;a href=&quot;http://framebunker.com/#contact&quot;&gt;give us a shout&lt;/a&gt;.&lt;/li&gt;
-	&lt;li&gt;We enter into final production on &lt;a href=&quot;http://playstaticsky.com&quot;&gt;Static Sky&lt;/a&gt;, preparing a 2018 launch.&lt;/li&gt;
+	&lt;li&gt;We enter into final production on &lt;a href=&quot;http://playstaticsky.com&quot;&gt;Static Sky&lt;/a&gt;.&lt;/li&gt;
 	&lt;li&gt;As &lt;a href=&quot;http://playstaticsky.com&quot;&gt;Static Sky&lt;/a&gt; ramps down, we spin up new and exciting production &amp;#8211; stay tuned for more updates on that.&lt;/li&gt;
 	&lt;li&gt;I pick up the slack on the feed here as we launch a series of technical blog posts from &lt;a href=&quot;http://framebunker.com&quot;&gt;framebunker&lt;/a&gt;.&lt;/li&gt;
 	&lt;li&gt;Both &lt;a href=&quot;/behave&quot;&gt;Behave&lt;/a&gt; development and &lt;a href=&quot;http://GameAINorth.com&quot;&gt;Game AI North&lt;/a&gt; organisation continue unaffected.&lt;/li&gt;
@@ -23,7 +368,7 @@
 
 </description>
 				<published>2017-12-28 00:00:00 +0100</published>
-				<link>http://angryant.com/2017/12/28/A-Change-of-Gears/</link>
+				<link>http://www.angryant.com/2017/12/28/A-Change-of-Gears/</link>
 			</item>
 		
 			<item>
@@ -74,7 +419,7 @@
 
 </description>
 				<published>2017-07-04 00:00:00 +0200</published>
-				<link>http://angryant.com/2017/07/04/CoreObject/</link>
+				<link>http://www.angryant.com/2017/07/04/CoreObject/</link>
 			</item>
 		
 			<item>
@@ -140,7 +485,7 @@
 
 </description>
 				<published>2017-02-17 00:00:00 +0100</published>
-				<link>http://angryant.com/2017/02/17/Unity-Protocol-Buffers/</link>
+				<link>http://www.angryant.com/2017/02/17/Unity-Protocol-Buffers/</link>
 			</item>
 		
 			<item>
@@ -578,7 +923,7 @@ Pre-release:
  - Magic happened. Behave was born.
 &lt;/pre&gt;</description>
 				<published>2016-02-13 00:00:00 +0100</published>
-				<link>http://angryant.com/2016/02/13/Behave-2-7/</link>
+				<link>http://www.angryant.com/2016/02/13/Behave-2-7/</link>
 			</item>
 		
 			<item>
@@ -604,7 +949,7 @@ Pre-release:
 
 </description>
 				<published>2015-07-17 00:00:00 +0200</published>
-				<link>http://angryant.com/2015/07/17/Learn/</link>
+				<link>http://www.angryant.com/2015/07/17/Learn/</link>
 			</item>
 		
 			<item>
@@ -995,7 +1340,7 @@ Pre-release:
  - Magic happened. Behave was born.
 &lt;/pre&gt;</description>
 				<published>2015-06-13 00:00:00 +0200</published>
-				<link>http://angryant.com/2015/06/13/Behave-2-6/</link>
+				<link>http://www.angryant.com/2015/06/13/Behave-2-6/</link>
 			</item>
 		
 			<item>

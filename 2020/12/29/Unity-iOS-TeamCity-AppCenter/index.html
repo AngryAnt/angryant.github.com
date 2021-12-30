@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - Unity, iOS, TeamCity, AppCenter</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/screen/base.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/screen/site.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print/base.css" type="text/css" media="print" />
+<!-- No more Google Analytics, because no -->
+
+
+		<link rel="author" href="https://plus.google.com/+EmilJohansen" />
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a><img id="logo" title="Logo" alt="Logo" src="/resources/logo.png"></h1>
+
+			</div>
+			<div id="container">
+				<span class="date">29 Dec 2020</span>
+				<h1 id="Top">Unity, iOS, TeamCity, AppCenter</h1>
+				
+				<div id="content">
+					<div class="post"><p>You can take the developer out of the tools company, but weaning the developer of tool making is another thing entirely. As per usual, at <a href="https://framebunker.com">framebunker</a> we remain focused on applying tools development where sensible to increase the efficiency multiplier on all efforts involved in development. This of-course includes a continuous integration setup, where we find another JetBrains solution to fitting our needs very nicely: TeamCity.</p>
+
+<p>Aside from being able to rely on prior experience, we enjoy the flexibility afforded by the solution, suite of available plugins, and direct integration with other parts of our setup. The party trick? Integration in Rider allows not just running of build configurations based on what is already checked in to some branch, but also based on your current local state - for “hey, check this out!” and similar scenarios. Is this offered by other CI setups? Don’t know - probably? Is it cool? Very yes.</p>
+
+<h2 id="the-inaudible-x-factor">The [inaudible] X factor</h2>
+
+<p>While we find ourselves working in many different environments from time to time, we seem to gravitate towards Unity and iOS. When you add continuous integration to the mix, that means dealing with the Xcode cli for building and signing something actually useful in distribution. And this is where I wrote my TODO on writing this post. If you take a look around the wider interwebs for clues on how this interface works, you will come across a broad range of advice on how such a feat is achieved. All different, most fully correct at time of writing.</p>
+
+<p>Historically things have changed in this area at least every couple of years which seems to pretty much coincide, with some padding, with how often I need to work with it. So every time I need to set something up, the environment has changed. Obviously underlying technology changes quite naturally over time, but in most cases that does not lead to people also radically changing the interface for said technology - desktop operating systems deal in windows, icons, and cursors, most cars have four wheels and a steering wheel, etc. - even if the technology underlying both has changed quite a bit over the years. Not so in this case. Exaggeration? Probably, but not by a whole lot.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Anyway, this is not the prime topic of the post - just part of its inspiration. I wanted to describe the whole flow outlined in the title of this post and provide some insight at each step. Hopefully you will find useful bits here and there even if the whole flow is not relevant to your needs - just as I picked up bits and pieces from other posts as well as the very helpful AppCenter support department (comparatively not a lot of community material out there, given how young the product is).</p>
+
+<p>Overall the flow goes like this:</p>
+
+<ul>
+  <li>An iOS title is being developed in Unity. For us this means version 2019.4 - the latest LTS release at time of writing.</li>
+  <li>Collaboration happens via git - pushed to and pulled from a local server. Specifics are largely irrelevant to this flow, but in our case we use <a href="https://gitea.io/">Gitea</a> - including its support for git-lfs. Providing related support is an instance of the Unity cache server.</li>
+  <li>TeamCity is connected to the relevant project repositories and some build configurations are set to trigger as soon as fresh commits are detected. Among other things this provides us with up to date builds of the project available for download via the web interface.</li>
+  <li>For iOS builds that is not necessarily all that useful (aside from verifying that things build and pass tests) as you need to run an install flow in order to get on-device testing. Further, everyone relevant for distribution of test builds do not necessarily have access to our build server. So we rely on <a href="https://appcenter.ms">AppCenter</a> (formerly Hockey App - at least this portion of it) to handle distribution of builds.</li>
+</ul>
+
+<p>All of the above runs in Docker containers on our service network - with the exception of the macOS and Windows build agents which run in VMs on developer machines (enjoying that lovely trend of high core count desktop <a href="https://www.amd.com/en/products/ryzen-threadripper">CPUs</a>). In either case configurations easily transfered to other infrastructure - for example when dealing with client projects.</p>
+
+<p>And why not do that? All of the above is definitely available for “free” or a minor fee, running on infrastructure maintained by someone else. Mostly flexibility. Running on someone else’s computer is great when you first start it up and everything lines up perfectly with your needs at the time. Reality, that is at least ours, unfortunately rarely remains on static spec - at which point maybe you can upgrade to a different plan or migrate to a different service, but more likely you end up just sucking it up and compromising your needs in order to not rock the service boat. Without spending time on depressing detail we have similarly had bad and potentially disastrous experiences with service operator support quality. Suffice to say I have no plans to again invite a session well past midnight of jumping VPN exit nodes to circumvent overzealous protection schemes while frantically laboring to salvage our data out of the fire of “computer says no”.</p>
+
+<h2 id="unity-to-ios">Unity to iOS</h2>
+
+<p>Building Unity projects on a CI setup means running the editor via command-line interface - loading the appropriate project in the right import target mode, cache server connected, invoking the appropriate editor script function you write to initiate the build you want, and finally routing output properly back to the CI system. Not a ton of work, but since a “runner” plugin for Unity projects already exists for TeamCity, we decided to not reinvent that particular wheel - relying on this plugin hopefully seeing some support. Our experience with it has unfortunately not been super smooth, so we may revisit that decision in the future.</p>
+
+<p>A couple of things to keep in mind:</p>
+
+<ul>
+  <li>“Build and run” is what you would usually click in the Unity editor UI in order to end up with Xcode building a nice iOS app for you. Not so when going via Unity build pipeline API. In stead the flow is:
+    <ul>
+      <li>Build (not run) - this produces an Xcode project for you.</li>
+      <li>Optional modification of the generated Xcode project - utech has <a href="https://docs.unity3d.com/ScriptReference/iOS.Xcode.PBXProject.html">a library</a> available for this.</li>
+      <li>Instruct Xcode to build the generated (and possibly further modified) Xcode project via command-line interface.</li>
+    </ul>
+  </li>
+  <li>While the build function in your editor script must be static, the class implementing it cannot be. Similarly you should avoid nesting it further than one level in namespacing. Failing any of these will lead to Unity not being able to invoke the function via its command-line parameter.</li>
+  <li>Builds must take place inside one call stack originating in the function invoked via command-line - so being reliant on processes which need to be requested via Unity API before then being collected via an EditorApplication.update invocation or similar, issuing the final build call, is a no-go. This may well be a result of how the TeamCity plugin structures the actual command-line invocation of Unity, which is part of why we have a review of that plugin scheduled.</li>
+  <li>Over a number of Unity updates we have unfortunately seen a loss of some build-related functionality. Our solution has been to patch out these regressions directly in the UnityEditor assemblies, but that may not be an option for everyone. I hope to be sharing that setup and such patches in the not too distant future, but we’re not in a position where work on that front pays the bills - so no timeline promises. Build-relevant issues at time of writing (LTS 2019.4):
+    <ul>
+      <li>Preprocessing scenes is no longer possible - only postprocessing is.
+        <ul>
+          <li>Our patch bypasses the scene postprocess setup entirely and invokes our own, with the same sort of attribute markup, as appropriate. Internally it relies on a callback injected before Unity runs its scene processing - thus facilitating preprocessing. I am not aware of a non-patching alternative.</li>
+        </ul>
+      </li>
+      <li>As promising as it was, the quite new compile pipeline API invokes its events before the produced assemblies are actually moved into place on disk. As a result, any further work on said assemblies is at best not possible (no assemblies there) or at worst defeated (assemblies are modified, only to immediately be overwritten with newly generated copies). Bypassing this issue is further complicated by IL2CPP which makes timing even more critical (no longer a matter of “late enough”, but also “before IL2CPP”).
+        <ul>
+          <li>Our patch relies on the compiler pipeline API as a source of “what has been built” (usually “everything”, so gains vs. just assuming “all of the assemblies” are minimal), but otherwise completely bypasses it. For playmode patching we just respond to domain unload and for builds a new callback is injected at a point just prior to IL2CPP invocation, when updated assemblies are known to have been written to disk. I am not aware of a non-patching alternative - particularly when IL2CPP is in play.</li>
+        </ul>
+      </li>
+      <li>Aside from patching the Unity editor with these things (and other non-build-related stuff), we really enjoy the advantages of build-time changes to project assemblies afforded us by this post-processing flow. More than just code generation (like generating an enum based on Unity layer names), being able to modify, expand, and contextualise the actual code flow based the complete project - not just based on code structure, but actual usage as dictated by asset data - is quite exhilarating. Anyway, that’s an aside - not really build related. As stated - more on this in a later post (tm).</li>
+    </ul>
+  </li>
+</ul>
+
+<p>We implement the invocation of our Unity build script as one of two build steps (using the Unity plugin) of our TeamCity iOS build configuration. The other is the invocation of the Xcode CLI for building, signing, and packaging the Unity-generated project. This step is configured as the Command Line runner type, with the following “custom script”:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xcodebuild archive <span class="nt">-project</span> <span class="s2">"output-path/Unity-iPhone.xcodeproj"</span> <span class="nt">-scheme</span> Unity-iPhone <span class="nt">-archivePath</span> <span class="s2">"output-path/name.xcarchive"</span>
+</code></pre></div></div>
+
+<p>At time of writing that is really it! If you have worked with the Xcode CLI before or trawled the interwebs in search of this one line, you know how much other work has previously been involved. Fingers crossed that the above remains supported - if not static - for years to come. This of-course assumes that your build agent has already been configured to properly build and sign iOS applications when you invoke manually from the Unity editor UI.</p>
+
+<p>The result of this step is an xcarchive - almost what we need for distribution.</p>
+
+<h2 id="ios-to-appcenter">iOS to AppCenter</h2>
+
+<p>Whether you need to iterate with on-device builds or are sharing progress with the team or external groups, you will eventually need to distribute your build. Signing configuration of-course has to be configured via Xcode and associated online services and I am sure it is possible to automate distribution that way as well - ultimately via TestFlight on the client side. However since that route is currently not mandated, we prefer to keep our multi-platform flow joined for as long as possible - hence AppCenter (or, originally HockeyApp - business will business).</p>
+
+<p>Signing configuration aside, this is our only external service dependency. Given the subject matter, I am inclined to give this one a pass - especially as it means not needing to maintain an additional externally accessible network when distributing to external groups, and the much more manageable hit we would sustain should the service fail us. That said, I am certainly curious about self-hosted options.</p>
+
+<p>While our iOS build configuration in TeamCity is set to trigger when new changes are detected, distribution is either a manual or scheduled step (“gimme NAO” vs nightly builds). Dependent on the project, several distribution configurations exist - one for each group “team”/”testers”/”this partner”/”that partner” as well as “me”. We rely on the TeamCity build configuration template and parameters features to avoid too much duplication between related, but specialised configurations. In the case of the AppCenter ones a template defines the parameters which it then uses in its “command line” build step, while inherited configurations define different values of those parameters (or use the default). For example, the “me” configuration defines the <code class="highlighter-rouge">AppCenterGroup</code> parameter as <code class="highlighter-rouge">Direct-CI-%teamcity.build.triggeredBy.username%</code>, which the template uses in the “custom script” of its “command line” runner:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">COMMAND</span><span class="o">=</span><span class="s1">'appcenter'</span>
+<span class="nv">COMMAND</span><span class="o">=</span><span class="s2">"</span><span class="nv">$APPCENTER_CLI_INSTALL_PATH$COMMAND</span><span class="s2">"</span>
+
+zip <span class="nt">-ry</span> Project.%env.BUILD_NUMBER%.zip Payload
+<span class="nb">mv </span>Project.%env.BUILD_NUMBER%.zip Payload/Project.%env.BUILD_NUMBER%.ipa
+<span class="nb">echo</span> <span class="s2">"Starting upload now"</span>
+<span class="nv">$COMMAND</span> distribute release <span class="nt">--file</span> <span class="s2">"%system.teamcity.build.workingDir%/Payload/Project.%env.BUILD_NUMBER%.ipa"</span> <span class="nt">--app</span> %AppCenterApp% <span class="nt">--group</span> <span class="s2">"%AppCenterGroup%"</span> <span class="nt">--token</span> %AppCenterToken%
+</code></pre></div></div>
+
+<p>These configurations are based on the output of the earlier described iOS build configurations. As such they rely on a snapshot dependency from there, with the rule: <code class="highlighter-rouge">Project.iOS.*.xcarchive.zip!Products/Applications/**=&gt;Payload/</code>. This instructs TeamCity to collect the zip of the previously generated xarchive and from it copy out the contents of the <code class="highlighter-rouge">Products/Applications</code> subfolder - into a local <code class="highlighter-rouge">Payload</code> folder. A couple of things to be aware of both in this and how it gets used in the above script:</p>
+
+<ul>
+  <li>The choice of the “Payload” folder name is convention. A valid ipa file is a zip archive with the application contained in a subfolder by this name.</li>
+  <li>Moving the zip file into the Payload folder after compression is not related to the upload process at all. In stead, I simply make use of the fact that I have the build configuration artifact dependency configured to “Clean destination paths before downloading artifacts”. So by moving the archive in there I make sure that the build agent clears it along with the uncompressed app when next it runs this configuration. Note that this does not conflict with having the build configuration use the ipa as its artifact.</li>
+  <li>Note that while the earlier script example was cross-platform (aside from Xcode being macOS-only), this is a shell script written for Linux or macOS. Initially I had this be a batch script run on our Windows build agent, but since we wanted the distribution step to always be available (as opposed to whenever a developer machine with a Windows build agent was online) and the Windows environment ironically wasn’t ideal for running this tool, I moved it to an Ubuntu-based Docker [container][<a href="https://github.com/AngryAnt/teamcity-appcenter-agent-docker">teamcity-appcenter-agent-docker</a> which could run along with TeamCity and our other services.</li>
+  <li>While <code class="highlighter-rouge">zip</code> is the program you want for zip compression under Ubuntu, on the Windows 10 command-line, you need to use <code class="highlighter-rouge">tar</code> - which conversely does not produce zip archives on Ubuntu.</li>
+  <li>appcenter-cli does not provide any status output - hence the <code class="highlighter-rouge">echo</code> command. A <code class="highlighter-rouge">--debug</code> flag is available, but turning it on only outputs the REST data sent and received - no additional error information or status reporting results.</li>
+  <li>Not all AppCenter tokens are created equal. Make sure to use <code class="highlighter-rouge">appcenter-cli</code> to create the token eventually supplied to its distribute invocation - tokens created via the web UI are not valid for this use.</li>
+</ul>
+
+<h3 id="build-agent-setup">Build agent setup</h3>
+
+<p>As mentioned, while the TeamCity server itself runs in a Docker instance, the build agents performing the brunt of the actual build-related tasks generally run as VMs on developer machines - with the above exception. This gives us much more free hands to configure the build environments for the tasks needing performed - aside from setting up and running the build agent software itself.</p>
+
+<p>For the AppCenter build agent that means installing <a href="https://nodejs.org/download/release/v10.23.0/">nodejs</a> and the <a href="https://github.com/Microsoft/appcenter-cli">appcenter-cli</a> tool. A couple of notes on that:</p>
+
+<ul>
+  <li>While the appcenter-cli documentation does mention that it requires nodejs 10, that is not a <em>minimum</em> spec, but an <em>absolute</em>. Installing latest nodejs and hoping for the best will, at time of writing, only lead to long debugging sessions.</li>
+  <li>When setting up a Windows-based build agent for AppCenter use, you will want to not just install the appcenter-cli node package as a global package, but first modify the nodejs “prefix” from the default location somewhere in the current user path to something global (I go for <code class="highlighter-rouge">C:\nodejs</code>) - ensuring build agent accessibility regardless of its user mode now or later.</li>
+  <li>You may have noticed the <code class="highlighter-rouge">APPCENTER_CLI_INSTALL_PATH</code> variable used in the distribution script. This is just an environment variable set on the build agent - not something specific to TeamCity like the configuration parameters. Not only does this facilitate easy adaptation to different build agents offering the same capability - it is also usable as an agent requirement defined in the TeamCity build configuration. <code class="highlighter-rouge">APPCENTER_CLI_INSTALL_PATH</code> points to where appcenter-cli is installed, so any agent with that environment variable set should be able to run build configurations dependent on that tool.</li>
+</ul>
+
+<p>For other agents (or the same - if you do not want to run appcenter-cli on unique agents), we just need a licensed Unity install of the appropriate version, the TeamCity agent software, and a Java runtime to run it. macOS agents with iOS-build capability will also need Xcode and its cli installed. Notes:</p>
+
+<ul>
+  <li>The TeamCity install provides the agent software - just navigating to the agents overview in the web UI provides an install link. Once the agent is up and running (having been authorized by an administrator via the web UI), the TeamCity install takes care of keeping the agent software up to date.</li>
+  <li>While Windows agents get a nice little UI installer, the macOS ones are a bit more manual. Minimal steps to get things going at time of writing are as follows (just pasted from our wiki):
+    <ol>
+      <li>Unzip <code class="highlighter-rouge">buildAgent.zip</code> file to <code class="highlighter-rouge">~/buildAgent</code>.</li>
+      <li>Configure <code class="highlighter-rouge">~/buildAgent/conf/buildAgent.properties</code>:
+        <ul>
+          <li><code class="highlighter-rouge">serverUrl=http\://[DNS-or-IP]\:[PORT]</code></li>
+          <li><code class="highlighter-rouge">name=[MachineName]-macOS(optionally function and number)</code></li>
+          <li><code class="highlighter-rouge">workDir=[full user folder path]/buildAgent/work</code></li>
+          <li><code class="highlighter-rouge">tempDir=[full user folder path]/buildAgent/temp</code></li>
+          <li><code class="highlighter-rouge">systemDir=[full user folder path]/buildAgent/system</code></li>
+          <li><code class="highlighter-rouge">env.TEAMCITY_JRE=[full user folder path]/buildAgent/jre</code></li>
+          <li><code class="highlighter-rouge">ownPort=9090</code></li>
+        </ul>
+      </li>
+      <li>Create the folder <code class="highlighter-rouge">~/buildAgent/logs</code></li>
+      <li>Load the agent for initial connect and auto-upgrade from the server <code class="highlighter-rouge">sh buildAgent/bin/mac.launchd.sh load</code></li>
+      <li>(Administrator authenticates the agent via the web UI)</li>
+      <li>Copy <code class="highlighter-rouge">~/buildAgent/bin/jetbrains.teamcity.BuildAgent.plist</code> to <code class="highlighter-rouge">~/Library/LaunchAgents/</code></li>
+    </ol>
+  </li>
+  <li>Further / more up to date details are available in <a href="https://www.jetbrains.com/help/teamcity/setting-up-and-running-additional-build-agents.html#Installing+Additional+Build+Agents">this</a> section of the TeamCity documentation.</li>
+  <li>The days of Java being easily available on macOS are unfortunately gone. Disregard the java install flow suggested by macOS / Xcode and in stead install / fix Homebrew, using it to install the necessary Java version (at time of writing Java 8):</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew cask <span class="nb">install </span>adoptopenjdk8
+</code></pre></div></div>
+
+<ul>
+  <li>If opting to run appcenter-cli in a QUEMU/KVM based VM, do note that its upload process seems especially susceptible to problems in the default VM driver for the NIC. Making sure that this is set as <code class="highlighter-rouge">virtio</code> in stead eliminated some hefty delays when we were still running in a full VM-based agent.</li>
+</ul>
+
+<h2 id="wrap-and-future">Wrap and future</h2>
+
+<p>In general we are pretty happy with this setup. Iteration speed is really snappy, it serves all our needs, and the full flexibility facilitates some pretty cool options. Services are backed up off-premises on the same schedule as everything else and support delays &amp; limitations are zero. Obviously establishing things took a bit more doing than signing up for some services and connecting them, but that cost is nowhere near a place where I would consider trading in all the upsides we have found.</p>
+
+<p>Aside from that review of the Unity TeamCity plugin, we are not likely to be doing a ton of tinkering with this part of our service setup in the immediate future, but one opportunity I did come across while setting up the AppCenter flow was managing distribution group composition via the cli. If so inclined, it might be interesting to have an infrequently run configuration use this to synchronise distribution groups with the Xcode signing groups - especially in a scenario where large groups of recipients are managed and frequently modified. Not currently relevant for us, but it seemed like an interesting project.</p>
+
+<p>Anyway, that’s about it. I hope you found something useful in this overview and best of luck in whatever it is you do.</p>
+
+</div>
+				</div>
+				<div id="feed-container">
+					<div id="feed">
+						
+							<a href="/2021/12/30/New-Gear/" class="titleSmall">New Gear</a><br />
+						
+							<a href="/2020/12/29/Unity-iOS-TeamCity-AppCenter/" class="titleSmall">Unity, iOS, TeamCity, AppCenter</a><br />
+						
+							<a href="/2019/12/07/RAID0-NVMe-on-Ubuntu/" class="titleSmall">RAID0 NVMe on Ubuntu</a><br />
+						
+							<a href="/2017/12/28/A-Change-of-Gears/" class="titleSmall">A Change of Gears</a><br />
+						
+							<a href="/2017/07/04/CoreObject/" class="titleSmall">CoreObject</a><br />
+						
+							<a href="/2017/02/17/Unity-Protocol-Buffers/" class="titleSmall">Unity Protocol Buffers</a><br />
+						
+							<a href="/2016/02/13/Behave-2-7/" class="titleSmall">Behave 2.7</a><br />
+						
+							<a href="/2015/07/17/Learn/" class="titleSmall">Learn</a><br />
+						
+							<a href="/2015/06/13/Behave-2-6/" class="titleSmall">Behave 2.6</a><br />
+						
+							<a href="/2015/02/26/Trusted-Gear/" class="titleSmall">Trusted Gear</a><br />
+						
+							<a href="/2015/01/02/Mad-Mash-Versioning/" class="titleSmall">Mad Mash Versioning</a><br />
+						
+							<a href="/2015/01/01/Behave-2-5/" class="titleSmall">Behave 2.5</a><br />
+						
+							<a href="/2014/11/28/Behave-2-4/" class="titleSmall">Behave 2.4</a><br />
+						
+							<a href="/2014/06/20/Co-very-routine/" class="titleSmall">Co-very-routine</a><br />
+						
+							<a href="/2014/04/25/Construct/" class="titleSmall">Construct</a><br />
+						
+							<a href="/2014/03/25/The-Engine-Wars-Numbers/" class="titleSmall">The Engine Wars: Numbers</a><br />
+						
+							<a href="/2014/03/13/GDC-14-The-Quest-For-Fun/" class="titleSmall">GDC 14: The Quest For Fun</a><br />
+						
+							<a href="/2014/03/07/Moving-in-Unity/" class="titleSmall">Moving in Unity</a><br />
+						
+							<a href="/2014/02/27/Behave-2-3/" class="titleSmall">Behave 2.3</a><br />
+						
+							<a href="/2014/01/03/Unity-and-net-assemblies/" class="titleSmall">Unity and .net assemblies</a><br />
+						
+							<a href="/2013/12/23/Behave-2-2/" class="titleSmall">Behave 2.2</a><br />
+						
+							<a href="/2013/10/11/ReView/" class="titleSmall">ReView</a><br />
+						
+							<a href="/2013/10/06/Behave-2-1/" class="titleSmall">Behave 2.1</a><br />
+						
+							<a href="/2013/08/25/Behave-2-0/" class="titleSmall">Behave 2.0</a><br />
+						
+							<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a><br />
+						
+							<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a><br />
+						
+							<a href="/2013/07/19/Unity-Hacks-Touch-gestures/" class="titleSmall">Unity Hacks: Touch gestures</a><br />
+						
+							<a href="/2013/07/17/OnRenderTextureGUI/" class="titleSmall">OnRenderTextureGUI</a><br />
+						
+							<a href="/2013/07/05/Unite-13-video-Unity-Hacks-available/" class="titleSmall">Unite 13 video "Unity Hacks" available</a><br />
+						
+							<a href="/2013/06/07/The-implicit-local-network-interface/" class="titleSmall">The implicit local network interface</a><br />
+						
+							<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a><br />
+						
+							<a href="/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/" class="titleSmall">Five years of Unity expertise looking for contracts</a><br />
+						
+							<a href="/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/" class="titleSmall">Automagic Unity Android Java gadget OF DOOM!</a><br />
+						
+							<a href="/2012/10/03/Invading-Planet-from-your-couch/" class="titleSmall">Invading Planet from your couch</a><br />
+						
+							<a href="/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/" class="titleSmall">Mountain Lion and laggy bluetooth and duct-tape</a><br />
+						
+							<a href="/2012/09/23/Unite-12-video-and-new-videos-section-available/" class="titleSmall">Unite 12 video and new videos section available</a><br />
+						
+							<a href="/2012/08/28/Asia-Bootcamp-videos-now-available/" class="titleSmall">Asia Bootcamp videos now available</a><br />
+						
+							<a href="/2012/05/17/path-is-now-mit-licensed/" class="titleSmall">Path is now MIT licensed</a><br />
+						
+							<a href="/2011/11/30/behave-1-4-released/" class="titleSmall">Behave 1.4 released</a><br />
+						
+							<a href="/2011/10/09/so-ive-been-a-bit-busy-lately/" class="titleSmall">So I've been a bit busy lately</a><br />
+						
+							<a href="/2011/04/28/behave-1-3-released/" class="titleSmall">Behave 1.3 released</a><br />
+						
+							<a href="/2011/04/23/igda-unity-sig-slides/" class="titleSmall">IGDA Unity SIG slides</a><br />
+						
+							<a href="/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/" class="titleSmall">Second Unity IGDA SIG this evening: Scene construction and AI</a><br />
+						
+							<a href="/2011/03/10/first-igda-unity-sig-this-evening/" class="titleSmall">First IGDA Unity SIG this evening</a><br />
+						
+							<a href="/2011/03/03/alternative-licensing-available/" class="titleSmall">Alternative licensing available</a><br />
+						
+							<a href="/2011/02/15/pathfinding-in-two-line/" class="titleSmall">Pathfinding in two lines</a><br />
+						
+							<a href="/2011/02/15/path-2-released/" class="titleSmall">Path 2 released</a><br />
+						
+							<a href="/2011/02/02/assembling-and-assimilating/" class="titleSmall">Assembling and assimilating</a><br />
+						
+							<a href="/2011/01/29/path-2-intro-screencast/" class="titleSmall">Path 2 intro screencast</a><br />
+						
+							<a href="/2011/01/29/path-2-beta-release-for-ggj/" class="titleSmall">Path 2 beta release for GGJ</a><br />
+						
+							<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a><br />
+						
+							<a href="/2011/01/09/expanding-beta/" class="titleSmall">Expanding beta</a><br />
+						
+							<a href="/2010/11/28/behave-aigamedev-master-class-public-stream/" class="titleSmall">Behave AIgameDev master class public stream</a><br />
+						
+							<a href="/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/" class="titleSmall">Behave master class on open AIgameDev stream tomorrow</a><br />
+						
+							<a href="/2010/10/29/interview-with-aigamedev/" class="titleSmall">Interview with AIGameDev</a><br />
+						
+							<a href="/2010/10/24/new-video-from-tree-to-code/" class="titleSmall">New video: From tree to code</a><br />
+						
+							<a href="/2010/10/23/issue-tracking-on-github-behave-release-project/" class="titleSmall">Issue tracking on github Behave release project</a><br />
+						
+							<a href="/2010/10/22/it-university-copenhagen-unity-course-completed/" class="titleSmall">IT University Copenhagen Unity course completed</a><br />
+						
+							<a href="/2010/10/21/it-university-copenhagen-unity-course-files-thursday/" class="titleSmall">IT University Copenhagen Unity course files Thursday</a><br />
+						
+							<a href="/2010/10/20/cph-it-university-unity-course-files/" class="titleSmall">CPH IT University Unity course files</a><br />
+						
+							<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a><br />
+						
+							<a href="/2010/09/29/video-behave-starting-from-scratch/" class="titleSmall">Video: Behave - starting from scratch</a><br />
+						
+							<a href="/2010/09/29/behave-runtime-documentation-updated/" class="titleSmall">Behave runtime documentation updated</a><br />
+						
+							<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a><br />
+						
+							<a href="/2010/03/19/faff-cleanup-sketch/" class="titleSmall">FAFF cleanup: Sketch</a><br />
+						
+							<a href="/2010/03/15/building-a-menu-of-delegates-and-enums/" class="titleSmall">Building a menu of delegates and enums</a><br />
+						
+							<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a><br />
+						
+							<a href="/2010/01/14/optimising-coroutine-yielding-in-c/" class="titleSmall">Optimising coroutine yielding in C#</a><br />
+						
+							<a href="/2010/01/05/downloading-the-hydra/" class="titleSmall">Downloading the hydra</a><br />
+						
+							<a href="/2009/11/15/new-license-of-path-gpl/" class="titleSmall">New license of Path: GPL</a><br />
+						
+							<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a><br />
+						
+							<a href="/2009/10/04/magnetic/" class="titleSmall">Magnetic</a><br />
+						
+							<a href="/2009/09/18/gui-drag-drop/" class="titleSmall">GUI drag-drop</a><br />
+						
+							<a href="/2009/09/17/logging-an-entire-gameobject/" class="titleSmall">Logging an entire GameObject</a><br />
+						
+							<a href="/2009/09/07/i-bet-you-cant-type-an-a/" class="titleSmall">I bet you can't type an A!</a><br />
+						
+							<a href="/2009/08/31/where-did-that-component-go/" class="titleSmall">Where did that component go?</a><br />
+						
+							<a href="/2009/08/19/unitysteer/" class="titleSmall">UnitySteer</a><br />
+						
+							<a href="/2009/05/18/new-and-improved-behave-10-released/" class="titleSmall">New and improved: Behave 1.0 released</a><br />
+						
+							<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a><br />
+						
+							<a href="/2009/03/20/behave-03b-hotfix/" class="titleSmall">Behave 0.3b hotfix</a><br />
+						
+							<a href="/2009/03/19/path-tutorial-video-available/" class="titleSmall">Path tutorial video available</a><br />
+						
+							<a href="/2009/03/18/path-10-launched/" class="titleSmall">Path 1.0 launched!</a><br />
+						
+							<a href="/2008/12/17/community-tutorial-2/" class="titleSmall">Continued community tutorials</a><br />
+						
+							<a href="/2008/11/30/community-tutorial/" class="titleSmall">Community tutorial</a><br />
+						
+							<a href="/2008/11/28/new-tutorial/" class="titleSmall">New tutorial</a><br />
+						
+							<a href="/2008/11/04/first-tutorial-available/" class="titleSmall">First tutorial available</a><br />
+						
+							<a href="/2008/11/02/behave-03b/" class="titleSmall">Behave 0.3b</a><br />
+						
+							<a href="/2008/10/25/unite-08-open-mic-session/" class="titleSmall">unite '08 open-mic session</a><br />
+						
+							<a href="/2008/09/24/behave-02b/" class="titleSmall">Behave 0.2b</a><br />
+						
+							<a href="/2008/09/09/behave-01b/" class="titleSmall">Behave 0.1b</a><br />
+						
+							<a href="/2008/09/08/behave-pre-release/" class="titleSmall">Behave pre-release</a><br />
+						
+							<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a><br />
+						
+							<a href="/2008/04/12/path-beta-02b/" class="titleSmall">Path beta 0.2b</a><br />
+						
+							<a href="/2008/04/05/path-beta-01b/" class="titleSmall">Path beta 0.1b</a><br />
+						
+							<a href="/2008/03/30/path-pre-release/" class="titleSmall">Path pre-release</a><br />
+						
+					</div>
+				</div>
+				<div id="footer">
+	<div id="sidebar">
+		<div id="external">
+			<a href="/feed.xml">RSS</a>
+			<a href="/feed.articles.xml">Full RSS</a>
+			<a href="https://gist.github.com/AngryAnt">Gist</a>
+			<a href="https://mastodon.eej.dk">Mastodon</a>
+			<a href="https://twitter.com/AngryAnt">Twitter</a>
+			<a href="http://eej.dk">LinkedIn</a>
+			<a href="http://lanyrd.eej.dk">Lanyrd</a>
+			<a href="http://connect.eej.dk">Unity Connect</a>
+		</div>
+	</div>
+	<p class="footnote" style="margin-top: 50px; margin-bottom: 10px; clear: both;">Copyright &#169; AngryAnt&trade; <script>document.write ((new Date ()).getFullYear ());</script>. All public github gists are public domain. Client portfolio:</p>
+	<div id="pokemon">
+	<p><a href="http://www.google.com"><img src="/resources/clients/google.png" title="Google" alt="Google" /></a>
+		<a href="http://www.autodesk.com"><img src="/resources/clients/autodesk.png" title="Autodesk" alt="Autodesk" /></a>
+		<a href="http://www.oculusvr.com"><img src="/resources/clients/oculus.jpg" title="Oculus" alt="Oculus" /></a>
+		<a href="http://www.unity3d.com"><img src="/resources/clients/unity.png" title="Unity" alt="Unity" /></a>
+		<a href="http://github.com"><img src="/resources/clients/github.png" title="GitHub" alt="GitHub" /></a>
+		<a href="http://www.oriblindforest.com"><img src="/resources/clients/moonstudios.png" title="Moon Studios" alt="Moon Studios" /></a>
+		<a href="http://www.rovio.com"><img src="/resources/clients/rovio.png" title="Rovio" alt="Rovio" /></a>
+		<a href="http://dice.se"><img src="/resources/clients/dice.png" title="DICE" alt="DICE" /></a>
+		<a href="http://starbreeze.com"><img src="/resources/clients/starbreeze.png" title="Starbreeze" alt="Starbreeze" class="narrow" /></a>
+		<a href="http://framebunker.com"><img src="/resources/clients/framebunker.png" title="framebunker" alt="framebunker" /></a>
+		<a href="http://hugogames.com"><img src="/resources/clients/hugo.png" title="Hugo Games" alt="Hugo Games" class="narrow" /></a>
+		<a href="http://kythera.ai"><img src="/resources/clients/kythera.png" title="Kythera" alt="Kythera" /></a>
+		<a href="http://rokoko.co"><img src="/resources/clients/rokoko.png" title="RoKoKo" alt="RoKoKo" class="narrow" /></a>
+		<a href="http://www.fullcontrol.dk"><img src="/resources/clients/fullcontrol.png" title="Full Control" alt="Full Control" /></a>
+		<a href="http://fundayfactory.com"><img src="/resources/clients/fundayfactory.png" title="Funday Factory" alt="Funday Factory" class="narrow" /></a>
+		<a href="http://toughguystudios.com"><img src="/resources/clients/toughguy.png" title="Tough Guy Studios" alt="Tough Guy Studios" /></a>
+		<a href="http://lucus.dk"><img src="/resources/clients/lucus.png" title="Lucus" alt="Lucus" /></a>
+		<a href="http://atchik.com"><img src="/resources/clients/atchik.png" title="Atchik" alt="Atchik" /></a>
+		<a href="http://www.tp.edu.sg"><img src="/resources/clients/Temasek.png" title="Temasek Polytechnic" alt="Temasek Polytechnic" /></a>
+		<a href="http://dadiu.dk"><img src="/resources/clients/dadiu.jpg" title="DADIU" alt="DADIU" /></a></p>
+	</div>
+	<!--<div id="pokemon">
+		!/resources/clients/google.png(Google)!:http://www.google.com
+		!/resources/clients/autodesk.png(Autodesk)!:http://www.autodesk.com
+		!/resources/clients/oculus.jpg(Oculus)!:http://www.oculusvr.com
+		!/resources/clients/unity.png(Unity)!:http://www.unity3d.com
+		!/resources/clients/github.png(GitHub)!:http://github.com
+		!/resources/clients/moonstudios.png(Moon Studios)!:http://www.oriblindforest.com
+		!/resources/clients/rovio.png(Rovio)!:http://www.rovio.com
+		!/resources/clients/dice.png(DICE)!:http://dice.se
+		!/resources/clients/starbreeze.png(Starbreeze)!:http://starbreeze.com
+		!/resources/clients/framebunker.png(framebunker)!:http://framebunker.com
+		!/resources/clients/hugo.png(Hugo Games)!:http://hugogames.com
+		!/resources/clients/kythera.png(Kythera)!:http://kythera.ai
+		!/resources/clients/rokoko.png(RoKoKo)!:http://rokoko.co
+		!/resources/clients/fullcontrol.png(Full Control)!:http://www.fullcontrol.dk
+		!/resources/clients/fundayfactory.png(Funday Factory)!:http://fundayfactory.com
+		!/resources/clients/toughguy.png(Tough Guy Studios)!:http://toughguystudios.com
+		!/resources/clients/lucus.png(Lucus)!:http://lucus.dk
+		!/resources/clients/atchik.png(Atchik)!:http://atchik.com
+		!/resources/clients/Temasek.png(Temasek Polytechnic)!:http://www.tp.edu.sg
+		!/resources/clients/dadiu.jpg(DADIU)!:http://dadiu.dk
+	</div>-->
+</div>
+
+			</div>
+		</div>
+		
+
+	</body>
+</html>

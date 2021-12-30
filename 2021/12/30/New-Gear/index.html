@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>AngryAnt - New Gear</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/screen/base.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/screen/site.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/css/print/base.css" type="text/css" media="print" />
+<!-- No more Google Analytics, because no -->
+
+
+		<link rel="author" href="https://plus.google.com/+EmilJohansen" />
+	</head>
+	<body>
+		<div id="site">
+			<div id="sidebar">
+				<h1 class="header"><a href="/" style="padding:0; margin:0; float: none;">AngryAnt</a><img id="logo" title="Logo" alt="Logo" src="/resources/logo.png"></h1>
+
+			</div>
+			<div id="container">
+				<span class="date">30 Dec 2021</span>
+				<h1 id="Top">New Gear</h1>
+				
+				<div id="content">
+					<div class="post"><p>In 2015 I did a review of my <a href="https://www.angryant.com/2015/02/26/Trusted-Gear/">active toolbox</a>. As obviously a lot has changed since then, particularly with pandemic-mode operations, I figured an update would be appropriate.</p>
+
+<p>I had hoped to have done a post on a new build agent setup we are working on, but unfortunately JetBrains support are still having some trouble replicating problems we are experiencing with Linux-based TeamCity Unity build agents. You will just have to look forward to that - hopefully not too far into the new year.</p>
+
+<p>A central theme in the current toolbox is self-hosting and flexibility in general. Third party provided services are great until you get near the edge of intended use cases - which usually works well, but holds the capacity to (hopefully only) slightly frustrate every project flow you go through. We first dipped our toes in self-hosting some services pre-pandemic but since moving to be fully distributed we went all in - to the point of currently only relying on external services for text chat, email, and mobile build distribution.</p>
+
+<p>That said, I will strive to keep the format of the earlier post - focusing primarily on local machine tools. So as mentioned the update here is flexibility and obviously a use case change as well, given the steep drop in need for working on the go.</p>
+
+<h2 id="platform">Platform</h2>
+<p>The 2013 MacBook Pro got retired - initially in favour of a company workstation at the office and a personal one at home, for once pieced together from parts matching <em>my</em> needs rather than the sales considerations of a manufacturer of prebuilts. Moving our operations fully distributed, resulting in the company workstation moving in with me, the personal workstation then got converted into a server - replacing the basic Synology box which had previously been sufficient for the limited services we self-hosted when sitting multiple non-family-members in offices were a thing.</p>
+
+<p>This change of hardware platform obviously meant a move away from macOS - marking the first change in the toolbox. Prior to retiring the laptop I had started dual booting <a href="https://ubuntu.com/download/desktop">Ubuntu</a> on it in order to gauge how far the Linux desktop experience had moved since last I had a look at it. A clear goal in general was an increase in flexibility - not just limited to hardware choice, so if given an actually modern and fully functional desktop experience I was definitely going to prefer Linux over Windows. At the end of my trial run I was satisfied with the experience and had gradually moved to cross-platform software on the macOS installation as well - in order to reduce the number of new things I would need to deal with when jumping completely.</p>
+
+<p>After landing well on the new platform and properly acclimating I did move around a bit before settling on my current setup, but as a migration point <a href="https://ubuntu.com/download/desktop">Ubuntu</a> (with the default <a href="https://www.gnome.org/">GNOME</a> desktop environment) was excellent. For anyone doing the research today I would recommend trying out <a href="https://zorin.com/os/">Zorin OS</a> as the migration point in stead - regardless of where you consider migrating from.</p>
+
+<p>I prefer to not use headspace for more tools than necessary, so I opted to use Ubuntu server for our self-hosted efforts - in order to work with the same underlying tooling available in the terminal application of my desktop. The before-mentioned moving around did eventually see me leave Ubuntu for both use cases - in favour of <a href="https://nixos.org/">NixOS</a> as the underlying system, with <a href="https://kde.org/plasma-desktop/">Plasma</a> as the desktop environment on my workstation. Note that while <a href="https://kde.org/plasma-desktop/">Plasma</a> may initially look to be “the Windows experience but on top of Linux”, the primary selling point of the environment is accessible customisation. If I were to describe my current setup in more familiar terms, it would probably be: a macOS-like header bar &amp; launcher, no dock, window auto-tiling, and a functionality-focused high-contrast if dark colour scheme. You can basically adjust it to your hearts content, making it an optimal fit for your particular flow - which is what drew me to it.</p>
+
+<p>I would not recommend <a href="https://nixos.org/">NixOS</a> as a migration entry point, but long term the paradigm shift is well worth it to me. The advantages are numerous, but personally I am mostly drawn by the declarative OS configuration enabling a single text file to describe a complete system and all of its settings. The flexibility on Linux is great, but just like any other system there are a ton of different locations to review &amp; configure the full experience (Window settings panels meme: Engage!). Having a single file I can use to quickly review what a system is and to modify it is absolutely excellent. It is no animated semi-transparent GUI of smooth loveliness, but I’ll take it.</p>
+
+<p>For control over hardware resources, service segregation, and advanced tools management I have opted to run a hypervisor on both server and workstation. Aside from massive cloud servers and game consoles, hypervisors are great for configuring and running a number of personal virtual machines on the same hardware - in particular when you have clearly segmented services and goals to work with. From a security standpoint network segregation in this environment is not as solid as with individual machines, given that virtual machine escape exploits are a thing. However neither my private nor our company threat model includes threat actors with the necessary budget and given that the alternative is third party services susceptible to the very same attacks, this configuration is entirely acceptable. This setup means that my day to day desktop experience is actually a virtual machine. Though with a dedicated graphics card and plenty of resources &amp; CPU priority associated that distinction is entirely unnoticeable. In addition to this primary VM, the workstation runs a router for the different VMs, CI agents for the different projects, and other tools like distributed bake &amp; generative services, devkit tools with picky environment requirements, and that sort of thing.</p>
+
+<p>As an aside, I also ended up running <a href="https://nixos.org/">NixOS</a> on my tablet - though here I opted for <a href="https://www.gnome.org/">GNOME</a> rather than <a href="https://kde.org/plasma-desktop/">Plasma</a> as the desktop experience. While explicitly not designed for touch devices, I find it the better experience of the two on such hardware. In addition to buttery smooth regular reading of books &amp; comics + browsing + media activities, the gaming experience on the tablet is great - using Steam in-home streaming to run games from a VM on the server running an attached dedicated graphics card, with controls either via touch or the excellent Steam Controller. This on a minimum-spec dual-core device with four gigabytes of memory.</p>
+
+<h2 id="tracking">Tracking</h2>
+<p>OmniGroup only develop their software for the fruit company ecosystem, which meant I would of-course have to find an alternative to OmniFocus. Given the difficulty in finding a suitable project &amp; TODO tracking solution described in the last toolbox post, this was by far the toughest workflow change.</p>
+
+<p>Thankfully our self-hosting journey overlapped nicely with the local toolbox change here as I found an excellent combination of user experience and flexibility in the <a href="https://www.jetbrains.com/youtrack/">YouTrack</a> solution we were already using for company project tracking. While a fully hosted version is available as well, we had already opted for self-hosted in order to more easily run some custom integration with the rest of our flow. The resulting setup is one install for the company, one for the family, and optionally one per project if it involves tightly integrated external parties.</p>
+
+<p>The underlying data structures can have a whole lot of fields associated with each task/entry - making it a full Jira-like complex beast if that is what you want - or a simple TODO app if that is more your target. Combined with a mobile app and a very flexible system of searches/queries bookmarked or exposed in lists, dashboards, reports, and agile boards, I have found that I can easily tailor an experience to anything from a complex project through small efforts to grocery shopping without slamming into too many walls or facing highly “enterprisey” experiences for very simple use cases.</p>
+
+<p>For flow integration we use the official <a href="https://www.nuget.org/packages/YouTrackSharp/">.net API</a> - as we as much as possible strive to standardise all our code- &amp; data base to C# and markdown respectively. The experience here has been great as well. We have primarily used the API to update other systems based on changes in tasks, but our wishlist does currently include more bidirectional integration which should be fully supported by the API.</p>
+
+<p>My calendar is still a central part of my day to day flow - essentially feeding tasks from the tracker through a planning phase and into the calendar. Continuing to use the iCloud calendar setup either through the web app or integrated with a local client is an option, but for forward-looking flexibility and a more stable experience I have opted for a self-hosted solution here as well. A couple of options are available here but probably of most broad appeal would be the CalDav service built into <a href="https://nextcloud.com/">Nextcloud</a>. So long as the service runs https, you can add the account to iOS just fine and on the desktop I have worked with a couple of different options until finally settling on the very lovely, but still-pre-release <a href="https://apps.kde.org/kalendar/">Kalendar</a> project.</p>
+
+<h2 id="typing">Typing</h2>
+<p>Since the last toolbox update the life of this typist has improved significantly. While <a href="https://www.sublimetext.com/">Sublime Text</a> is still great and a very important part of my toolbox, OmniSharp unfortunately did not last as a stable experience. Thankfully <a href="https://www.jetbrains.com/rider/">Rider</a> picked up that slack and then some, offering a rock solid IDE with an extensive suite of tools and of-course neat integration with the other JetBrains products in our arsenal. As a tool for .net and Unity development, <a href="https://www.jetbrains.com/rider/">Rider</a> has been a no-brainer for a while. Praise aside, particularly for our IL patching workflows I am not really satisfied with the assembly/IL browsing functionality of <a href="https://www.jetbrains.com/rider/">Rider</a> when it comes to external assemblies rather than the assembled result of a loaded project. For this need I am still a very happy camper with the <a href="https://github.com/icsharpcode/AvaloniaILSpy">Avalonia ILSpy</a> project.</p>
+
+<p>Worth noting when speaking of <a href="https://www.sublimetext.com/">Sublime Text</a> is <a href="https://www.sublimemerge.com/">Sublime Merge</a> - another newcomer since last update. While <a href="https://git-fork.com/">Fork</a> is still excellent and would be my first recommendation to anyone, <a href="https://www.sublimemerge.com/">Sublime Merge</a> offers better platform support and an interface striking just the right balance for me between simplification and utility.</p>
+
+<p>Given that we standardise on markdown as much as possible, expanding the toolbox with a dedicated markdown editor only made sense. While it offers a lot more than just that, [Obsidian][obsidian] is my pick for markdown editing. At time of writing the WYSIWYG editor is very freshly released, but none the less it is my daily driver for the purpose.</p>
+
+<h2 id="searching">Searching</h2>
+<p>Developed specifically for the fruit company ecosystem, <a href="https://kapeli.com/dash">Dash</a> is another previously mentioned tool in need of replacement. Thankfully the developer is very open to clients on other platforms having great access to the largely-community-supplied documentation packages. The consequence is a healthy selection of alternatives, of which I went for <a href="https://zealdocs.org/">Zeal</a>. Available on Linux, macOS, and Windows, this offline documentation viewer is just as excellent a tool to me as <a href="https://kapeli.com/dash">Dash</a> was on macOS.</p>
+
+<p>I honestly did not really have much use of the editor integration of <a href="https://kapeli.com/dash">Dash</a> in the past, so only having the global shortcut + search tags for accessing <a href="https://zealdocs.org/">Zeal</a> was not a real change for me. Integration may be available, but given the base I was operating on I just did not go looking for it. Thankfully more alternatives are available and perhaps even a fully editor embedded client - in case that is more relevant to you.</p>
+
+<h2 id="navigation">Navigation</h2>
+<p>Before the platform &amp; services shift mentioned throughout this write-up, I decided to complete my workstation ergonomics by looking at peripherals which for some inexplicable reason I had ignored through years of paying attention to desk, lighting, seating, and monitors. Perhaps the reason is that this aspect of ergonomics has an odd air of fringe vs. the other aspects.</p>
+
+<p>Previously I had been using a flat wireless keyboard with short key travel and a nicely large wireless touchpad. There are a ton of options and semi-religious opinions in this area, but after a while I settled on a vertical wireless mouse (a regular mouse where your hand orientation ends up more vertical than regular horizontal) and a mechanical split keyboard. I found the <a href="https://www.ergodox.io/">ErgoDox</a> open source design very compelling and the number of available options based on it equally so. Aside from being split, the layout is also column stagger rather than the default row stagger - resulting in a more natural primary vertical movement of your fingers rather than constant sideways switching.</p>
+
+<p>Once I had the board in hand I realised the further room for ergonomic optimisation. Since the available boards implementing the <a href="https://www.ergodox.io/">ErgoDox</a> design are fully customise-able via the <a href="https://qmk.fm/">QMK</a> project, you can use visual editors to redefine key functions as you like or even dive fully into the C-based firmware and write your own custom layout &amp; -functionality there. I used this opportunity to further reduce finger stretch by removing use of some keys entirely and moving other functionality to layers (while not accurate, if you think if the shift key as changing the keyboard layout to a layer of capital letters and different symbols, you have the general idea) - including a numpad and pre-baked shortcut keys like the <code class="highlighter-rouge">copy</code> key you double-tap to <code class="highlighter-rouge">cut</code> or the word left/right keys positioned just above the left/right arrow keys - which again are flanked by the line start/end keys.</p>
+
+<p>Combining these ergonomic layout optimisations with baked shortcut keys and function keys mapped in <a href="https://kde.org/plasma-desktop/">Plasma</a> to different functionality in different applications (like the macOS shortcut mapping demonstrated in the last toolbox post), my work environment took a significantly step forward on ergonomics, functionality, and sheer accessible speed.</p>
+
+<p>As a bonus, the <a href="https://www.ergodox.io/">ErgoDox</a> board I opted for came with per-key LED lighting. As I understand it you are supposed to utilise this for fancy animated effects, providing a clear speed &amp; precision boost when gaming - and while I could certainly use both, I opted instead for using it to highlight key functions in the active layer - like a clear inverted T-shape for the arrow keys or a grid for the numpad etc.</p>
+
+<h2 id="wrap">Wrap</h2>
+<p>And that is about it. All these years later I do not have any current conference plans, but my toolbox certainly keeps adapting to my current needs. Overall I feel much more efficient and flexible in my day to day and am happy to have a feeling of being able to do much more with my local and extended environment - to adapt to personal and company needs on any given effort. I hope that this update has helped inspire you - if nothing else then to review <em>your</em> current toolbox - perhaps to see if anything in there could stand a revisit compared to available alternatives today.</p>
+
+<ul>
+  <li><a href="https://www.angryant.com/2015/02/26/Trusted-Gear/">“Trusted Gear” post</a></li>
+  <li><a href="https://ubuntu.com/download/desktop">Ubuntu desktop</a></li>
+  <li><a href="https://zorin.com/os/">Zorin OS</a></li>
+  <li><a href="https://nixos.org/">NixOS</a></li>
+  <li><a href="https://kde.org/plasma-desktop/">Plasma</a></li>
+  <li><a href="https://www.jetbrains.com/youtrack/">YouTrack</a></li>
+  <li><a href="https://www.nuget.org/packages/YouTrackSharp/">YouTrackSharp</a></li>
+  <li><a href="https://nextcloud.com/">Nextcloud</a></li>
+  <li><a href="https://apps.kde.org/kalendar/">Kalendar</a></li>
+  <li><a href="https://www.jetbrains.com/rider/">Rider</a></li>
+  <li><a href="https://www.sublimetext.com/">Sublime Text</a></li>
+  <li><a href="https://github.com/icsharpcode/AvaloniaILSpy">Avalonia ILSpy</a></li>
+  <li><a href="https://www.sublimemerge.com/">Sublime Merge</a></li>
+  <li><a href="https://git-fork.com/">Fork</a></li>
+  <li><a href="https://kapeli.com/dash">Dash</a></li>
+  <li><a href="https://zealdocs.org/">Zeal</a></li>
+  <li><a href="https://www.ergodox.io/">ErgoDox</a></li>
+  <li><a href="https://qmk.fm/">QMK</a></li>
+</ul>
+
+</div>
+				</div>
+				<div id="feed-container">
+					<div id="feed">
+						
+							<a href="/2021/12/30/New-Gear/" class="titleSmall">New Gear</a><br />
+						
+							<a href="/2020/12/29/Unity-iOS-TeamCity-AppCenter/" class="titleSmall">Unity, iOS, TeamCity, AppCenter</a><br />
+						
+							<a href="/2019/12/07/RAID0-NVMe-on-Ubuntu/" class="titleSmall">RAID0 NVMe on Ubuntu</a><br />
+						
+							<a href="/2017/12/28/A-Change-of-Gears/" class="titleSmall">A Change of Gears</a><br />
+						
+							<a href="/2017/07/04/CoreObject/" class="titleSmall">CoreObject</a><br />
+						
+							<a href="/2017/02/17/Unity-Protocol-Buffers/" class="titleSmall">Unity Protocol Buffers</a><br />
+						
+							<a href="/2016/02/13/Behave-2-7/" class="titleSmall">Behave 2.7</a><br />
+						
+							<a href="/2015/07/17/Learn/" class="titleSmall">Learn</a><br />
+						
+							<a href="/2015/06/13/Behave-2-6/" class="titleSmall">Behave 2.6</a><br />
+						
+							<a href="/2015/02/26/Trusted-Gear/" class="titleSmall">Trusted Gear</a><br />
+						
+							<a href="/2015/01/02/Mad-Mash-Versioning/" class="titleSmall">Mad Mash Versioning</a><br />
+						
+							<a href="/2015/01/01/Behave-2-5/" class="titleSmall">Behave 2.5</a><br />
+						
+							<a href="/2014/11/28/Behave-2-4/" class="titleSmall">Behave 2.4</a><br />
+						
+							<a href="/2014/06/20/Co-very-routine/" class="titleSmall">Co-very-routine</a><br />
+						
+							<a href="/2014/04/25/Construct/" class="titleSmall">Construct</a><br />
+						
+							<a href="/2014/03/25/The-Engine-Wars-Numbers/" class="titleSmall">The Engine Wars: Numbers</a><br />
+						
+							<a href="/2014/03/13/GDC-14-The-Quest-For-Fun/" class="titleSmall">GDC 14: The Quest For Fun</a><br />
+						
+							<a href="/2014/03/07/Moving-in-Unity/" class="titleSmall">Moving in Unity</a><br />
+						
+							<a href="/2014/02/27/Behave-2-3/" class="titleSmall">Behave 2.3</a><br />
+						
+							<a href="/2014/01/03/Unity-and-net-assemblies/" class="titleSmall">Unity and .net assemblies</a><br />
+						
+							<a href="/2013/12/23/Behave-2-2/" class="titleSmall">Behave 2.2</a><br />
+						
+							<a href="/2013/10/11/ReView/" class="titleSmall">ReView</a><br />
+						
+							<a href="/2013/10/06/Behave-2-1/" class="titleSmall">Behave 2.1</a><br />
+						
+							<a href="/2013/08/25/Behave-2-0/" class="titleSmall">Behave 2.0</a><br />
+						
+							<a href="/2013/08/04/Unity-Hacks-Dual-sticks/" class="titleSmall">Unity Hacks: Dual sticks</a><br />
+						
+							<a href="/2013/07/28/Unity-Hacks-Cameras/" class="titleSmall">Unity Hacks: Cameras</a><br />
+						
+							<a href="/2013/07/19/Unity-Hacks-Touch-gestures/" class="titleSmall">Unity Hacks: Touch gestures</a><br />
+						
+							<a href="/2013/07/17/OnRenderTextureGUI/" class="titleSmall">OnRenderTextureGUI</a><br />
+						
+							<a href="/2013/07/05/Unite-13-video-Unity-Hacks-available/" class="titleSmall">Unite 13 video "Unity Hacks" available</a><br />
+						
+							<a href="/2013/06/07/The-implicit-local-network-interface/" class="titleSmall">The implicit local network interface</a><br />
+						
+							<a href="/2013/05/21/Talks-and-progress/" class="titleSmall">Talks and progress</a><br />
+						
+							<a href="/2013/05/14/Five-years-of-Unity-expertise-looking-for-contracts/" class="titleSmall">Five years of Unity expertise looking for contracts</a><br />
+						
+							<a href="/2012/12/22/Automagic-Unity-Android-Java-gadget-OF-DOOM/" class="titleSmall">Automagic Unity Android Java gadget OF DOOM!</a><br />
+						
+							<a href="/2012/10/03/Invading-Planet-from-your-couch/" class="titleSmall">Invading Planet from your couch</a><br />
+						
+							<a href="/2012/09/28/Mountain-Lion-and-laggy-bluetooth-and-duct-tape/" class="titleSmall">Mountain Lion and laggy bluetooth and duct-tape</a><br />
+						
+							<a href="/2012/09/23/Unite-12-video-and-new-videos-section-available/" class="titleSmall">Unite 12 video and new videos section available</a><br />
+						
+							<a href="/2012/08/28/Asia-Bootcamp-videos-now-available/" class="titleSmall">Asia Bootcamp videos now available</a><br />
+						
+							<a href="/2012/05/17/path-is-now-mit-licensed/" class="titleSmall">Path is now MIT licensed</a><br />
+						
+							<a href="/2011/11/30/behave-1-4-released/" class="titleSmall">Behave 1.4 released</a><br />
+						
+							<a href="/2011/10/09/so-ive-been-a-bit-busy-lately/" class="titleSmall">So I've been a bit busy lately</a><br />
+						
+							<a href="/2011/04/28/behave-1-3-released/" class="titleSmall">Behave 1.3 released</a><br />
+						
+							<a href="/2011/04/23/igda-unity-sig-slides/" class="titleSmall">IGDA Unity SIG slides</a><br />
+						
+							<a href="/2011/03/17/second-unity-igda-sig-this-evening-scene-construction-and-ai/" class="titleSmall">Second Unity IGDA SIG this evening: Scene construction and AI</a><br />
+						
+							<a href="/2011/03/10/first-igda-unity-sig-this-evening/" class="titleSmall">First IGDA Unity SIG this evening</a><br />
+						
+							<a href="/2011/03/03/alternative-licensing-available/" class="titleSmall">Alternative licensing available</a><br />
+						
+							<a href="/2011/02/15/pathfinding-in-two-line/" class="titleSmall">Pathfinding in two lines</a><br />
+						
+							<a href="/2011/02/15/path-2-released/" class="titleSmall">Path 2 released</a><br />
+						
+							<a href="/2011/02/02/assembling-and-assimilating/" class="titleSmall">Assembling and assimilating</a><br />
+						
+							<a href="/2011/01/29/path-2-intro-screencast/" class="titleSmall">Path 2 intro screencast</a><br />
+						
+							<a href="/2011/01/29/path-2-beta-release-for-ggj/" class="titleSmall">Path 2 beta release for GGJ</a><br />
+						
+							<a href="/2011/01/25/aigamedev-master-class-video-now-online-3/" class="titleSmall">AIgameDev master class video now online</a><br />
+						
+							<a href="/2011/01/09/expanding-beta/" class="titleSmall">Expanding beta</a><br />
+						
+							<a href="/2010/11/28/behave-aigamedev-master-class-public-stream/" class="titleSmall">Behave AIgameDev master class public stream</a><br />
+						
+							<a href="/2010/11/27/behave-master-class-on-open-aigamedev-stream-tomorrow/" class="titleSmall">Behave master class on open AIgameDev stream tomorrow</a><br />
+						
+							<a href="/2010/10/29/interview-with-aigamedev/" class="titleSmall">Interview with AIGameDev</a><br />
+						
+							<a href="/2010/10/24/new-video-from-tree-to-code/" class="titleSmall">New video: From tree to code</a><br />
+						
+							<a href="/2010/10/23/issue-tracking-on-github-behave-release-project/" class="titleSmall">Issue tracking on github Behave release project</a><br />
+						
+							<a href="/2010/10/22/it-university-copenhagen-unity-course-completed/" class="titleSmall">IT University Copenhagen Unity course completed</a><br />
+						
+							<a href="/2010/10/21/it-university-copenhagen-unity-course-files-thursday/" class="titleSmall">IT University Copenhagen Unity course files Thursday</a><br />
+						
+							<a href="/2010/10/20/cph-it-university-unity-course-files/" class="titleSmall">CPH IT University Unity course files</a><br />
+						
+							<a href="/2010/10/11/behave-1-2-released/" class="titleSmall">Behave 1.2 released</a><br />
+						
+							<a href="/2010/09/29/video-behave-starting-from-scratch/" class="titleSmall">Video: Behave - starting from scratch</a><br />
+						
+							<a href="/2010/09/29/behave-runtime-documentation-updated/" class="titleSmall">Behave runtime documentation updated</a><br />
+						
+							<a href="/2010/09/29/behave-1-1-released/" class="titleSmall">Behave 1.1 released</a><br />
+						
+							<a href="/2010/03/19/faff-cleanup-sketch/" class="titleSmall">FAFF cleanup: Sketch</a><br />
+						
+							<a href="/2010/03/15/building-a-menu-of-delegates-and-enums/" class="titleSmall">Building a menu of delegates and enums</a><br />
+						
+							<a href="/2010/03/10/pick-me-pick-me/" class="titleSmall">Pick me! Pick me!</a><br />
+						
+							<a href="/2010/01/14/optimising-coroutine-yielding-in-c/" class="titleSmall">Optimising coroutine yielding in C#</a><br />
+						
+							<a href="/2010/01/05/downloading-the-hydra/" class="titleSmall">Downloading the hydra</a><br />
+						
+							<a href="/2009/11/15/new-license-of-path-gpl/" class="titleSmall">New license of Path: GPL</a><br />
+						
+							<a href="/2009/11/04/copyinspector/" class="titleSmall">CopyInspector</a><br />
+						
+							<a href="/2009/10/04/magnetic/" class="titleSmall">Magnetic</a><br />
+						
+							<a href="/2009/09/18/gui-drag-drop/" class="titleSmall">GUI drag-drop</a><br />
+						
+							<a href="/2009/09/17/logging-an-entire-gameobject/" class="titleSmall">Logging an entire GameObject</a><br />
+						
+							<a href="/2009/09/07/i-bet-you-cant-type-an-a/" class="titleSmall">I bet you can't type an A!</a><br />
+						
+							<a href="/2009/08/31/where-did-that-component-go/" class="titleSmall">Where did that component go?</a><br />
+						
+							<a href="/2009/08/19/unitysteer/" class="titleSmall">UnitySteer</a><br />
+						
+							<a href="/2009/05/18/new-and-improved-behave-10-released/" class="titleSmall">New and improved: Behave 1.0 released</a><br />
+						
+							<a href="/2009/04/08/behave-03b-and-unity-25/" class="titleSmall">Behave 0.3b and unity 2.5</a><br />
+						
+							<a href="/2009/03/20/behave-03b-hotfix/" class="titleSmall">Behave 0.3b hotfix</a><br />
+						
+							<a href="/2009/03/19/path-tutorial-video-available/" class="titleSmall">Path tutorial video available</a><br />
+						
+							<a href="/2009/03/18/path-10-launched/" class="titleSmall">Path 1.0 launched!</a><br />
+						
+							<a href="/2008/12/17/community-tutorial-2/" class="titleSmall">Continued community tutorials</a><br />
+						
+							<a href="/2008/11/30/community-tutorial/" class="titleSmall">Community tutorial</a><br />
+						
+							<a href="/2008/11/28/new-tutorial/" class="titleSmall">New tutorial</a><br />
+						
+							<a href="/2008/11/04/first-tutorial-available/" class="titleSmall">First tutorial available</a><br />
+						
+							<a href="/2008/11/02/behave-03b/" class="titleSmall">Behave 0.3b</a><br />
+						
+							<a href="/2008/10/25/unite-08-open-mic-session/" class="titleSmall">unite '08 open-mic session</a><br />
+						
+							<a href="/2008/09/24/behave-02b/" class="titleSmall">Behave 0.2b</a><br />
+						
+							<a href="/2008/09/09/behave-01b/" class="titleSmall">Behave 0.1b</a><br />
+						
+							<a href="/2008/09/08/behave-pre-release/" class="titleSmall">Behave pre-release</a><br />
+						
+							<a href="/2008/04/15/path-beta-03b/" class="titleSmall">Path beta 0.3b</a><br />
+						
+							<a href="/2008/04/12/path-beta-02b/" class="titleSmall">Path beta 0.2b</a><br />
+						
+							<a href="/2008/04/05/path-beta-01b/" class="titleSmall">Path beta 0.1b</a><br />
+						
+							<a href="/2008/03/30/path-pre-release/" class="titleSmall">Path pre-release</a><br />
+						
+					</div>
+				</div>
+				<div id="footer">
+	<div id="sidebar">
+		<div id="external">
+			<a href="/feed.xml">RSS</a>
+			<a href="/feed.articles.xml">Full RSS</a>
+			<a href="https://gist.github.com/AngryAnt">Gist</a>
+			<a href="https://mastodon.eej.dk">Mastodon</a>
+			<a href="https://twitter.com/AngryAnt">Twitter</a>
+			<a href="http://eej.dk">LinkedIn</a>
+			<a href="http://lanyrd.eej.dk">Lanyrd</a>
+			<a href="http://connect.eej.dk">Unity Connect</a>
+		</div>
+	</div>
+	<p class="footnote" style="margin-top: 50px; margin-bottom: 10px; clear: both;">Copyright &#169; AngryAnt&trade; <script>document.write ((new Date ()).getFullYear ());</script>. All public github gists are public domain. Client portfolio:</p>
+	<div id="pokemon">
+	<p><a href="http://www.google.com"><img src="/resources/clients/google.png" title="Google" alt="Google" /></a>
+		<a href="http://www.autodesk.com"><img src="/resources/clients/autodesk.png" title="Autodesk" alt="Autodesk" /></a>
+		<a href="http://www.oculusvr.com"><img src="/resources/clients/oculus.jpg" title="Oculus" alt="Oculus" /></a>
+		<a href="http://www.unity3d.com"><img src="/resources/clients/unity.png" title="Unity" alt="Unity" /></a>
+		<a href="http://github.com"><img src="/resources/clients/github.png" title="GitHub" alt="GitHub" /></a>
+		<a href="http://www.oriblindforest.com"><img src="/resources/clients/moonstudios.png" title="Moon Studios" alt="Moon Studios" /></a>
+		<a href="http://www.rovio.com"><img src="/resources/clients/rovio.png" title="Rovio" alt="Rovio" /></a>
+		<a href="http://dice.se"><img src="/resources/clients/dice.png" title="DICE" alt="DICE" /></a>
+		<a href="http://starbreeze.com"><img src="/resources/clients/starbreeze.png" title="Starbreeze" alt="Starbreeze" class="narrow" /></a>
+		<a href="http://framebunker.com"><img src="/resources/clients/framebunker.png" title="framebunker" alt="framebunker" /></a>
+		<a href="http://hugogames.com"><img src="/resources/clients/hugo.png" title="Hugo Games" alt="Hugo Games" class="narrow" /></a>
+		<a href="http://kythera.ai"><img src="/resources/clients/kythera.png" title="Kythera" alt="Kythera" /></a>
+		<a href="http://rokoko.co"><img src="/resources/clients/rokoko.png" title="RoKoKo" alt="RoKoKo" class="narrow" /></a>
+		<a href="http://www.fullcontrol.dk"><img src="/resources/clients/fullcontrol.png" title="Full Control" alt="Full Control" /></a>
+		<a href="http://fundayfactory.com"><img src="/resources/clients/fundayfactory.png" title="Funday Factory" alt="Funday Factory" class="narrow" /></a>
+		<a href="http://toughguystudios.com"><img src="/resources/clients/toughguy.png" title="Tough Guy Studios" alt="Tough Guy Studios" /></a>
+		<a href="http://lucus.dk"><img src="/resources/clients/lucus.png" title="Lucus" alt="Lucus" /></a>
+		<a href="http://atchik.com"><img src="/resources/clients/atchik.png" title="Atchik" alt="Atchik" /></a>
+		<a href="http://www.tp.edu.sg"><img src="/resources/clients/Temasek.png" title="Temasek Polytechnic" alt="Temasek Polytechnic" /></a>
+		<a href="http://dadiu.dk"><img src="/resources/clients/dadiu.jpg" title="DADIU" alt="DADIU" /></a></p>
+	</div>
+	<!--<div id="pokemon">
+		!/resources/clients/google.png(Google)!:http://www.google.com
+		!/resources/clients/autodesk.png(Autodesk)!:http://www.autodesk.com
+		!/resources/clients/oculus.jpg(Oculus)!:http://www.oculusvr.com
+		!/resources/clients/unity.png(Unity)!:http://www.unity3d.com
+		!/resources/clients/github.png(GitHub)!:http://github.com
+		!/resources/clients/moonstudios.png(Moon Studios)!:http://www.oriblindforest.com
+		!/resources/clients/rovio.png(Rovio)!:http://www.rovio.com
+		!/resources/clients/dice.png(DICE)!:http://dice.se
+		!/resources/clients/starbreeze.png(Starbreeze)!:http://starbreeze.com
+		!/resources/clients/framebunker.png(framebunker)!:http://framebunker.com
+		!/resources/clients/hugo.png(Hugo Games)!:http://hugogames.com
+		!/resources/clients/kythera.png(Kythera)!:http://kythera.ai
+		!/resources/clients/rokoko.png(RoKoKo)!:http://rokoko.co
+		!/resources/clients/fullcontrol.png(Full Control)!:http://www.fullcontrol.dk
+		!/resources/clients/fundayfactory.png(Funday Factory)!:http://fundayfactory.com
+		!/resources/clients/toughguy.png(Tough Guy Studios)!:http://toughguystudios.com
+		!/resources/clients/lucus.png(Lucus)!:http://lucus.dk
+		!/resources/clients/atchik.png(Atchik)!:http://atchik.com
+		!/resources/clients/Temasek.png(Temasek Polytechnic)!:http://www.tp.edu.sg
+		!/resources/clients/dadiu.jpg(DADIU)!:http://dadiu.dk
+	</div>-->
+</div>
+
+			</div>
+		</div>
+		
+
+	</body>
+</html>
